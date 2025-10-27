@@ -91,7 +91,7 @@ Teachers or teaching assistants (TAs) may also use the tool to quickly generate 
    - if from home page, select the lecture notes or summary to base the quiz on. 
 2. Choose parameters 
    -  Number of questions (e.g., 5, 10...)
-   -  Type of quiz-questions like Multiple-choise, text or flashcards. (optional MVP)
+   -  Type of quiz-questions like Multiple-choice, text or flashcards. (optional MVP)
    -  Difficulty level of the questions (optional MVP)
 3. System: 
    - Sends text + parameters to AI 
@@ -143,47 +143,87 @@ Teachers or teaching assistants (TAs) may also use the tool to quickly generate 
 - **Framework**: Next.js 14+ with App Router for server-side rendering and optimal performance
 - **Language**: TypeScript for type safety and better AI-assisted development
 - **Styling**: Tailwind CSS for rapid, responsive UI development
+- **State Management**: Zustand for lightweight, scalable global state management
+- **Shadcn UI**: Shadcn UI for rapid, responsive UI development
+- **Forms**: React Hook Form with Zod validation for robust form handling
+- **Authentication UI**: Supabase Auth UI components + custom styling
+- **API Communication**: Axios with interceptors for authenticated requests
+- **Deployment**: Vercel for frontend hosting with automatic CI/CD
+
+**Architecture Pattern**: Component-based architecture with clear separation between presentation components, container components, and business logic hooks.
 
 ### Backend Specifications 
 - **Framework**: FastAPI (Python) for high-performance RESTful API development
 - **Language**: Python for AI integration compatibility and rapid development
+- **Database**: Supabase (PostgreSQL) for managed database and real-time capabilities
 - **Authentication**: Supabase Auth for built-in user management, JWT tokens, and email verification
+- **Authorization**: Row Level Security (RLS) policies in Supabase - ensures users only access their own data. 
+- **ORM**: SQLAlchemy for database operations and type safety
+- **Database Migrations**: Alembic for version-controlled schema changes
+- **AI Integration**:Gemini 2.5 Pro/Flash - used to generate summaries, quizzes and feedback. 
 - **Email Service**: Supabase Auth for authentication emails + SendGrid for custom transactional emails
+- **Real-time Communication**: Supabase Realtime for live game monitoring and updates
+- **API Documentation**: FastAPI automatic OpenAPI/Swagger documentation
+- **Testing**: Pytest for unit and integration tests
+- **Deployment**: Vercel (FastAPI supports Vercel deployment)
 
-### Database Specification
+### Database Specifications
 - **Database Type**: Supabase (PostgreSQL-based relational database)
-- **ORM**: SQLAlchemy for Python-based type-safe database access
+- **ORM**: SQLAlchemy for database access and schema definition
+- **Migrations**: Alembic for version control of schema updates
+- **Hosting**: Supabase Cloud – includes automatic backups, scaling, and monitoring
+- **Schema Design**:
+  - **Users**: Managed by Supabase Auth; stores user metadata (student, teacher)
+  - **LectureNotes**: Stores uploaded files, extracted text, and metadata
+  - **Summaries**: AI-generated summaries linked to user and lecture notes
+  - **Quizzes**: Stores AI-generated questions, answers, and configurations (difficulty, type)
+  - **QuizAttempts**: Records user answers, scores, and time spent per quiz
+- **Security**: Row Level Security (RLS) policies ensure users can only access their own data
 
-### AI Integration Specification
-**AI Use cases**:
-1. **Note summaries**: Generate summaries based on the notes provided by the user. 
-2. **Question Generation**: Generate questions based on the provided notes, the Answer should also be generated. Type of questions is based of what the user selects. (Multiple-choise, text-questions...)
-3. **Feedback Generation**: Provide feedback and score based on the answers the user has given to the generated questions. 
-
-**Implementation**:
-- **Model**: Gemini 2.5 pro/flash
+### AI Integration Specifications
+- **AI Model**: Gemini 2.5 Pro/Flash – selected for accuracy, cost-efficiency, and speed
+- **Use Cases**:
+  - **Lecture Note Summarization**: Extracts key points and provides a short paragraph summary
+  - **Quiz Generation**: Creates contextual questions and answers based on lecture content and summary
+  - **Feedback Generation (optional)**: Evaluates user answers and provides personalized feedback
 - **Prompt Design**:
-  - AI recieves the lecture notes by the user to generate the summary.
-  - Question generator uses the lecture notes and generated summary, as well as the users chosen type of questions. 
-  - AI recieves the answers the user have given, to provide feedback. 
+  - **Summarization**: AI receives parsed text from uploaded lecture notes
+  - **Quiz Generation**: AI receives summary, original text, and quiz type parameters (e.g., multiple-choice or written)
+  - **Feedback**: AI evaluates user-submitted answers and provides explanation or score
+- **Error Handling**: Implements retry logic for failed requests and validation for AI responses
+- **Cost Management**: Implements basic rate limiting and usage tracking for AI API calls.
 
-### Platform Type
-**Primary Platform**: Web application (browser-based)
+### User Authentication Specifications
+- **Authentication Method**: Supabase Auth with JWT-based authentication
+- **Features**:
+  - Email/password registration with built-in validation
+  - Automatic email verification via Supabase Auth templates
+  - Password reset using secure magic link flow
+  - Session management with automatic refresh token rotation
+  - Role-based metadata (student, teacher)
+- **Security Measures**:
+  - HTTPS enforced by Supabase and Vercel
+  - Passwords securely hashed by Supabase (bcrypt)
+  - JWTs automatically managed by Supabase
+  - Row Level Security (RLS) ensures users can only access their own data
+  - CSRF protection and input validation on all authentication forms
 
-**Target Devices**:
-- Desktop computers (primary): Windows, macOS, Linux
-- Laptops (primary): All operating systems
-- Tablets (secondary): iPad, Android tablets (landscape orientation recommended)
-- Mobile phones (future): iOS and Android via responsive design or dedicated apps
 
-### User Authentication Specification
-**Authentication Method**: Supabase Auth with JWT-based authentication
+### Platform Specifications
+- **Primary Platform**: Web application (browser-based)
+- **Target Devices**:
+  - **Primary**: Desktop and laptop devices (Windows, macOS, Linux)
+  - **Secondary**: Tablets (iPad, Android tablets in landscape mode)
+  - **Future**: Mobile phones (responsive UI or dedicated app)
+- **Browser Compatibility**: Chrome, Firefox, Safari, Edge (latest two versions)
+- **Responsive Design**: Optimized for 1024px+ viewports; adaptable for tablets and smaller screens
 
-**Features**:
-- Email/password registration with built-in validation
-- Automatic email verification via Supabase Auth email templates
-- Secure password reset flow with magic links
-- Session management with automatic refresh token rotation
+### Security & Compliance Specifications
+- **Data Encryption**: All sensitive data encrypted in transit (HTTPS/TLS) and at rest (managed by Supabase)
+- **GDPR Compliance**: Data storage and deletion policies aligned with GDPR requirements
+- **Session Management**: JWT-based sessions to prevent unauthorized access
+- **Data Access Control**: Row Level Security (RLS) ensures users can only read/write their own data records
+
 
 
 ## Timeline and milestones 
