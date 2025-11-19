@@ -2,7 +2,7 @@
 
 ## Fase 0
 
-- [ ] Brainstorming
+- [x] Brainstorming
   - [ ] /analyst *brainstorm "Root Cause Analysis and Solution Design for Player Inactivity"
   - [ ] /analyst *brainstorm "User Flow Deviations & Edge Cases"
 - [ ] Research
