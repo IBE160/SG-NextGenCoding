@@ -3,8 +3,7 @@
 ## Fase 0
 
 - [x] Brainstorming
-  - [ ] /analyst *brainstorm "Root Cause Analysis and Solution Design for Player Inactivity"
-  - [ ] /analyst *brainstorm "User Flow Deviations & Edge Cases"
+  - [x] /analyst *brainstorm "Expanding the core functionality of the "Lecture Notes - Summary & Quiz generator" application"
 - [x] Research
   - [x] /analyst *research "Which AI library should we use for orchestrating LLM interactions?"
 - [x] Product Brief
