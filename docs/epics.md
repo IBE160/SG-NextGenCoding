@@ -2,8 +2,8 @@
 
 **Author:** BIP
 **Date:** torsdag 20. november 2025
-**Project Level:** {{project_level}}
-**Target Scale:** {{target_scale}}
+**Project Level:** Level 3
+**Target Scale:** Medium
 
 ---
 
@@ -67,6 +67,8 @@ This breakdown provides an actionable roadmap for the architecture and implement
 
 Establish the basic technical infrastructure, deployment pipeline, core security, data handling, and fundamental UI elements.
 
+**Note on Parallel Work**: Stories 1.2, 1.3, and 1.4 can be worked on in parallel after Story 1.1 is complete.
+
 <!-- Repeat for each story (M = 1, 2, 3...) within epic N -->
 
 ### Story 1.1: Initialize Project Structure & Tools
@@ -89,6 +91,8 @@ So that I can start coding efficiently and maintain consistency across the team.
 
 **Prerequisites:** None
 
+Scope: MVP
+
 **Technical Notes:** This story covers initial `npm init`, `npx create-next-app`, `poetry init` or `pipenv init`, basic file structure.
 
 ### Story 1.2: Set Up CI/CD & Deployment Pipeline
@@ -108,6 +112,8 @@ So that I can quickly and reliably deploy changes to development environments.
 **And** unit tests (if any exist) are run successfully before deployment.
 
 **Prerequisites:** Story 1.1
+
+Scope: MVP
 
 **Technical Notes:** This involves Vercel project setup, linking GitHub repository, and configuring Vercel for both frontend and backend.
 
@@ -131,6 +137,10 @@ So that I can manage basic user data and authentication state.
 
 **Prerequisites:** Story 1.1
 
+Scope: MVP
+
+FRs: [FR-DM-1]
+
 **Technical Notes:** Supabase project setup, API key management, basic RLS policies, installing Supabase client libraries in frontend/backend.
 
 ### Story 1.4: Implement Initial UI Layout & Theming
@@ -150,6 +160,10 @@ So that subsequent feature development has a visual foundation.
 **And** Shadcn UI components (e.g., Button, Card) can be imported and used.
 
 **Prerequisites:** Story 1.1
+
+Scope: MVP
+
+FRs: [FR-UI-1]
 
 **Technical Notes:** Tailwind configuration, Shadcn UI setup instructions.
 
@@ -199,6 +213,10 @@ So that I can easily access and review my previous learning materials.
 
 **Prerequisites:** Epic 2 (Story 2.2), Epic 3 (Story 3.4), Epic 4 (Story 4.3), Epic 1 (Story 1.3 - Data Persistence)
 
+Scope: MVP
+
+FRs: [FR-DM-1]
+
 **Technical Notes:** FastAPI endpoints for fetching user history, Supabase queries, UI components for displaying lists.
 
 ### Story 5.2: Review Past Quiz Results and Answers
@@ -217,6 +235,10 @@ So that I can identify areas where I need to improve.
 
 **Prerequisites:** Story 5.1
 
+Scope: MVP
+
+FRs: [FR-DM-1]
+
 **Technical Notes:** FastAPI endpoint for fetching detailed quiz results, UI for presenting question-answer review.
 
 ### Story 5.3: Full WCAG 2.1 AA Compliance Audit & Remediation
@@ -233,9 +255,11 @@ So that I have an equitable learning experience.
 
 **And** the application is fully navigable and usable via keyboard.
 
-**And** all UI elements have appropriate ARIA attributes and labels.
-
 **Prerequisites:** All other epics' stories are largely complete.
+
+Scope: MVP
+
+FRs: [FR-UI-1]
 
 **Technical Notes:** Manual and automated accessibility testing tools, knowledge of WCAG guidelines, remediation of identified issues.
 
@@ -256,6 +280,10 @@ So that the application feels professional and delightful to use.
 **And** the application provides clear visual feedback for all user actions.
 
 **Prerequisites:** All other epics' stories are largely complete.
+
+Scope: MVP
+
+FRs: [FR-UI-1]
 
 **Technical Notes:** Focus on CSS refinements, minor JS/React optimizations, attention to detail in UI/UX.
 
@@ -281,6 +309,10 @@ So that I can actively test my understanding.
 
 **Prerequisites:** Epic 3 (Story 3.2: Text Extraction from Uploaded Files)
 
+Scope: MVP
+
+FRs: [FR-ILA-1]
+
 **Technical Notes:** FastAPI endpoint for quiz generation, Google Gemini API integration, prompt engineering for quiz generation.
 
 ### Story 4.2: Interactive Quiz User Interface
@@ -300,6 +332,10 @@ So that my learning experience is engaging and effective.
 **And** I can navigate between questions (e.g., next/previous).
 
 **Prerequisites:** Story 4.1
+
+Scope: MVP
+
+FRs: [FR-ILA-1]
 
 **Technical Notes:** React components for quiz display, state management for user answers.
 
@@ -321,6 +357,10 @@ So that I can identify my knowledge gaps.
 
 **Prerequisites:** Story 4.2
 
+Scope: MVP
+
+FRs: [FR-ILA-1]
+
 **Technical Notes:** FastAPI endpoint for quiz submission and grading, UI for displaying results.
 
 ### Story 4.4: Content Quality Feedback Mechanism
@@ -338,6 +378,10 @@ So that the system can continuously improve.
 **And** my feedback is securely recorded.
 
 **Prerequisites:** Epic 3 (Story 3.4), Story 4.3
+
+Scope: MVP
+
+FRs: [FR-ILA-2]
 
 **Technical Notes:** FastAPI endpoint for feedback submission, Supabase table for feedback data, UI for feedback collection.
 
@@ -363,6 +407,10 @@ So that the system can process them.
 
 **Prerequisites:** Epic 1 (Story 1.4), Epic 2 (Story 2.2/2.3)
 
+Scope: MVP
+
+FRs: [FR-CIP-1]
+
 **Technical Notes:** HTML file input, drag-and-drop handler, client-side file type and size validation.
 
 ### Story 3.2: Text Extraction from Uploaded Files
@@ -380,6 +428,10 @@ So that the AI can process the content for summaries and quizzes.
 **And** the extracted text is available for subsequent AI processing.
 
 **Prerequisites:** Story 3.1
+
+Scope: MVP
+
+FRs: [FR-CIP-2]
 
 **Technical Notes:** Backend libraries for parsing PDF (e.g., `PyPDF2`), DOCX (e.g., `python-docx`), and TXT files. Error handling for corrupted files.
 
@@ -401,6 +453,10 @@ So that I can quickly grasp the key concepts.
 
 **Prerequisites:** Story 3.2
 
+Scope: MVP
+
+FRs: [FR-CIP-2]
+
 **Technical Notes:** FastAPI endpoint for summary generation, Google Gemini API integration, prompt engineering for summarization, asynchronous task handling (queuing system).
 
 ### Story 3.4: Display Summary in User Interface
@@ -418,6 +474,10 @@ So that I can easily review the key points.
 **And** I can copy the summary text.
 
 **Prerequisites:** Story 3.3
+
+Scope: MVP
+
+FRs: [FR-CIP-2]
 
 **Technical Notes:** Markdown renderer component, UI for displaying the summary.
 
@@ -443,6 +503,10 @@ So that I can access personalized features and save my progress.
 
 **Prerequisites:** Epic 1 (Story 1.3: Integrate Supabase for Basic Data & Auth, Story 1.4: Implement Initial UI Layout & Theming)
 
+Scope: MVP
+
+FRs: [FR-UM-1]
+
 **Technical Notes:** Supabase Auth `signUp` function, form validation with React Hook Form and Zod, Next.js API route for handling registration.
 
 ### Story 2.2: User Login and Session Management
@@ -459,9 +523,11 @@ So that I can access my saved content and continue my learning journey.
 
 **And** a session is established, allowing me access to protected routes.
 
-**And** I can log out, which invalidates my session.
-
 **Prerequisites:** Story 2.1
+
+Scope: MVP
+
+FRs: [FR-UM-1]
 
 **Technical Notes:** Supabase Auth `signInWithPassword` function, JWT handling, protected routes in Next.js.
 
@@ -480,6 +546,10 @@ So that I can experience the value of the application before committing to an ac
 **And** after reaching the limit, the system prompts me to register or log in to continue.
 
 **Prerequisites:** Epic 1 (Story 1.3), Story 2.1, Story 2.2
+
+Scope: MVP
+
+FRs: [FR-UM-2]
 
 **Technical Notes:** Client-side tracking of guest uses (e.g., local storage), conditional rendering based on authentication status and use count.
 
@@ -502,6 +572,10 @@ So that I can maintain access to my account and ensure its security.
 **Then** clicking the link verifies my email address.
 
 **Prerequisites:** Story 2.1
+
+Scope: MVP
+
+FRs: [FR-UM-1]
 
 **Technical Notes:** Supabase Auth password recovery and email verification flows.
 

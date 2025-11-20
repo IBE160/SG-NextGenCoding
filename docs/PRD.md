@@ -1,7 +1,7 @@
-# {{project_name}} - Product Requirements Document
+# ibe160 - Product Requirements Document
 
-**Author:** {{user_name}}
-**Date:** {{date}}
+**Author:** BIP
+**Date:** 2025-11-20
 **Version:** 1.0
 
 ---
@@ -24,12 +24,11 @@ The core "magic" is the instant transformation of dense lecture notes into a cle
 
 The project is a Web Application in the EdTech domain with medium complexity, requiring attention to data privacy and educational standards.
 
-{{#if domain_context_summary}}
-
 ### Domain Context
 
 The EdTech domain requires careful consideration of student data privacy laws like GDPR, FERPA (in the U.S.), and COPPA (for users under 13). The application should also be designed with web accessibility (WCAG 2.1 AA) in mind to ensure it is usable by all students. While not required for MVP, awareness of learning management standards (like SCORM/xAPI) is beneficial for potential future integrations with institutional systems.
-{{/if}}
+
+
 
 ---
 
@@ -61,21 +60,21 @@ The core functionality that must work for the product to be useful:
 *   **AI-Generated Quiz**: Creation of quiz questions with answers based on lecture notes.
 *   **Content Feedback**: A simple "Rate this" or "Report Issue" mechanism for users to provide feedback on the quality of AI-generated content.
 
-### Growth Features (Post-MVP)
+### Out of Scope for MVP
 
-Features that will make the product more competitive and enhance the user experience:
+The following features are explicitly out of scope for the MVP to ensure a focused and timely delivery of the core product value. They are categorized as Growth or Vision features for future consideration.
 
-*   **AI-Generated Feedback**: System provides feedback based on user answers.
-*   **Difficulty Setting**: Users can select the difficulty level for quizzes.
-*   **Different Quiz Options**: Options for multiple choice, written answers, or flashcards.
-*   **Number of Questions**: Option to select the quantity of quiz questions.
+#### Growth Features (Post-MVP)
 
-### Vision (Future)
+*   **AI-Generated Feedback**: Deferred to gather more data on user interaction with quizzes before adding this layer of complexity.
+*   **Difficulty Setting**: Deferred to simplify the initial user experience. The AI will be tuned for a general audience first.
+*   **Different Quiz Options**: Deferred to focus on a single, high-quality quiz format for MVP.
+*   **Number of Questions**: Deferred to simplify the initial user experience.
 
-Long-term aspirations for the product:
+#### Vision (Future)
 
-*   **Class Feature**: Users can join classes where teachers create summaries and quizzes.
-*   **Study Group Feature**: Similar to the class feature, enabling collaborative study.
+*   **Class Feature**: A significant feature requiring a multi-user architecture, which is a a large extension of the core MVP.
+*   **Study Group Feature**: Similar to the Class Feature, this requires a more complex social and permissions model.
 
 ---
 
@@ -162,6 +161,7 @@ We will focus on highly optimized and intuitive interaction patterns for the cri
 
 **1. User Management & Authentication (FR-UM)**
 *   **FR-UM-1: User Registration & Login**: The system shall allow new users to register for an account and existing users to log in securely using email and password (via Supabase Auth).
+    *   **Priority**: MVP
     *   **User Value**: Provides personalized experience, saves user data securely.
     *   **Acceptance Criteria**:
         *   Users can successfully create an account with a unique email and password.
@@ -169,6 +169,8 @@ We will focus on highly optimized and intuitive interaction patterns for the cri
         *   Password recovery and email verification processes are functional.
     *   **Domain Constraint**: Must comply with GDPR data handling for user data.
 *   **FR-UM-2: Guest Access**: The system shall allow guest users to access core summary and quiz generation features for a limited number of uses (e.g., 1-2 free uses) without requiring registration.
+    *   **Priority**: MVP
+    *   **Dependencies**: FR-UM-1
     *   **User Value**: Low friction trial, immediate value proposition of the "magic."
     *   **Acceptance Criteria**:
         *   Guest users can upload a file, generate a summary, and take a quiz for the defined free uses.
@@ -176,12 +178,16 @@ We will focus on highly optimized and intuitive interaction patterns for the cri
 
 **2. Content Ingestion & Processing (FR-CIP)**
 *   **FR-CIP-1: Lecture Note Upload**: The system shall allow users to upload lecture notes in PDF, TXT, and DOCX formats.
+    *   **Priority**: MVP
+    *   **Dependencies**: FR-UM-1
     *   **User Value**: Easily use existing notes without conversion, saving time.
     *   **Acceptance Criteria**:
         *   Users can select and upload supported file types.
         *   The system validates file format and size.
         *   The system accurately extracts text from the uploaded file for AI processing.
 *   **FR-CIP-2: AI Summary Generation**: The system shall generate a concise summary (including key points and a short paragraph) from uploaded lecture notes using AI (Gemini 2.5).
+    *   **Priority**: MVP
+    *   **Dependencies**: FR-CIP-1
     *   **User Value**: Time-saving, quick grasp of key concepts, enhances understanding. *(Highlights "magic")*
     *   **Acceptance Criteria**:
         *   A summary is generated within a specified performance threshold (e.g., under 30 seconds for a typical file).
@@ -191,6 +197,8 @@ We will focus on highly optimized and intuitive interaction patterns for the cri
 
 **3. Interactive Learning & Assessment (FR-ILA)**
 *   **FR-ILA-1: AI Quiz Generation**: The system shall generate relevant quiz questions (e.g., multiple-choice, true/false, short answer) and correct answers based on the uploaded lecture notes and/or generated summary using AI (Gemini 2.5).
+    *   **Priority**: MVP
+    *   **Dependencies**: FR-CIP-2
     *   **User Value**: Self-assessment, active recall, identifies knowledge gaps, makes studying efficient. *(Highlights "magic")*
     *   **Acceptance Criteria**:
         *   A quiz is generated within a specified performance threshold (e.g., under 30 seconds).
@@ -198,6 +206,8 @@ We will focus on highly optimized and intuitive interaction patterns for the cri
         *   Users can take the generated quiz through an intuitive interface.
     *   **Domain Constraint**: Ethical AI use guidelines must be applied to minimize bias and ensure factual accuracy.
 *   **FR-ILA-2: Content Feedback**: The system shall provide a simple mechanism for users to rate the quality/accuracy of AI-generated summaries and quizzes (e.g., "helpful/not helpful," "report issue" button).
+    *   **Priority**: MVP
+    *   **Dependencies**: FR-ILA-1, FR-CIP-2
     *   **User Value**: Users contribute to improving AI quality, feel heard and valued.
     *   **Acceptance Criteria**:
         *   Users can easily submit feedback on both summaries and quizzes.
@@ -205,6 +215,7 @@ We will focus on highly optimized and intuitive interaction patterns for the cri
 
 **4. Data Management & History (FR-DM)**
 *   **FR-DM-1: Data Persistence**: The system shall securely store user data, uploaded lecture notes, generated summaries, quizzes, and quiz results between user sessions for logged-in users.
+    *   **Priority**: MVP
     *   **User Value**: Continuity of study, ability to track progress and review past materials.
     *   **Acceptance Criteria**:
         *   Logged-in users can access their past content and results.
@@ -213,11 +224,22 @@ We will focus on highly optimized and intuitive interaction patterns for the cri
 
 **5. User Interface & Experience (FR-UI)**
 *   **FR-UI-1: Responsive User Interface**: The system shall provide a responsive web interface compatible with modern browsers (Chrome, Firefox, Safari, Edge - latest two versions) on desktop, laptop, and tablet devices.
+    *   **Priority**: MVP
     *   **User Value**: Consistent, accessible, and comfortable experience across different devices and screen sizes.
     *   **Acceptance Criteria**:
         *   UI elements and layouts adapt correctly across specified device types and browser windows.
         *   Core functionalities are fully accessible and usable via keyboard navigation.
     *   **Domain Constraint**: WCAG 2.1 AA accessibility guidelines must be met for all UI components and content.
+
+---
+
+## Edge Cases and Special Scenarios
+
+- **Large File Uploads**: The system should gracefully handle file uploads that are close to the size limit, providing clear feedback to the user during the upload and processing.
+- **Empty or Very Short Files**: If a user uploads a file with little or no content, the AI should return a message indicating that there is not enough content to generate a summary or quiz, rather than producing an error or a nonsensical output.
+- **Unsupported File Types**: The system should provide a clear and immediate error message if a user attempts to upload a file type that is not supported.
+- **AI Service Unavailability**: If the AI service (Gemini 2.5) is unavailable or returns an error, the user should be notified with a user-friendly message, and the system should not crash.
+- **Poor Quality OCR**: For PDF files that are images, the text extraction (OCR) might be of poor quality. The system should ideally detect this and warn the user that the generated content might be inaccurate.
 
 ---
 
@@ -245,6 +267,23 @@ We will focus on highly optimized and intuitive interaction patterns for the cri
 
 ---
 
+## Technical Unknowns
+
+- **AI Performance at Scale**: While Gemini 2.5 is powerful, its performance and cost implications at high user volumes are yet to be determined. This will require monitoring and potential optimization post-launch.
+- **OCR Accuracy for Diverse PDFs**: The accuracy of text extraction from image-based PDFs can vary widely. The effectiveness of detecting poor quality OCR and providing meaningful warnings to the user needs to be researched and tested.
+- **Real-time Collaboration Complexity**: For the "Vision" features (Class and Study Group), the real-time collaboration aspect using Supabase's capabilities will introduce significant complexity that needs to be fully scoped and designed.
+
+---
+
+## Test Strategy
+
+- **Unit Tests**: Both frontend and backend code will be covered by unit tests to ensure individual components function correctly.
+- **Integration Tests**: Integration tests will be written to verify the interactions between different parts of the system, such as the frontend and backend API, and the backend and the AI service.
+- **End-to-End (E2E) Tests**: E2E tests will simulate user journeys to ensure the entire application works as expected. This will include testing the file upload, summary generation, and quiz taking processes.
+- **User Acceptance Testing (UAT)**: A group of beta testers will be invited to use the application and provide feedback before the public launch. This will help identify usability issues and ensure the application meets user expectations.
+
+---
+
 ## Implementation Planning
 
 ### Epic Breakdown Required
@@ -257,13 +296,11 @@ Requirements must be decomposed into epics and bite-sized stories (200k context 
 
 ## References
 
-{{#if product_brief_path}}
+
 
 - Product Brief: docs/product-brief-ibe160-2025-11-19.md
 - Research: docs/research-technical-2025-11-19.md
-  {{/if}}
 
----
 
 ## Next Steps
 
@@ -277,4 +314,4 @@ Requirements must be decomposed into epics and bite-sized stories (200k context 
 
 The PRD outlines a web application to make learning more efficient and engaging by transforming lecture notes into summaries and quizzes. Success will be measured by accuracy, user engagement, and organic growth. The MVP includes a "Guest Mode," file upload (PDF, TXT, DOCX), AI-generated content, and a feedback mechanism. The requirements address functional needs as well as NFRs for performance, security, accessibility, and integration, with special attention to EdTech domain considerations like data privacy.
 
-_Created through collaborative discovery between {{user_name}} and AI facilitator._
+_Created through collaborative discovery between BIP and AI facilitator._
