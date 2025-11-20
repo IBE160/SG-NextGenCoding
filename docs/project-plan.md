@@ -3,7 +3,7 @@
 ## Fase 0
 
 - [x] Brainstorming
-  - [x] /analyst *brainstorm "Expanding the core functionality of the "Lecture Notes - Summary & Quiz generator" application"
+  - [x] /analyst *brainstorm "Expanding the core functionality of the application"
 - [x] Research
   - [x] /analyst *research "Which AI library should we use for orchestrating LLM interactions?"
 - [x] Product Brief
@@ -13,6 +13,7 @@
 
 - [ ] Planning
   - [x] /run-agent-task pm *prd
+  - [ ] /run-agent-task pm *create-epics-and-stories
   - [ ] /run-agent-task pm *validate-prd
   - [ ] /run-agent-task ux-designer *create-ux-design {prompt / user-input-file}
   - [ ] /run-agent-task ux-designer *validate-ux-design {prompt / user-input-file}
