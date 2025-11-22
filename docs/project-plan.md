@@ -12,10 +12,10 @@
   - [x] File: bmm-workflow-status.yaml
 - [x] Brainstorming
   - [x] /run-agent-task analyst *brainstorm "Expanding the core functionality of the application"
-    - [x] File: brainstorming-session-results-date.md
+    - [x] File: brainstorming-session-results-onsdag 5. november 2025.md
 - [x] Research
   - [x] /run-agent-task analyst *research "Which AI library should we use for orchestrating LLM interactions?"
-    - [x] File: research-technical-date.md
+    - [x] File: research-technical-2025-11-19.md
 - [x] Product Brief
   - [x] /run-agent-task analyst *product-brief "Read the two brainstorming sessions the research session and the @proposal.md file, and create a product brief for the project."
     - [x] File: product-brief.md
