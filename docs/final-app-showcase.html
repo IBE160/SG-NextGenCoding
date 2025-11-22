@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final App Showcase</title>
+    <style>
+        :root {
+            --primary: #60a5fa;
+            --secondary: #818cf8;
+            --background: #1f2937;
+            --foreground: #f9fafb;
+            --card-background: #374151;
+            --border-color: #4b5563;
+            --success: #4ade80;
+            --error: #ef4444;
+            --text-muted: #9ca3af;
+        }
+
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            margin: 0;
+        }
+
+        .showcase-container {
+            max-width: 1600px;
+            margin: auto;
+            padding: 2rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .screen-panel {
+            background-color: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .screen-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .screen-header h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+
+        .screen-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+        }
+        
+        .button {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            border: none;
+            background-color: var(--primary);
+            color: var(--foreground);
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--background);
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            color: var(--foreground);
+            margin-bottom: 1rem;
+            box-sizing: border-box;
+        }
+        
+        .nav {
+            background-color: var(--card-background);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .nav-brand { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+        .nav-links a { color: var(--text-muted); text-decoration: none; margin-left: 1.5rem; font-weight: 500; }
+        .nav-links a.active { color: var(--foreground); }
+
+    </style>
+</head>
+<body>
+
+    <div class="nav">
+        <div class="nav-brand">ibe160</div>
+        <div class="nav-links">
+            <a href="#" class="active">Home</a>
+            <a href="#">My Summaries</a>
+            <a href="#">My Quizzes</a>
+            <a href="#">Settings</a>
+        </div>
+    </div>
+
+    <div class="showcase-container">
+        <h1>Key Screens Showcase</h1>
+        <div class="grid">
+
+            <!-- 1. Login Page -->
+            <div class="screen-panel">
+                <div class="screen-header"><h3>1. Login Page</h3></div>
+                <div class="screen-content">
+                    <h2>Welcome Back</h2>
+                    <p style="color: var(--text-muted);">Log in to continue your learning journey.</p>
+                    <label for="email">Email</label>
+                    <input type="email" id="email" class="input-field" placeholder="you@example.com">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="input-field" placeholder="••••••••">
+                    <button class="button" style="width: 100%;">Login</button>
+                    <p style="text-align: center; color: var(--text-muted); margin-top: 1rem;">Don't have an account? <a href="#" style="color: var(--primary);">Sign Up</a></p>
+                </div>
+            </div>
+
+            <!-- 2. Home Screen Dashboard -->
+            <div class="screen-panel">
+                <div class="screen-header"><h3>2. Home Screen Dashboard</h3></div>
+                <div class="screen-content">
+                    <h2>Welcome, BIP!</h2>
+                    <p style="color: var(--text-muted);">What would you like to do today?</p>
+                    <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+                        <button class="button" style="flex: 1;">Generate Summary</button>
+                        <button class="button" style="flex: 1; background-color: var(--secondary);">Generate Quiz</button>
+                    </div>
+                    <h4>Recent Summaries</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="padding: 0.5rem; border-bottom: 1px solid var(--border-color);">Intro to AI.pdf</li>
+                        <li style="padding: 0.5rem; border-bottom: 1px solid var(--border-color);">History of Rome.docx</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 3. File Upload Screen -->
+            <div class="screen-panel">
+                <div class="screen-header"><h3>3. File Upload</h3></div>
+                <div class="screen-content">
+                    <h2>Step 1: Choose Your Notes</h2>
+                    <div style="border: 2px dashed var(--border-color); border-radius: 0.5rem; padding: 2rem; text-align: center; margin-bottom: 1rem;">
+                        <p>Drag & Drop Here</p>
+                        <p style="color: var(--text-muted);">or</p>
+                        <button class="button" style="background-color: var(--card-background); border: 1px solid var(--primary); color: var(--primary);">Browse Files</button>
+                    </div>
+                     <h4>Or select a recent file:</h4>
+                     <ul style="list-style: none; padding: 0;">
+                        <li style="padding: 0.75rem; background-color: var(--background); border-radius: 0.25rem; margin-bottom: 0.5rem;">Intro to AI.pdf</li>
+                     </ul>
+                </div>
+            </div>
+
+            <!-- 4. Settings Screen -->
+            <div class="screen-panel">
+                <div class="screen-header"><h3>4. Settings for Generation</h3></div>
+                <div class="screen-content">
+                    <h2>Step 2: Adjust Settings</h2>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label>Summary Length</label>
+                        <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                            <button class="button" style="flex:1; background-color: var(--card-background);">Short</button>
+                            <button class="button" style="flex:1;">Medium</button>
+                            <button class="button" style="flex:1; background-color: var(--card-background);">Long</button>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label>Quiz Difficulty</label>
+                        <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                            <button class="button" style="flex:1; background-color: var(--card-background);">Easy</button>
+                            <button class="button" style="flex:1;">Medium</button>
+                            <button class="button" style="flex:1; background-color: var(--card-background);">Hard</button>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="num_questions">Number of Questions</label>
+                        <input type="number" id="num_questions" class="input-field" value="10">
+                    </div>
+                    <button class="button" style="width: 100%;">Generate</button>
+                </div>
+            </div>
+
+            <!-- 5. Summary Display -->
+            <div class="screen-panel">
+                <div class="screen-header"><h3>5. Summary Display</h3></div>
+                <div class="screen-content">
+                    <h2>Summary of "Intro to AI.pdf"</h2>
+                     <p>AI, or Artificial Intelligence, is a field of computer science focused on creating intelligent machines. Its history began in the mid-20th century, with key applications now in natural language processing (NLP), computer vision, and robotics. Ethical considerations like bias and privacy are crucial for responsible development.</p>
+                     <button class="button" style="width: 100%; background-color: var(--secondary);">Generate Quiz from this Summary</button>
+                </div>
+            </div>
+
+            <!-- 6. Interactive Quiz Player -->
+            <div class="screen-panel">
+                <div class="screen-header"><h3>6. Interactive Quiz Player</h3></div>
+                <div class="screen-content">
+                    <h2>AI Quiz</h2>
+                    <div style="background-color: var(--background); padding: 1rem; border-radius: 0.5rem;">
+                        <p style="color: var(--text-muted);">AI Question:</p>
+                        <p>What year is often cited as the birth of AI due to the Dartmouth Workshop?</p>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <input type="text" class="input-field" placeholder="Your answer here...">
+                        <button class="button" style="width: 100%;">Submit Answer</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. History Page -->
+            <div class="screen-panel">
+                <div class="screen-header"><h3>7. History Page</h3></div>
+                <div class="screen-content">
+                    <h2>My Summaries</h2>
+                     <ul style="list-style: none; padding: 0;">
+                        <li style="padding: 1rem; background-color: var(--background); border-radius: 0.25rem; margin-bottom: 0.5rem; cursor: pointer;">Summary: Intro to AI.pdf</li>
+                        <li style="padding: 1rem; background-color: var(--background); border-radius: 0.25rem; margin-bottom: 0.5rem; cursor: pointer;">Summary: History of Rome.docx</li>
+                     </ul>
+                </div>
+            </div>
+
+            <!-- 8. Empty State -->
+            <div class="screen-panel">
+                <div class="screen-header"><h3>8. Empty State</h3></div>
+                <div class="screen-content" style="text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                    <div style="font-size: 3rem;">📄</div>
+                    <h2>No Summaries Yet</h2>
+                    <p style="color: var(--text-muted);">You haven't generated any summaries. Get started by uploading your first set of notes!</p>
+                    <button class="button">Generate Your First Summary</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

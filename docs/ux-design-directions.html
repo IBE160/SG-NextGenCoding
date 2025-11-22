@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UX Design Directions Showcase</title>
+    <style>
+        :root {
+            --primary: #60a5fa; /* Blue */
+            --secondary: #818cf8; /* Complementary Blue */
+            --background: #1f2937; /* Dark Slate Gray */
+            --foreground: #f9fafb; /* White/Light Gray for text */
+            --card-background: #374151; /* Slightly lighter dark gray for cards */
+            --border-color: #4b5563; /* Medium dark gray for borders */
+            --success: #4ade80; /* Green */
+            --error: #ef4444; /* Red */
+            --text-muted: #9ca3af; /* Light gray for muted text */
+        }
+
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            background-color: var(--background);
+            color: var(--foreground);
+            margin: 0;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+        .container { max-width: 1400px; margin: auto; }
+        h1, h2, h3 { font-weight: 700; color: var(--foreground); margin-bottom: 1rem; }
+        h1 { font-size: 2.5rem; }
+        h2 { font-size: 2rem; }
+        h3 { font-size: 1.5rem; }
+        p { margin-bottom: 1rem; }
+
+        .design-direction {
+            background-color: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .design-direction-header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .design-direction-header h2 { margin: 0; color: var(--primary); }
+        .design-direction-header p { margin: 0.5rem 0 0; color: var(--text-muted); }
+
+        .screen-mockup-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .screen {
+            background-color: var(--background);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+        .screen h4 { font-size: 1.2rem; margin-top: 0; color: var(--secondary); }
+        .screen .content { flex-grow: 1; }
+        .button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 1rem;
+            border: none;
+        }
+        .button-primary { background-color: var(--primary); color: var(--foreground); }
+        .button-primary:hover { background-color: #3b82f6; } /* Slightly darker primary */
+        .button-secondary { background-color: var(--card-background); color: var(--primary); border: 1px solid var(--primary); }
+        .button-secondary:hover { background-color: #2e3845; } /* Slightly darker card background */
+        
+        .drop-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+        .input-field {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--background);
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            color: var(--foreground);
+            margin-bottom: 1rem;
+        }
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            margin-top: 1rem;
+        }
+        .alert-success { background-color: #166534; color: #dcfce7; }
+        .alert-error { background-color: #991b1b; color: #fee2e2; }
+
+        .summary-block {
+            background-color: var(--background);
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .quiz-question {
+            background-color: var(--background);
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        .quiz-options label {
+            display: block;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+        }
+        input[type="radio"] { margin-right: 0.5rem; }
+
+        @media (max-width: 768px) {
+            .screen-mockup-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✨ UX Design Directions</h1>
+        <p>Explore different visual approaches for key screens, all built on the "Scholarly Slate" dark theme. Consider which direction best aligns with the project's vision for "Generating knowledge" and "a new way of learning."</p>
+
+        <!-- Design Direction 1: Minimalist & Direct -->
+        <div class="design-direction">
+            <div class="design-direction-header">
+                <h2>1. Minimalist & Direct</h2>
+                <p><strong>Personality:</strong> Professional & Efficient | <strong>Best for:</strong> Users who want quick access to core functions.</p>
+                <p><strong>Key Characteristics:</strong> Clean, centered layout with focus on the core action. Prominent file upload area. Direct interactions with minimal distractions. Text-focused feedback.</p>
+            </div>
+            <div class="screen-mockup-grid">
+                <!-- File Upload Screen -->
+                <div class="screen">
+                    <h4>Upload Notes</h4>
+                    <div class="content">
+                        <div class="drop-area">
+                            Drag & Drop your lecture notes here
+                            <p class="text-muted">or <label for="file-upload-1" style="color: var(--primary); cursor: pointer;">browse files</label></p>
+                            <input type="file" id="file-upload-1" style="display: none;">
+                            <p class="text-muted">Supported: PDF, TXT, DOCX (Max 20MB)</p>
+                        </div>
+                        <button class="button button-primary" style="width: 100%;">Upload</button>
+                    </div>
+                </div>
+                <!-- Content Display Screen (Summary) -->
+                <div class="screen">
+                    <h4>AI Summary</h4>
+                    <div class="content">
+                        <div class="summary-block">
+                            <p style="color: var(--text-muted); font-style: italic;">Summary of "Introduction to AI.pdf"</p>
+                            <p><strong>Key Points:</strong></p>
+                            <ul>
+                                <li>AI defined as intelligence by machines.</li>
+                                <li>History from Dartmouth workshop to deep learning.</li>
+                                <li>Applications: NLP, CV, Robotics.</li>
+                                <li>Ethical considerations: Bias, privacy.</li>
+                            </ul>
+                            <p>AI is a rapidly evolving field focusing on creating intelligent machines. Its history spans decades, leading to current advancements in various applications. Ethical deployment is crucial for future development.</p>
+                        </div>
+                        <button class="button button-primary">Generate Quiz</button>
+                        <button class="button button-secondary">Share Summary</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design Direction 2: Engaging & Structured -->
+        <div class="design-direction">
+            <div class="design-direction-header">
+                <h2>2. Engaging & Structured</h2>
+                <p><strong>Personality:</strong> Approachable & Guided | <strong>Best for:</strong> Users who appreciate a clear, step-by-step process.</p>
+                <p><strong>Key Characteristics:</strong> Structured layout using cards. Upload integrated into a clear flow. Guided interactions with contextual hints. Balanced text and visual cues.</p>
+            </div>
+            <div class="screen-mockup-grid">
+                <!-- File Upload Screen -->
+                <div class="screen">
+                    <h4>Step 1: Upload Your Notes</h4>
+                    <div class="content">
+                        <div class="drop-area" style="padding: 1.5rem; border-color: var(--secondary);">
+                            <p style="margin-bottom: 0.5rem; color: var(--foreground);">Drop your files here</p>
+                            <p style="color: var(--text-muted);">or click to select (PDF, TXT, DOCX)</p>
+                        </div>
+                        <input type="file" class="input-field" placeholder="No file selected..." style="margin-bottom: 0.5rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: var(--text-muted);">
+                            <span>Max size: 20MB</span>
+                            <span>Status: Ready</span>
+                        </div>
+                        <button class="button button-primary" style="width: 100%;">Process Notes</button>
+                    </div>
+                </div>
+                <!-- Content Display Screen (Quiz) -->
+                <div class="screen">
+                    <h4>AI Quiz: Introduction to AI</h4>
+                    <div class="content">
+                        <div class="quiz-question">
+                            <p><strong>Q1: What year is often cited as the birth of AI due to the Dartmouth Workshop?</strong></p>
+                            <div class="quiz-options">
+                                <label><input type="radio" name="q1" value="a"> 1943</label>
+                                <label><input type="radio" name="q1" value="b"> 1956</label>
+                                <label><input type="radio" name="q1" value="c"> 1969</label>
+                                <label><input type="radio" name="q1" value="d"> 1980</label>
+                            </div>
+                        </div>
+                        <div class="quiz-question">
+                            <p><strong>Q2: Name two ethical considerations for AI development.</strong></p>
+                            <input type="text" class="input-field" placeholder="Your answer here...">
+                        </div>
+                        <button class="button button-primary" style="width: 100%;">Next Question</button>
+                        <button class="button button-secondary" style="width: 100%; margin-top: 0.5rem;">Finish Quiz</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design Direction 3: Immersive & AI-Focused -->
+        <div class="design-direction">
+            <div class="design-direction-header">
+                <h2>3. Immersive & AI-Focused</h2>
+                <p><strong>Personality:</strong> Innovative & Intelligent | <strong>Best for:</strong> Users who want to feel the "magic" of AI.</p>
+                <p><strong>Key Characteristics:</strong> Emphasizes AI with subtle background patterns or animations. Larger content display area. Seamless, almost conversational interaction feel.</p>
+            </div>
+            <div class="screen-mockup-grid">
+                <!-- File Upload Screen -->
+                <div class="screen">
+                    <h4>Your Learning AI</h4>
+                    <div class="content">
+                        <div style="text-align: center; margin-bottom: 1.5rem; color: var(--primary); font-size: 3rem;">🧠</div>
+                        <p style="text-align: center; color: var(--text-muted); margin-bottom: 1.5rem;">Upload your notes and let the AI illuminate your learning path.</p>
+                        <label for="file-upload-3" class="button button-primary" style="width: 100%; text-align: center; display: block;">Choose Notes (PDF, TXT, DOCX)</label>
+                        <input type="file" id="file-upload-3" style="display: none;">
+                        <p style="text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem;">Max 20MB. Your data is secure.</p>
+                    </div>
+                </div>
+                <!-- Content Display Screen (Summary + Quick Quiz) -->
+                <div class="screen">
+                    <h4>"Introduction to AI" - AI Generated Insight</h4>
+                    <div class="content">
+                        <div class="summary-block" style="background-color: #2c3a4d; border-color: #3d4f64;">
+                            <p style="font-size: 0.9rem; color: var(--text-muted);">Quick Summary:</p>
+                            <p>This document details the definition, historical context, key applications, and ethical considerations surrounding Artificial Intelligence. It emphasizes AI's role in natural language processing, computer vision, and robotics, and the importance of responsible development.</p>
+                        </div>
+                        <div class="quiz-question" style="background-color: #2c3a4d; border-color: #3d4f64;">
+                            <p><strong>Test Your Knowledge:</strong> What is a primary ethical concern in AI development?</p>
+                            <input type="text" class="input-field" style="background-color: #1f2937; border-color: #4b5563;" placeholder="Your answer...">
+                        </div>
+                        <button class="button button-primary" style="width: 100%;">Explore Full Summary</button>
+                        <button class="button button-secondary" style="width: 100%; margin-top: 0.5rem;">Start Full Quiz</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

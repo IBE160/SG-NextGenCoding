@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UX Color Themes</title>
+    <style>
+        body { font-family: sans-serif; margin: 0; padding: 2rem; background-color: #f9fafb; color: #111827; }
+        h1, h2, h3 { font-weight: 700; }
+        .container { max-width: 1200px; margin: auto; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        .theme-card { border: 1px solid #e5e7eb; border-radius: 0.5rem; background-color: #fff; overflow: hidden; }
+        .theme-header { padding: 1.5rem; border-bottom: 1px solid #e5e7eb; }
+        .theme-header h2 { margin: 0; font-size: 1.25rem; }
+        .theme-header p { margin: 0.25rem 0 0; color: #6b7281; }
+        .theme-body { padding: 1.5rem; }
+        .palette { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
+        .swatch { width: 50px; height: 50px; border-radius: 0.25rem; text-align: center; font-size: 0.75rem; color: white; display: flex; align-items: center; justify-content: center; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+        .components h3 { margin-top: 0; }
+        .button { border: none; padding: 0.5rem 1rem; border-radius: 0.25rem; font-weight: 600; cursor: pointer; margin-right: 0.5rem;}
+        .button-primary { background-color: var(--primary); color: white; }
+        .button-secondary { background-color: var(--secondary); color: white; }
+        .alert { padding: 1rem; border-radius: 0.25rem; margin-top: 1rem; }
+        .alert-success { background-color: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-border); }
+        .alert-error { background-color: var(--error-bg); color: var(--error-text); border: 1px solid var(--error-border); }
+
+        /* Theme 1: Scholarly Blue */
+        .theme-1 {
+            --primary: #2563eb; --secondary: #4f46e5;
+            --success-bg: #dcfce7; --success-text: #166534; --success-border: #86efac;
+            --error-bg: #fee2e2; --error-text: #991b1b; --error-border: #fca5a5;
+        }
+        /* Theme 2: Vibrant Teal & Mango */
+        .theme-2 {
+            --primary: #0d9488; --secondary: #f97316;
+            --success-bg: #dcfce7; --success-text: #166534; --success-border: #86efac;
+            --error-bg: #fee2e2; --error-text: #991b1b; --error-border: #fca5a5;
+        }
+        /* Theme 3: Focused Slate */
+        .theme-3 {
+            --primary: #4f46e5; --secondary: #2563eb;
+            --success-bg: #dcfce7; --success-text: #166534; --success-border: #86efac;
+            --error-bg: #fee2e2; --error-text: #991b1b; --error-border: #fca5a5;
+        }
+        .theme-3.dark {
+            background-color: #1f2937; color: #f9fafb; border-color: #374151;
+            --primary: #818cf8; --secondary: #60a5fa;
+            --success-bg: #14532d; --success-text: #bbf7d0; --success-border: #4ade80;
+            --error-bg: #7f1d1d; --error-text: #fecaca; --error-border: #ef4444;
+        }
+        /* Theme 4: Creative Coral */
+        .theme-4 {
+            --primary: #f43f5e; --secondary: #ec4899;
+            --success-bg: #dcfce7; --success-text: #166534; --success-border: #86efac;
+            --error-bg: #fee2e2; --error-text: #991b1b; --error-border: #fca5a5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Color Theme Visualizer</h1>
+        <p>Explore the different theme options below. Each theme includes a color palette and live component examples.</p>
+        <div class="grid">
+            
+            <!-- Theme 1: Scholarly Blue -->
+            <div class="theme-card theme-1">
+                <div class="theme-header">
+                    <h2>1. Scholarly Blue</h2>
+                    <p>Trustworthy, clean, and focused on clarity.</p>
+                </div>
+                <div class="theme-body">
+                    <h3>Palette</h3>
+                    <div class="palette">
+                        <div class="swatch" style="background-color: #2563eb;">Pri</div>
+                        <div class="swatch" style="background-color: #4f46e5;">Sec</div>
+                        <div class="swatch" style="background-color: #dbeafe;">Lgt</div>
+                        <div class="swatch" style="background-color: #1e3a8a;">Drk</div>
+                    </div>
+                    <h3>Components</h3>
+                    <div>
+                        <button class="button button-primary">Primary</button>
+                        <button class="button button-secondary">Secondary</button>
+                    </div>
+                    <div class="alert alert-success">Success! Your summary is ready.</div>
+                    <div class="alert alert-error">Error! File type not supported.</div>
+                </div>
+            </div>
+
+            <!-- Theme 2: Vibrant Teal & Mango -->
+            <div class="theme-card theme-2">
+                <div class="theme-header">
+                    <h2>2. Vibrant Teal & Mango</h2>
+                    <p>Engaging, modern, and suggests innovation.</p>
+                </div>
+                <div class="theme-body">
+                    <h3>Palette</h3>
+                    <div class="palette">
+                        <div class="swatch" style="background-color: #0d9488;">Pri</div>
+                        <div class="swatch" style="background-color: #f97316;">Acc</div>
+                        <div class="swatch" style="background-color: #ccfbf1;">Lgt</div>
+                        <div class="swatch" style="background-color: #134e4a;">Drk</div>
+                    </div>
+                    <h3>Components</h3>
+                    <div>
+                        <button class="button button-primary">Primary</button>
+                        <button class="button button-secondary">Secondary</button>
+                    </div>
+                    <div class="alert alert-success">Success! Your summary is ready.</div>
+                    <div class="alert alert-error">Error! File type not supported.</div>
+                </div>
+            </div>
+
+            <!-- Theme 3: Focused Slate -->
+            <div class="theme-card theme-3 dark">
+                <div class="theme-header">
+                    <h2>3. Focused Slate (Dark)</h2>
+                    <p>Productive, serene, and easy on the eyes.</p>
+                </div>
+                <div class="theme-body">
+                    <h3>Palette</h3>
+                    <div class="palette">
+                        <div class="swatch" style="background-color: #818cf8;">Pri</div>
+                        <div class="swatch" style="background-color: #60a5fa;">Sec</div>
+                        <div class="swatch" style="background-color: #312e81;">Lgt</div>
+                        <div class="swatch" style="background-color: #e0e7ff;">Drk</div>
+                    </div>
+                    <h3>Components</h3>
+                    <div>
+                        <button class="button button-primary">Primary</button>
+                        <button class="button button-secondary">Secondary</button>
+                    </div>
+                    <div class="alert alert-success">Success! Your summary is ready.</div>
+                    <div class="alert alert-error">Error! File type not supported.</div>
+                </div>
+            </div>
+            
+            <!-- Theme 4: Creative Coral -->
+            <div class="theme-card theme-4">
+                <div class="theme-header">
+                    <h2>4. Creative Coral</h2>
+                    <p>Motivating, energetic, and friendly.</p>
+                </div>
+                <div class="theme-body">
+                    <h3>Palette</h3>
+                    <div class="palette">
+                        <div class="swatch" style="background-color: #f43f5e;">Pri</div>
+                        <div class="swatch" style="background-color: #ec4899;">Sec</div>
+                        <div class="swatch" style="background-color: #ffe4e6;">Lgt</div>
+                        <div class="swatch" style="background-color: #881337;">Drk</div>
+                    </div>
+                    <h3>Components</h3>
+                    <div>
+                        <button class="button button-primary">Primary</button>
+                        <button class="button button-secondary">Secondary</button>
+                    </div>
+                    <div class="alert alert-success">Success! Your summary is ready.</div>
+                    <div class="alert alert-error">Error! File type not supported.</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
