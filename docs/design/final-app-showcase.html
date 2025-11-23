@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Final App Showcase</title>
+    <title>Final App Showcase - Revamped</title>
     <style>
         :root {
             --primary: #60a5fa;
             --secondary: #818cf8;
-            --background: #1f2937;
+            --background: #111827; /* Even darker background */
             --foreground: #f9fafb;
-            --card-background: #374151;
-            --border-color: #4b5563;
+            --card-background: #1f2937; /* The old background color, now for cards */
+            --border-color: #374151;
             --success: #4ade80;
-            --error: #ef4444;
             --text-muted: #9ca3af;
         }
 
@@ -22,6 +21,8 @@
             background-color: var(--background);
             color: var(--foreground);
             margin: 0;
+            background-image: radial-gradient(var(--border-color) 1px, transparent 1px);
+            background-size: 20px 20px;
         }
 
         .showcase-container {
@@ -84,13 +85,16 @@
         }
         
         .nav {
-            background-color: var(--card-background);
+            background-color: rgba(31, 41, 55, 0.8);
+            backdrop-filter: blur(10px);
             padding: 1rem 2rem;
             border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
         
         .nav-brand { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
@@ -134,20 +138,25 @@
             <div class="screen-panel">
                 <div class="screen-header"><h3>2. Home Screen Dashboard</h3></div>
                 <div class="screen-content">
-                    <h2>Welcome, BIP!</h2>
-                    <p style="color: var(--text-muted);">What would you like to do today?</p>
-                    <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
-                        <button class="button" style="flex: 1;">Generate Summary</button>
-                        <button class="button" style="flex: 1; background-color: var(--secondary);">Generate Quiz</button>
+                    <h2 style="text-align: center;">Welcome, BIP!</h2>
+                    <p style="color: var(--text-muted); text-align: center;">Ready to generate some knowledge?</p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 2rem 0;">
+                        <div style="background: linear-gradient(145deg, #2a3a4a, var(--card-background)); padding: 1.5rem; border-radius: 0.5rem; text-align: center; border: 1px solid var(--primary);">
+                            <div style="font-size: 2rem;">📝</div>
+                            <h3>Generate Summary</h3>
+                        </div>
+                        <div style="background: linear-gradient(145deg, #2a3a4a, var(--card-background)); padding: 1.5rem; border-radius: 0.5rem; text-align: center; border: 1px solid var(--secondary);">
+                            <div style="font-size: 2rem;">❓</div>
+                            <h3>Generate Quiz</h3>
+                        </div>
                     </div>
-                    <h4>Recent Summaries</h4>
+                    <h4>Recent Activity</h4>
                     <ul style="list-style: none; padding: 0;">
-                        <li style="padding: 0.5rem; border-bottom: 1px solid var(--border-color);">Intro to AI.pdf</li>
-                        <li style="padding: 0.5rem; border-bottom: 1px solid var(--border-color);">History of Rome.docx</li>
+                        <li style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; background-color: var(--background); border-radius: 0.25rem; margin-bottom: 0.5rem;"><span>📝</span> Summary: Intro to AI.pdf</li>
                     </ul>
                 </div>
             </div>
-
+            
             <!-- 3. File Upload Screen -->
             <div class="screen-panel">
                 <div class="screen-header"><h3>3. File Upload</h3></div>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Screen Mockup - Revamped</title>
+    <style>
+        :root {
+            --primary: #60a5fa;
+            --secondary: #818cf8;
+            --background: #111827; /* Even darker background */
+            --foreground: #f9fafb;
+            --card-background: #1f2937; /* The old background color, now for cards */
+            --border-color: #374151;
+            --success: #4ade80;
+            --text-muted: #9ca3af;
+        }
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            margin: 0;
+            line-height: 1.6;
+            background-image: radial-gradient(var(--border-color) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .nav {
+            background-color: rgba(31, 41, 55, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .nav-brand { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+        .nav-links a { color: var(--text-muted); text-decoration: none; margin-left: 1.5rem; font-weight: 500; }
+        .nav-links a.active { color: var(--foreground); }
+        .main-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 0 0 0.5rem 0;
+            background: -webkit-linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+        .header .ai-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding: 0.25rem 0.75rem;
+            background-color: var(--card-background);
+            border-radius: 9999px;
+            font-size: 0.875rem;
+        }
+        .ai-status .glow {
+            width: 8px;
+            height: 8px;
+            background-color: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--success);
+        }
+        .actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        .action-card {
+            background: linear-gradient(145deg, #2a3a4a, var(--card-background));
+            padding: 2rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(96, 165, 250, 0.1), transparent 40%);
+            transform: rotate(0deg);
+            transition: transform 0.5s;
+        }
+        .action-card:hover::before {
+            transform: rotate(360deg);
+        }
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px rgba(96, 165, 250, 0.15);
+            border-color: var(--primary);
+        }
+        .action-card .icon { font-size: 3rem; margin-bottom: 1rem; }
+        .action-card h2 { font-size: 1.5rem; margin: 0 0 0.5rem 0; }
+        .action-card p { color: var(--text-muted); font-size: 1rem; margin: 0; }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+        .content-widget {
+            background-color: var(--card-background);
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+        }
+        .widget-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .widget-header h3 { font-size: 1.25rem; margin: 0; }
+        .content-list { list-style: none; padding: 1rem; margin: 0; }
+        .content-list li {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+        }
+        .content-list li:last-child { border-bottom: none; }
+        .content-list li:hover { background-color: rgba(255,255,255,0.05); }
+        .item-icon { font-size: 1.25rem; }
+    </style>
+</head>
+<body>
+
+    <div class="nav">
+        <div class="nav-brand">ibe160</div>
+        <div class="nav-links">
+            <a href="#" class="active">Home</a>
+            <a href="#">My Summaries</a>
+            <a href="#">My Quizzes</a>
+            <a href="#">Settings</a>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="header">
+            <h1>Your Learning Companion</h1>
+            <p>Ready to transform your notes into knowledge?</p>
+            <div class="ai-status">
+                <div class="glow"></div>
+                <span>AI Status: Online and ready to assist!</span>
+            </div>
+        </div>
+
+        <div class="actions-grid">
+            <div class="action-card">
+                <div class="icon">📝</div>
+                <h2>Generate Summary</h2>
+                <p>Distill your notes into key points.</p>
+            </div>
+            <div class="action-card">
+                <div class="icon">❓</div>
+                <h2>Generate Quiz</h2>
+                <p>Create an interactive quiz to test your knowledge.</p>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="content-widget">
+                <div class="widget-header"><h3>Recent Activity</h3></div>
+                <ul class="content-list">
+                    <li><span class="item-icon">📝</span> <span>Summary: Intro to AI.pdf</span></li>
+                    <li><span class="item-icon">❓</span> <span>Quiz: Intro to AI.pdf</span></li>
+                    <li><span class="item-icon">📝</span> <span>Summary: History of Rome.docx</span></li>
+                </ul>
+            </div>
+            <div class="content-widget">
+                <div class="widget-header"><h3>Quick Stats</h3></div>
+                <ul class="content-list">
+                    <li>Summaries Created: 5</li>
+                    <li>Quizzes Taken: 3</li>
+                    <li>Average Score: 85%</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
