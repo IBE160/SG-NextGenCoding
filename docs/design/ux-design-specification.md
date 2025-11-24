@@ -16,6 +16,7 @@ An AI-powered web application that transforms lecture notes into concise summari
 ### 1.1 Design System Choice
 
 **Chosen System:** shadcn/ui
+**Version:** Latest as of document creation date.
 
 **Rationale:** The choice of shadcn/ui aligns with the project's technical preferences (Next.js, TypeScript, Tailwind CSS) as outlined in the PRD. Its "copy-paste" model offers granular control over components, resulting in a lean bundle size and high customizability. This system also leverages Radix UI primitives, ensuring strong accessibility adherence from the outset. This choice balances rapid development with the need for a tailored and high-performance user interface.
 
@@ -88,6 +89,8 @@ The core novel UX pattern is the **AI-Powered Knowledge Generation Flow**. The d
 - **Foreground:** `#f9fafb` (White/light gray for text)
 - **Success:** `#4ade80` (Green)
 - **Error:** `#ef4444` (Red)
+- **Warning:** `#facc15` (Yellow)
+- **Info:** `#38bdf8` (Light Blue)
 - **Neutrals:** A range of grays for borders, cards, and secondary text.
 
 ### 3.2 Typography System
@@ -237,7 +240,7 @@ graph TD
 
 ### 6.1 Component Strategy
 
-Our strategy is to leverage the `shadcn/ui` design system for foundational components while developing a few key custom components for the application's unique features.
+Our strategy is to leverage the `shadcn/ui` design system for foundational components while developing a few key custom components for the application's unique features. Any specific customizations to `shadcn/ui` components (e.g., theme overrides) will be documented in the project's Storybook or component library.
 
 #### Components from `shadcn/ui`:
 - **Buttons:** For all primary and secondary actions.
@@ -257,6 +260,10 @@ Our strategy is to leverage the `shadcn/ui` design system for foundational compo
     - Quiz Difficulty: A segmented control for "Easy," "Medium," "Hard."
     - Number of Questions: A number input field.
 - **Behavior:** The component holds the state of the user's choices, which are passed to the AI upon generation. It will have pre-selected default values.
+- **States & Variants:**
+    - **Default:** All options are selectable.
+    - **Disabled:** All controls are disabled during content generation.
+    - **Variants:** A compact version may be used in-line, while a more spacious version could be used in a dedicated settings page.
 
 **2. Interactive Quiz Player**
 - **Purpose:** To create an engaging, conversational quiz experience.
@@ -265,16 +272,29 @@ Our strategy is to leverage the `shadcn/ui` design system for foundational compo
     - Answer Input: An input field for the user to type their answer.
     - Submit Button.
 - **Behavior:** This will be a turn-by-turn interaction. The AI provides a question, the user answers, the AI gives feedback, and then presents the next question.
+- **States & Variants:**
+    - **Waiting for answer:** Input field is active, submit button is enabled.
+    - **Submitting:** Input and button are disabled; a loading indicator is shown.
+    - **Displaying feedback:** Input is disabled; a "Next Question" button appears.
+    - **Error:** An error message is displayed if submission fails.
 
 **3. Quiz Attempt Reviewer**
 - **Purpose:** To allow users to review their performance on past quizzes.
 - **Anatomy:** A read-only log displaying the "conversation" of a past quiz, showing each question, the user's answer, and the AI's feedback.
+- **Behavior:** A static, scrollable view of the quiz history.
+- **States & Variants:**
+    - **Default:** Displays the full quiz conversation.
+    - **Empty:** Shows a message if no attempt history is available.
 
 **4. Dashboard Layout**
 - **Purpose:** To provide a clear overview and starting point for the user.
 - **Anatomy:**
     - Action Buttons: Prominent buttons to "Create Summary" and "Create Quiz."
     - Recent Content Lists: Lists of recent files, summaries, and quizzes.
+- **Behavior:** The lists are populated with the user's most recent activity, providing quick access.
+- **States & Variants:**
+    - **Populated:** Shows recent activity.
+    - **Empty (First Use):** The "Recent Content" areas display empty state messages, guiding the user to create their first piece of content.
 
 ---
 
@@ -285,41 +305,82 @@ Our strategy is to leverage the `shadcn/ui` design system for foundational compo
 The following patterns will be used to ensure a consistent and predictable user experience across the application.
 
 **1. Button Hierarchy**
-- **Primary:** `shadcn/ui` default style. Used for the main call to action on a page (e.g., "Generate Quiz," "Login").
-- **Secondary:** `shadcn/ui` secondary style (outline). Used for less important actions (e.g., "View History," "Cancel").
-- **Destructive:** `shadcn/ui` destructive style (red). Used for actions that delete data (e.g., "Delete File").
+- **Primary:** `shadcn/ui` default style. Used for the main call to action on a page.
+    - *Example:* "Generate Quiz," "Login."
+- **Secondary:** `shadcn/ui` secondary style (outline). Used for less important actions.
+    - *Example:* "View History," "Cancel."
+- **Tertiary/Link:** `shadcn/ui` link style. Used for navigation or non-critical actions that don't need prominence.
+    - *Example:* "Learn More," "Advanced Settings."
+- **Destructive:** `shadcn/ui` destructive style (red). Used for actions that delete data.
+    - *Example:* "Delete File," "End Session."
 
 **2. Feedback Patterns**
-- **Success:** A non-intrusive "toast" notification at the bottom of the screen.
+- **Success:** A non-intrusive "toast" notification at the bottom of the screen that auto-dismisses after 3-5 seconds.
+    - *Example:* "Quiz generated successfully!"
 - **Error:** A "toast" for non-critical errors. For critical failures (e.g., AI generation fails), an inline alert with a "Try Again" option will be used.
+    - *Example (Toast):* "Invalid file format."
+    - *Example (Alert):* "Generation failed due to a network error. [Try Again]"
+- **Warning:** An inline alert or toast with a yellow accent to notify users of potential issues that are not errors.
+    - *Example:* "Your summary is very long. Consider generating a shorter version."
+- **Info:** A dismissible inline alert with a blue accent for helpful tips or informational messages.
+    - *Example:* "Did you know? You can share generated quizzes with your friends."
 - **Loading:** A loading spinner or skeleton loader integrated directly into the component that is loading content.
+    - *Example:* A card will show a shimmering placeholder while its content is being fetched.
 
 **3. Form Patterns**
 - **Labels:** Positioned above the input field for maximum clarity.
+- **Help Text:** Small, gray text appearing below a field to provide additional guidance.
+    - *Example:* "Password must be at least 8 characters long."
 - **Validation:** Occurs on form submission. After the first submission, individual fields will validate as the user types.
-- **Error Display:** Inline error messages appear directly below the relevant field.
+- **Error Display:** Inline error messages appear directly below the relevant field in red text.
 
 **4. Modal Patterns**
-- **Usage:** Reserved for short, focused tasks like confirming a destructive action or showing a critical message.
+- **Usage:** Reserved for short, focused tasks like confirming a destructive action or showing a critical message. Not for complex forms.
+- **Sizes:** Predefined sizes (Small, Medium, Large) will be used for consistency. Small for confirmations, Medium for simple forms, Large for more content.
 - **Dismiss Behavior:** Can be dismissed by clicking an "X" icon, pressing the Escape key, or clicking the background overlay.
+- **Focus Management:** When a modal opens, focus is trapped inside it. When it closes, focus returns to the element that opened it.
+- **Stacking:** Stacking modals (opening a modal from another modal) should be avoided. If necessary, the first modal is hidden or replaced.
 
 **5. Navigation Patterns**
-- **Active State:** The current page in the top navigation menu is visually highlighted.
+- **Active State:** The current page in the top or side navigation menu is visually highlighted (e.g., bolder text, different background).
 - **Back Button:** The browser's back button will function as expected, taking the user to their previously viewed page.
+- **Breadcrumbs:** For deeply nested content (e.g., viewing a specific quiz attempt), breadcrumbs will be displayed at the top of the page.
+    - *Example:* `Home > My Quizzes > Modern History Midterm > Attempt 2`
 
 **6. Empty State Patterns**
 - **Usage:** Displayed when a list or area has no content.
-- **Content:** Will include a helpful message, an icon, and a clear call to action (e.g., "You have no summaries yet. [Generate Your First Summary]").
+- **Content:** Will include a helpful message, an icon, and a clear call to action.
+    - *Example:* An illustration of a book with the text "You have no summaries yet." and a button "[Generate Your First Summary]".
 
 **7. Confirmation Patterns**
 - **Destructive Actions:** A modal will appear to confirm any action that permanently deletes user data. The final confirmation button will use the "destructive" style.
+    - *Example:* Modal title "Delete Summary?", body text "Are you sure you want to permanently delete this summary? This action cannot be undone.", with buttons "[Cancel]" and "[Delete]".
 - **Unsaved Changes:** Rely on auto-saving where possible. For manual forms, the browser's default confirmation will be used if a user tries to navigate away with unsaved changes.
+
+**8. Notification Patterns**
+- **Placement:** Non-critical notifications (toasts) appear at the bottom-center of the screen. Critical system-wide alerts appear at the top of the page.
+- **Duration & Stacking:** Toasts auto-dismiss after 5 seconds. If multiple toasts are triggered, they stack vertically. Banners are dismissible by the user.
+- **Priority:** Critical alerts (Error/Destructive) require user interaction. Non-critical (Success, Info) do not.
+
+**9. Search Patterns**
+- **Trigger:** A search bar will be present at the top of pages with lists (e.g., My Quizzes). Typing in the bar will trigger the search.
+- **Results:** The list updates in real-time as the user types. Matched text is highlighted in the results.
+- **Filters:** Advanced filtering options (e.g., by date, by subject) will be available via a dropdown next to the search bar.
+- **No Results:** If no results are found, an empty state message is shown.
+    - *Example:* "No quizzes found for 'Ancient Rome'. Try a different search term."
+
+**10. Date/Time Patterns**
+- **Format:** Relative time is used for recent items (e.g., "2 hours ago"). Absolute dates (e.g., "Nov 22, 2025") are used for older items.
+- **Timezone:** All times are displayed in the user's local timezone.
+- **Pickers:** When a date picker is required, it will use a calendar-style interface, defaulting to the current date.
 
 ---
 
 ## 8. Responsive Design & Accessibility
 
 ### 8.1 Responsive Strategy
+
+**Alignment with Design Direction:** The responsive strategy directly supports the "Engaging AI" design direction by adapting the layout to be immersive and focused on all screen sizes. On larger screens, the multi-column layout allows for a rich, dashboard-like experience. On smaller screens, the single-column focus removes distractions and centers the AI-generated content, maintaining the core "Engaging AI" principle of a clear, transformative experience.
 
 **Breakpoints:**
 - **Desktop (large screens, > 1024px):**
@@ -373,9 +434,9 @@ Excellent work! Your UX Design Specification is complete.
 - **Accessibility:** WCAG 2.1 Level AA compliance requirements defined
 
 **Your Deliverables:**
-- UX Design Document: C:\Users\Henrik\OneDrive\HIM - IT og digitalisering\2025H\IBE160 - Programmering med KI\SG-NextGenCoding/docs/ux-design-specification.md
-- Interactive Color Themes: C:\Users\Henrik\OneDrive\HIM - IT og digitalisering\2025H\IBE160 - Programmering med KI\SG-NextGenCoding/docs/ux-color-themes.html
-- Design Direction Mockups: C:\Users\Henrik\OneDrive\HIM - IT og digitalisering\2025H\IBE160 - Programmering med KI\SG-NextGenCoding/docs/ux-design-directions.html
+- UX Design Document: [ux-design-specification.md](./ux-design-specification.md)
+- Interactive Color Themes: [ux-color-themes.html](./ux-color-themes.html)
+- Design Direction Mockups: [ux-design-directions.html](./ux-design-directions.html)
 
 **What happens next:**
 - Designers can create high-fidelity mockups from this foundation
@@ -390,27 +451,27 @@ You've made thoughtful choices through visual collaboration that will create a g
 
 ### Related Documents
 
-- Product Requirements: `{{prd_file}}`
-- Product Brief: `{{brief_file}}`
-- Brainstorming: `{{brainstorm_file}}`
+- Product Requirements: `../PRD.md`
+- Product Brief: `../product-brief-ibe160-2025-11-19.md`
+- Brainstorming: `../brainstorming-session-results-onsdag 5. november 2025.md`
 
 ### Core Interactive Deliverables
 
 This UX Design Specification was created through visual collaboration:
 
-- **Color Theme Visualizer**: C:\Users\Henrik\OneDrive\HIM - IT og digitalisering\2025H\IBE160 - Programmering med KI\SG-NextGenCoding/docs/ux-color-themes.html
+- **Color Theme Visualizer**: [ux-color-themes.html](./ux-color-themes.html)
   - Interactive HTML showing all color theme options explored
   - Live UI component examples in each theme
   - Side-by-side comparison and semantic color usage
 
-- **Design Direction Mockups**: C:\Users\Henrik\OneDrive\HIM - IT og digitalisering\2025H\IBE160 - Programmering med KI\SG-NextGenCoding/docs/ux-design-directions.html
+- **Design Direction Mockups**: [ux-design-directions.html](./ux-design-directions.html)
   - Interactive HTML with 6-8 complete design approaches
   - Full-screen mockups of key screens
   - Design philosophy and rationale for each direction
 
 ### Optional Enhancement Deliverables
 
-_This section will be populated if additional UX artifacts are generated through follow-up workflows._
+No additional UX artifacts were generated as part of this workflow. This section can be updated by future workflows that generate supplementary design materials (e.g., detailed wireframes, interactive prototypes).
 
 <!-- Additional deliverables added here by other workflows -->
 
