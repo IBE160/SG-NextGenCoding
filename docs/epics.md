@@ -69,8 +69,6 @@ Establish the basic technical infrastructure, deployment pipeline, core security
 
 **Note on Parallel Work**: Stories 1.2, 1.3, and 1.4 can be worked on in parallel after Story 1.1 is complete.
 
-<!-- Repeat for each story (M = 1, 2, 3...) within epic N -->
-
 ### Story 1.1: Initialize Project Structure & Tools
 
 As a developer,
@@ -167,125 +165,205 @@ FRs: [FR-UI-1]
 
 **Technical Notes:** Tailwind configuration, Shadcn UI setup instructions.
 
-### Story {{N}}.{{M}}: {{story_title_N_M}}
+---
 
-As a {{user_type}},
-I want {{capability}},
-So that {{value_benefit}}.
+## Epic 2: User Access & Authentication
+
+Enable users to securely access and manage their accounts, including a guest mode for trials.
+
+### Story 2.1: User Registration with Email and Password
+
+As a new user,
+I want to create an account using my email and a secure password,
+So that I can access personalized features and save my progress.
 
 **Acceptance Criteria:**
 
-**Given** {{precondition}}
-**When** {{action}}
-**Then** {{expected_outcome}}
+**Given** I am on the registration page,
+**When** I provide a valid email and password (and confirm password),
+**Then** my account is created in Supabase Auth.
 
-**And** {{additional_criteria}}
+**And** a confirmation email is sent to my provided email address.
 
-**Prerequisites:** {{dependencies_on_previous_stories}}
+**And** I am redirected to a success page or login.
 
-**Technical Notes:** {{implementation_guidance}}
+**Prerequisites:** Epic 1 (Story 1.3: Integrate Supabase for Basic Data & Auth, Story 1.4: Implement Initial UI Layout & Theming)
 
-<!-- End story repeat -->
+Scope: MVP
+
+FRs: [FR-UM-1]
+
+**Technical Notes:** Supabase Auth `signUp` function, form validation with React Hook Form and Zod, Next.js API route for handling registration.
+
+### Story 2.2: User Login and Session Management
+
+As a registered user,
+I want to log in to my account,
+So that I can access my saved content and continue my learning journey.
+
+**Acceptance Criteria:**
+
+**Given** I have a registered account,
+**When** I enter my correct email and password on the login page,
+**Then** I am authenticated via Supabase Auth.
+
+**And** a session is established, allowing me access to protected routes.
+
+**Prerequisites:** Story 2.1
+
+Scope: MVP
+
+FRs: [FR-UM-1]
+
+**Technical Notes:** Supabase Auth `signInWithPassword` function, JWT handling, protected routes in Next.js.
+
+### Story 2.3: Guest Access for Core Features
+
+As a potential user,
+I want to try the core summary and quiz generation features without immediate registration,
+So that I can experience the value of the application before committing to an account.
+
+**Acceptance Criteria:**
+
+**Given** I am an unauthenticated user,
+**When** I visit the application,
+**Then** I can access the file upload and content generation features for a limited number of uses (e.g., 2 free uses).
+
+**And** after reaching the limit, the system prompts me to register or log in to continue.
+
+**Prerequisites:** Epic 1 (Story 1.3), Story 2.1, Story 2.2
+
+Scope: MVP
+
+FRs: [FR-UM-2]
+
+**Technical Notes:** Client-side tracking of guest uses (e.g., local storage), conditional rendering based on authentication status and use count.
+
+### Story 2.4: Password Reset and Email Verification
+
+As a user,
+I want to reset my password if I forget it and verify my email address,
+So that I can maintain access to my account and ensure its security.
+
+**Acceptance Criteria:**
+
+**Given** I forget my password,
+**When** I initiate the password reset process,
+**Then** I receive a password reset link in my email.
+
+**And** I can set a new password via the link.
+
+**Given** I register,
+**When** I receive a verification email,
+**Then** clicking the link verifies my email address.
+
+**Prerequisites:** Story 2.1
+
+Scope: MVP
+
+FRs: [FR-UM-1]
+
+**Technical Notes:** Supabase Auth password recovery and email verification flows.
 
 ---
 
-<!-- End epic repeat -->
+## Epic 3: Content Ingestion & AI Summarization
 
-## Epic 5: History, Review & Advanced UI
+Allow users to upload their lecture notes and receive AI-generated summaries.
 
-Enable users to review their past learning activities and enhance the overall user experience and accessibility.
-
-### Story 5.1: View History of Summaries and Quizzes
-
-As a logged-in user,
-I want to see a list of my past summaries and quizzes,
-So that I can easily access and review my previous learning materials.
-
-**Acceptance Criteria:**
-
-**Given** I am logged in,
-**When** I navigate to my "History" or "Dashboard" section,
-**Then** I see a chronological list of my generated summaries and quizzes.
-
-**And** each item in the list shows basic details (e.g., date, document title, type).
-
-**And** I can click on an item to view its full content.
-
-**Prerequisites:** Epic 2 (Story 2.2), Epic 3 (Story 3.4), Epic 4 (Story 4.3), Epic 1 (Story 1.3 - Data Persistence)
-
-Scope: MVP
-
-FRs: [FR-DM-1]
-
-**Technical Notes:** FastAPI endpoints for fetching user history, Supabase queries, UI components for displaying lists.
-
-### Story 5.2: Review Past Quiz Results and Answers
-
-As a logged-in user,
-I want to review my past quiz attempts, including my answers and the correct answers,
-So that I can identify areas where I need to improve.
-
-**Acceptance Criteria:**
-
-**Given** I am viewing a past quiz from my history,
-**When** I select a quiz attempt,
-**Then** I see the questions, my submitted answers, and the correct answers.
-
-**And** my score for that attempt is clearly visible.
-
-**Prerequisites:** Story 5.1
-
-Scope: MVP
-
-FRs: [FR-DM-1]
-
-**Technical Notes:** FastAPI endpoint for fetching detailed quiz results, UI for presenting question-answer review.
-
-### Story 5.3: Full WCAG 2.1 AA Compliance Audit & Remediation
-
-As a user with disabilities,
-I want to use the application with assistive technologies and without barriers,
-So that I have an equitable learning experience.
-
-**Acceptance Criteria:**
-
-**Given** the application has implemented all core features,
-**When** an accessibility audit is performed against WCAG 2.1 AA guidelines,
-**Then** all critical issues are identified and remediated.
-
-**And** the application is fully navigable and usable via keyboard.
-
-**Prerequisites:** All other epics' stories are largely complete.
-
-Scope: MVP
-
-FRs: [FR-UI-1]
-
-**Technical Notes:** Manual and automated accessibility testing tools, knowledge of WCAG guidelines, remediation of identified issues.
-
-### Story 5.4: Implement Advanced UI Interactions & Polish
+### Story 3.1: File Upload Interface
 
 As a user,
-I want a highly polished and smooth user experience,
-So that the application feels professional and delightful to use.
+I want to easily upload my lecture notes in PDF, TXT, or DOCX format,
+So that the system can process them.
 
 **Acceptance Criteria:**
 
-**Given** core functionalities are implemented,
-**When** interacting with the application,
-**Then** UI animations are smooth and transitions are seamless.
+**Given** I am on the file upload page,
+**When** I drag and drop a file or use the file selector,
+**Then** the selected file's name and type are displayed.
 
-**And** minor UI inconsistencies are resolved.
+**And** only PDF, TXT, and DOCX files are accepted.
 
-**And** the application provides clear visual feedback for all user actions.
+**And** files exceeding 20MB are rejected with an error message.
 
-**Prerequisites:** All other epics' stories are largely complete.
+**Prerequisites:** Epic 1 (Story 1.4), Epic 2 (Story 2.2/2.3)
 
 Scope: MVP
 
-FRs: [FR-UI-1]
+FRs: [FR-CIP-1]
 
-**Technical Notes:** Focus on CSS refinements, minor JS/React optimizations, attention to detail in UI/UX.
+**Technical Notes:** HTML file input, drag-and-drop handler, client-side file type and size validation.
+
+### Story 3.2: Text Extraction from Uploaded Files
+
+As a user,
+I want the system to accurately extract text from my uploaded lecture notes,
+So that the AI can process the content for summaries and quizzes.
+
+**Acceptance Criteria:**
+
+**Given** I upload a supported file (PDF, TXT, DOCX),
+**When** the file is received by the backend,
+**Then** the text content is successfully extracted from the file.
+
+**And** the extracted text is available for subsequent AI processing.
+
+**Prerequisites:** Story 3.1
+
+Scope: MVP
+
+FRs: [FR-CIP-2]
+
+**Technical Notes:** Backend libraries for parsing PDF (e.g., `PyPDF2`), DOCX (e.g., `python-docx`), and TXT files. Error handling for corrupted files.
+
+### Story 3.3: AI Summary Generation Integration
+
+As a user,
+I want to receive a concise summary of my lecture notes,
+So that I can quickly grasp the key concepts.
+
+**Acceptance Criteria:**
+
+**Given** I have uploaded a file and its text has been extracted,
+**When** I request a summary,
+**Then** an AI model (Gemini 2.5) generates a summary of the content.
+
+**And** the summary is displayed to me in a readable format within a specified performance threshold (e.g., under 30 seconds).
+
+**And** ethical AI guidelines are followed to minimize bias and ensure factual accuracy.
+
+**Prerequisites:** Story 3.2
+
+Scope: MVP
+
+FRs: [FR-CIP-2]
+
+**Technical Notes:** FastAPI endpoint for summary generation, Google Gemini API integration, prompt engineering for summarization, asynchronous task handling (queuing system).
+
+### Story 3.4: Display Summary in User Interface
+
+As a user,
+I want to view my generated summary clearly and intuitively,
+So that I can easily review the key points.
+
+**Acceptance Criteria:**
+
+**Given** a summary has been generated,
+**When** I navigate to the summary view,
+**Then** the summary content is presented in an easy-to-read format (e.g., markdown rendering).
+
+**And** I can copy the summary text.
+
+**Prerequisites:** Story 3.3
+
+Scope: MVP
+
+FRs: [FR-CIP-2]
+
+**Technical Notes:** Markdown renderer component, UI for displaying the summary.
+
+---
 
 ## Epic 4: Interactive Quiz Generation & Feedback
 
@@ -385,199 +463,103 @@ FRs: [FR-ILA-2]
 
 **Technical Notes:** FastAPI endpoint for feedback submission, Supabase table for feedback data, UI for feedback collection.
 
-## Epic 3: Content Ingestion & AI Summarization
+---
 
-Allow users to upload their lecture notes and receive AI-generated summaries.
+## Epic 5: History, Review & Advanced UI
 
-### Story 3.1: File Upload Interface
+Enable users to review their past learning activities and enhance the overall user experience and accessibility.
+
+### Story 5.1: View History of Summaries and Quizzes
+
+As a logged-in user,
+I want to see a list of my past summaries and quizzes,
+So that I can easily access and review my previous learning materials.
+
+**Acceptance Criteria:**
+
+**Given** I am logged in,
+**When** I navigate to my "History" or "Dashboard" section,
+**Then** I see a chronological list of my generated summaries and quizzes.
+
+**And** each item in the list shows basic details (e.g., date, document title, type).
+
+**And** I can click on an item to view its full content.
+
+**Prerequisites:** Epic 2 (Story 2.2), Epic 3 (Story 3.4), Epic 4 (Story 4.3), Epic 1 (Story 1.3 - Data Persistence)
+
+Scope: MVP
+
+FRs: [FR-DM-1]
+
+**Technical Notes:** FastAPI endpoints for fetching user history, Supabase queries, UI components for displaying lists.
+
+### Story 5.2: Review Past Quiz Results and Answers
+
+As a logged-in user,
+I want to review my past quiz attempts, including my answers and the correct answers,
+So that I can identify areas where I need to improve.
+
+**Acceptance Criteria:**
+
+**Given** I am viewing a past quiz from my history,
+**When** I select a quiz attempt,
+**Then** I see the questions, my submitted answers, and the correct answers.
+
+**And** my score for that attempt is clearly visible.
+
+**Prerequisites:** Story 5.1
+
+Scope: MVP
+
+FRs: [FR-DM-1]
+
+**Technical Notes:** FastAPI endpoint for fetching detailed quiz results, UI for presenting question-answer review.
+
+### Story 5.3: Full WCAG 2.1 AA Compliance Audit & Remediation
+
+As a user with disabilities,
+I want to use the application with assistive technologies and without barriers,
+So that I have an equitable learning experience.
+
+**Acceptance Criteria:**
+
+**Given** the application has implemented all core features,
+**When** an accessibility audit is performed against WCAG 2.1 AA guidelines,
+**Then** all critical issues are identified and remediated.
+
+**And** the application is fully navigable and usable via keyboard.
+
+**Prerequisites:** All other epics' stories are largely complete.
+
+Scope: MVP
+
+FRs: [FR-UI-1]
+
+**Technical Notes:** Manual and automated accessibility testing tools, knowledge of WCAG guidelines, remediation of identified issues.
+
+### Story 5.4: Implement Advanced UI Interactions & Polish
 
 As a user,
-I want to easily upload my lecture notes in PDF, TXT, or DOCX format,
-So that the system can process them.
+I want a highly polished and smooth user experience,
+So that the application feels professional and delightful to use.
 
 **Acceptance Criteria:**
 
-**Given** I am on the file upload page,
-**When** I drag and drop a file or use the file selector,
-**Then** the selected file's name and type are displayed.
+**Given** core functionalities are implemented,
+**When** interacting with the application,
+**Then** UI animations are smooth and transitions are seamless.
 
-**And** only PDF, TXT, and DOCX files are accepted.
+**And** minor UI inconsistencies are resolved.
 
-**And** files exceeding 20MB are rejected with an error message.
+**And** the application provides clear visual feedback for all user actions.
 
-**Prerequisites:** Epic 1 (Story 1.4), Epic 2 (Story 2.2/2.3)
-
-Scope: MVP
-
-FRs: [FR-CIP-1]
-
-**Technical Notes:** HTML file input, drag-and-drop handler, client-side file type and size validation.
-
-### Story 3.2: Text Extraction from Uploaded Files
-
-As a user,
-I want the system to accurately extract text from my uploaded lecture notes,
-So that the AI can process the content for summaries and quizzes.
-
-**Acceptance Criteria:**
-
-**Given** I upload a supported file (PDF, TXT, DOCX),
-**When** the file is received by the backend,
-**Then** the text content is successfully extracted from the file.
-
-**And** the extracted text is available for subsequent AI processing.
-
-**Prerequisites:** Story 3.1
+**Prerequisites:** All other epics' stories are largely complete.
 
 Scope: MVP
 
-FRs: [FR-CIP-2]
+FRs: [FR-UI-1]
 
-**Technical Notes:** Backend libraries for parsing PDF (e.g., `PyPDF2`), DOCX (e.g., `python-docx`), and TXT files. Error handling for corrupted files.
-
-### Story 3.3: AI Summary Generation Integration
-
-As a user,
-I want to receive a concise summary of my lecture notes,
-So that I can quickly grasp the key concepts.
-
-**Acceptance Criteria:**
-
-**Given** I have uploaded a file and its text has been extracted,
-**When** I request a summary,
-**Then** an AI model (Gemini 2.5) generates a summary of the content.
-
-**And** the summary is displayed to me in a readable format within a specified performance threshold (e.g., under 30 seconds).
-
-**And** ethical AI guidelines are followed to minimize bias and ensure factual accuracy.
-
-**Prerequisites:** Story 3.2
-
-Scope: MVP
-
-FRs: [FR-CIP-2]
-
-**Technical Notes:** FastAPI endpoint for summary generation, Google Gemini API integration, prompt engineering for summarization, asynchronous task handling (queuing system).
-
-### Story 3.4: Display Summary in User Interface
-
-As a user,
-I want to view my generated summary clearly and intuitively,
-So that I can easily review the key points.
-
-**Acceptance Criteria:**
-
-**Given** a summary has been generated,
-**When** I navigate to the summary view,
-**Then** the summary content is presented in an easy-to-read format (e.g., markdown rendering).
-
-**And** I can copy the summary text.
-
-**Prerequisites:** Story 3.3
-
-Scope: MVP
-
-FRs: [FR-CIP-2]
-
-**Technical Notes:** Markdown renderer component, UI for displaying the summary.
-
-## Epic 2: User Access & Authentication
-
-Enable users to securely access and manage their accounts, including a guest mode for trials.
-
-### Story 2.1: User Registration with Email and Password
-
-As a new user,
-I want to create an account using my email and a secure password,
-So that I can access personalized features and save my progress.
-
-**Acceptance Criteria:**
-
-**Given** I am on the registration page,
-**When** I provide a valid email and password (and confirm password),
-**Then** my account is created in Supabase Auth.
-
-**And** a confirmation email is sent to my provided email address.
-
-**And** I am redirected to a success page or login.
-
-**Prerequisites:** Epic 1 (Story 1.3: Integrate Supabase for Basic Data & Auth, Story 1.4: Implement Initial UI Layout & Theming)
-
-Scope: MVP
-
-FRs: [FR-UM-1]
-
-**Technical Notes:** Supabase Auth `signUp` function, form validation with React Hook Form and Zod, Next.js API route for handling registration.
-
-### Story 2.2: User Login and Session Management
-
-As a registered user,
-I want to log in to my account,
-So that I can access my saved content and continue my learning journey.
-
-**Acceptance Criteria:**
-
-**Given** I have a registered account,
-**When** I enter my correct email and password on the login page,
-**Then** I am authenticated via Supabase Auth.
-
-**And** a session is established, allowing me access to protected routes.
-
-**Prerequisites:** Story 2.1
-
-Scope: MVP
-
-FRs: [FR-UM-1]
-
-**Technical Notes:** Supabase Auth `signInWithPassword` function, JWT handling, protected routes in Next.js.
-
-### Story 2.3: Guest Access for Core Features
-
-As a potential user,
-I want to try the core summary and quiz generation features without immediate registration,
-So that I can experience the value of the application before committing to an account.
-
-**Acceptance Criteria:**
-
-**Given** I am an unauthenticated user,
-**When** I visit the application,
-**Then** I can access the file upload and content generation features for a limited number of uses (e.g., 2 free uses).
-
-**And** after reaching the limit, the system prompts me to register or log in to continue.
-
-**Prerequisites:** Epic 1 (Story 1.3), Story 2.1, Story 2.2
-
-Scope: MVP
-
-FRs: [FR-UM-2]
-
-**Technical Notes:** Client-side tracking of guest uses (e.g., local storage), conditional rendering based on authentication status and use count.
-
-### Story 2.4: Password Reset and Email Verification
-
-As a user,
-I want to reset my password if I forget it and verify my email address,
-So that I can maintain access to my account and ensure its security.
-
-**Acceptance Criteria:**
-
-**Given** I forget my password,
-**When** I initiate the password reset process,
-**Then** I receive a password reset link in my email.
-
-**And** I can set a new password via the link.
-
-**Given** I register,
-**When** I receive a verification email,
-**Then** clicking the link verifies my email address.
-
-**Prerequisites:** Story 2.1
-
-Scope: MVP
-
-FRs: [FR-UM-1]
-
-**Technical Notes:** Supabase Auth password recovery and email verification flows.
+**Technical Notes:** Focus on CSS refinements, minor JS/React optimizations, attention to detail in UI/UX.
 
 ---
 
