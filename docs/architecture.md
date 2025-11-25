@@ -1,176 +1,179 @@
 # Architecture
-
 ## Executive Summary
+An AI-powered web application for generating summaries and quizzes from lecture notes. It will leverage Next.js (frontend), FastAPI (backend), and Supabase (database/auth). The architecture prioritizes user experience with asynchronous AI processing and robust error handling, adhering to strong consistency patterns to ensure maintainability and scalability.
 
-{{executive_summary}}
+## Project Initialization
+First implementation story should execute the following steps to initialize the project using the michaeltroya/supa-next-starter template for the frontend:
 
-## 1. Project Context & Understanding
-
-Based on the project documentation (PRD, Epics, UX Specification), the project is an AI-powered web application named `ibe160`.
-
-**Key Aspects:**
-
-*   **Core Functionality**: The application will transform uploaded lecture notes (PDF, TXT, DOCX) into concise summaries and interactive quizzes using AI.
-*   **Epics & Stories**: The project is broken down into 5 epics and 20 user stories.
-*   **User Experience**: The UX is designed to be a "magical" and effortless transformation experience. It will feature a dark theme ("Scholarly Slate") and a clean, card-based layout.
-*   **Critical Non-Functional Requirements**:
-    *   **Data Privacy**: Compliance with GDPR/FERPA.
-    *   **Security**: Row Level Security (RLS) in Supabase is a key requirement.
-    *   **Accessibility**: WCAG 2.1 AA compliance is required.
-*   **Key Challenges**:
-    *   Ensuring the quality and accuracy of AI-generated content.
-    *   Handling a variety of input file formats and qualities.
-    *   Delivering a seamless "instant transformation" experience while managing asynchronous AI processing on the backend.
-
-## 2. Project Initialization & Starter Template
-
-The **Vinta Software Next.js FastAPI Template** has been selected as the foundation for this project.
-
-### Initialization Process
-
-This project is initialized using the Vinta Software template on GitHub. The process is as follows:
-
-1.  Navigate to [https://github.com/vintasoftware/nextjs-fastapi-template](https://github.com/vintasoftware/nextjs-fastapi-template).
-2.  Click the "Use this template" button to create a new repository under your GitHub account.
-3.  Clone the newly created repository to your local machine:
-    ```bash
-    git clone https://github.com/YourUsername/your-new-repo.git
-    ```
-
-This process should be the **first implementation story**.
-
-### Architectural Decisions Provided by Starter
-
-The starter template makes the following architectural decisions, which align with the project's requirements:
-
-| Category              | Decision                                          |
-| --------------------- | ------------------------------------------------- |
-| **Frameworks**        | Next.js (Frontend), FastAPI (Backend)             |
-| **Language**          | TypeScript (Frontend), Python (Backend)           |
-| **Styling**           | Tailwind CSS                                      |
-| **UI Components**     | `shadcn/ui`                                       |
-| **Authentication**    | `fastapi-users` with JWT tokens                   |
-| **Database**          | PostgreSQL (managed via Docker Compose)           |
-| **Migrations**        | Alembic                                           |
-| **Dependency Mgmt**   | `pnpm` (Frontend), `uv` (Backend)               |
-| **Type Safety**       | End-to-end type safety with Zod and code generation |
-| **Containerization**  | Docker and Docker Compose                         |
-| **Deployment**        | Vercel-ready for both frontend and backend        |
-| **Project Structure** | Monorepo-like with `nextjs-frontend` and `fastapi_backend` folders |
-
-## 3. Decision Roadmap: Remaining Architectural Choices
-
-The chosen Vinta Software Next.js FastAPI Template provides a robust foundation, making many initial architectural decisions for us. Based on your project's unique requirements, we will now collaboratively address the following key architectural decisions.
-
-### Critical Decisions (Must be made for a functional and secure MVP)
-
-*   **Authentication Strategy**: Reconcile `fastapi-users` (from template) with Supabase Auth (from PRD). The goal is to integrate FastAPI backend directly with Supabase Auth services to leverage its features and RLS.
-*   **File Upload & Malware Scanning**: Determine the approach for handling file uploads (PDF, TXT, DOCX), using Supabase Storage, and integrating a malware scanning solution.
-*   **AI Integration Strategy**: Define the specific service layer and patterns for integrating with Gemini 2.5 Pro/Flash, including prompt engineering, error handling, and cost management.
-*   **Overall Security Architecture**: Detail the implementation of Supabase Row Level Security (RLS), comprehensive backend input validation and sanitization, and ensure encryption for all data at rest and in transit.
-*   **Scalability Strategy**: Outline the plan to handle 10x user load leveraging Vercel's serverless capabilities, Supabase optimizations, and a robust queuing system for AI tasks.
-*   **Accessibility Integration**: Confirm ongoing adherence to WCAG 2.1 Level AA, primarily through the use of `shadcn/ui` components and scheduled accessibility audits.
-
-### Important Decisions (Shape the architecture significantly, but might be refined during implementation)
-
-*   **Background Job/Queuing System**: Select and integrate a message queue (e.g., Celery with Redis) for asynchronous AI processing and other background tasks.
-*   **Email Service Integration**: Plan for integrating SendGrid (or similar) for custom transactional emails, complementing Supabase Auth's built-in email features.
-*   **Real-time Capabilities (Future-proofing)**: Architect for potential future integration of Supabase Realtime to support live updates in the application (e.g., quiz progress, notifications).
-*   **Global Error Handling and Logging**: Establish a consistent strategy for API error responses and implement a centralized structured logging solution.
-*   **High-Level Data Model Design**: Define the initial SQLAlchemy models for the core data entities, ensuring they support the application's functionality and RLS requirements.
+Use the template on GitHub: Create a new repository from https://github.com/michaeltroya/supa-next-starter.
+Clone the new repository: git clone <your-new-repository-url>
+Install dependencies: pnpm install
+This establishes the base frontend architecture with: Next.js 14, Supabase integration, Tailwind CSS, Shadcn UI, TypeScript, Jest for testing, ESLint, Prettier, and GitHub Actions for CI/CD.
 
 ## Decision Summary
-
 | Category | Decision | Version | Affects Epics | Rationale |
-| -------- | -------- | ------- | ------------- | --------- |
-
-{{decision_table_rows}}
-
+|---|---|---|---|---|
+| Data Persistence | Supabase (PostgreSQL) | 2.5 | User Management, Content Ingestion, Interactive Learning, Data Management | Aligns with tech stack choice, handles data persistence, authentication. |
+| API Pattern | RESTful API | N/A | All Epics (via backend API) | PRD specifies FastAPI, excellent for building RESTful APIs. |
+| Authentication | Supabase Auth | 2.5 | User Management | Aligns with tech stack choice, provides robust user authentication. |
+| Real-time Capabilities | Minimal Polling for MVP, clear upgrade path to WebSockets (Supabase Realtime) for future enhancements. | N/A | Content Ingestion (AI generation status), Interactive Learning (future), History/Review (future) | Balances MVP simplicity with enhanced user experience for AI generation feedback. |
+| Email Service | Resend | Verified | User Management (email verification, password reset) | Developer-friendly, good deliverability, integrates well with Next.js/React. |
+| File Storage | Supabase Storage | 2.5 | Content Ingestion | Natural choice given Supabase for database and authentication. |
+| Search Functionality | No Search for MVP, defer to post-MVP. | N/A | N/A (MVP decision) | Simplifies initial build, allows focus on core AI generation features. |
+| Background Jobs | Asynchronous Processing with Background Jobs, with user notifications on completion. | N/A | Content Ingestion (AI generation), Interactive Learning (AI generation) | Improves user experience and responsiveness for time-consuming AI generation tasks. |
+| Deployment Target | Vercel (Next.js frontend, serverless functions for FastAPI). | N/A | All Epics | Covered by starter choice, provides efficient CI/CD and hosting. |
 ## Project Structure
-
 ```
-{{project_root}}/
-{{source_tree}}
+/
+├── frontend/             # Next.js application
+│   ├── public/           # Static assets
+│   ├── src/
+│   │   ├── app/          # Next.js App Router (pages, layouts, etc.)
+│   │   ├── components/   # Reusable UI components (shadcn/ui overrides, custom components)
+│   │   ├── lib/          # Utility functions, Supabase client setup, helpers
+│   │   ├── styles/       # Tailwind CSS configuration, global styles
+│   │   └── types/        # TypeScript types (e.g., Supabase models)
+│   ├── .env.local.example
+│   ├── package.json
+│   ├── tailwind.config.ts
+│   ├── tsconfig.json
+│   └── ...
+├── backend/              # FastAPI application
+│   ├── app/              # Main FastAPI application
+│   │   ├── api/          # API endpoints (routers, e.g., /api/v1/summaries)
+│   │   ├── core/         # Core application configuration, settings, security
+│   │   ├── db/           # Database models (SQLAlchemy/SQLModel), migrations (Alembic)
+│   │   ├── crud/         # Database interaction logic (Create, Read, Update, Delete)
+│   │   ├── schemas/      # Pydantic models for request/response validation
+│   │   ├── services/     # Business logic, AI integration
+│   │   ├── dependencies/ # FastAPI dependency injection
+│   │   └── main.py       # FastAPI application entry point
+│   ├── tests/            # Unit and integration tests for backend
+│   ├── .env.example
+│   ├── requirements.txt  # or pyproject.toml for Poetry/uv
+│   └── ...
+├── shared/               # Code and types shared between frontend and backend
+│   └── (e.g., common TypeScript types, Pydantic models if compiled for TS)
+├── docs/                 # Project documentation (PRD, Epics, Architecture, etc.)
+├── .github/              # GitHub Actions workflows (CI/CD)
+├── .gitignore
+├── README.md
+└── ...
 ```
 
 ## Epic to Architecture Mapping
-
-{{epic_mapping_table}}
-
+| Epic | Architectural Component |
+|---|---|
+| Epic 1: Foundation & Core Platform | frontend/, backend/, .github/, root configuration files. |
+| Epic 2: User Access & Authentication | frontend/src/app/(auth)/, frontend/src/lib/supabase.ts, backend/app/api/auth/ (if needed), backend/app/core/security.py. Supabase (external). |
+| Epic 3: Content Ingestion & AI Summarization | frontend/src/app/upload/, frontend/src/services/, backend/app/api/summaries/, backend/app/services/ai_generation/, backend/app/db/, backend/app/schemas/. |
+| Epic 4: Interactive Quiz Generation & Feedback | frontend/src/app/quizzes/, frontend/src/services/, backend/app/api/quizzes/, backend/app/services/ai_generation/, backend/app/db/, backend/app/schemas/. |
+| Epic 5: History, Review & Advanced UI | frontend/src/app/dashboard/, frontend/src/app/history/, frontend/src/components/, backend/app/api/history/, backend/app/db/. WCAG compliance across frontend/src/components/ and frontend/src/app/ elements. |
 ## Technology Stack Details
-
 ### Core Technologies
-
-{{core_stack_details}}
-
+* Frontend: Next.js 16.0.3, TypeScript, React, Tailwind CSS, Shadcn UI
+* Backend: FastAPI 0.122.0 (Python), Pydantic 2.12.4
+* Database & Auth: Supabase (PostgreSQL for DB, Supabase Auth for Authentication, Supabase-js 2.84.0, Supabase-py 2.24.0)
+* ORM (Backend): SQLModel 0.0.27
+* AI Model: Gemini 2.5 Pro/Flash
+* Email Service: Resend 6.5.2 (Node.js SDK)
+* API Client (Frontend): Axios 1.13.2
+* Frontend State Management: Zustand 5.0.8
+* Deployment: Vercel
 ### Integration Points
-
-{{integration_details}}
-
-{{novel_pattern_designs_section}}
+* Frontend to Backend: RESTful API calls via Axios with interceptors.
+* Backend to Supabase: Supabase client library for database and authentication interactions.
+* Backend to Gemini API: Direct API calls to Gemini 2.5.
+* Backend to Email Service: Resend API for transactional emails.
+* Asynchronous Tasks: Background job queue for AI processing.
+## Novel Architectural Patterns
+No novel architectural patterns requiring invention have been detected in this project. All requirements can be met using established and well-understood architectural patterns. We will proceed with standard architectural patterns.
 
 ## Implementation Patterns
-
 These patterns ensure consistent implementation across all AI agents:
 
-{{implementation_patterns}}
-
-## Consistency Rules
-
 ### Naming Conventions
-
-{{naming_conventions}}
-
-### Code Organization
-
-{{code_organization_patterns}}
-
-### Error Handling
-
-{{error_handling_approach}}
+* API Endpoints: Use plural nouns for resources, kebab-case for multi-word.
+* Route Parameters: {id} format.
+* Database Tables: Plural, snake_case.
+* Database Columns: snake_case.
+* Frontend Components: PascalCase for components, kebab-case for file names.
+### Structure Patterns
+* Tests: Co-locate with code.
+* Frontend Component Organization: By feature.
+* Backend Organization: By domain/feature.
+* Shared Utilities: Dedicated lib/, core/, or shared/ directories.
+### Format Patterns
+* API Response Wrapper: {"data": ..., "message": ..., "status": ...} for success.
+* API Error Format: {"error": {"message": ..., "code": ...}} for errors.
+* Date Format in JSON: ISO 8601 strings.
+### Communication Patterns
+* Frontend State Management: Zustand (global), useState/useContext (local).
+* API Communication (Frontend): Axios with interceptors.
+* Backend Inter-service Communication: Direct FastAPI calls (MVP).
+### Lifecycle Patterns
+* Loading States: Clear indicators (spinners, skeleton loaders).
+* Error Recovery: Toast notifications, inline messages with retry.
+* Retry Mechanisms: Exponential backoff for network/external API calls.
+### Location Patterns
+* API Route Structure (Backend): Logical paths within backend/app/api/.
+* Static Assets (Frontend): frontend/public/.
+* Configuration Files: .env.local (frontend), .env (backend), project-wide in root of respective services.
+## Consistency Rules
+### Date/Time Formatting in UI
+* User-friendly, locale-aware format on the frontend.
 
 ### Logging Strategy
+* Clear, concise, contextual messages (basic console logging for MVP).
 
-{{logging_approach}}
+### User-facing Error Messages
+* Clear, non-technical, actionable advice.
+
+### Code Formatting
+* ESLint/Prettier (frontend), Ruff (backend), with automated checks.
 
 ## Data Architecture
-
-{{data_models_and_relationships}}
-
+* Database: PostgreSQL (managed by Supabase).
+* ORM (Backend): SQLModel
+* Frontend Data Access: Supabase client library, React Query/TanStack Query (via michaeltroya/supa-next-starter).
+* Data Models: Pydantic models for API schemas, corresponding database models (SQLAlchemy/SQLModel) for persistence.
 ## API Contracts
-
-{{api_specifications}}
-
+* Style: RESTful API.
+* Response Format: Wrapped payload for success, standardized error format.
+* Authentication: JWT tokens via Supabase Auth.
+* Error Handling: HTTP status codes, consistent error body.
 ## Security Architecture
-
-{{security_approach}}
-
+* Authentication: Supabase Auth (JWT-based, email/password, email verification, password reset).
+* Authorization: Supabase Row Level Security (RLS) for data, backend API route protection.
+* Data Protection: Encryption at rest and in transit (handled by Supabase, Vercel).
+* Input Validation: Pydantic models on backend.
+* CORS: Configured in FastAPI.
 ## Performance Considerations
-
-{{performance_strategies}}
-
+* Asynchronous Operations: FastAPI's async capabilities for I/O-bound tasks.
+* Background Jobs: For AI generation.
+* Caching: Potential for Redis (future) for AI prompt caching or frequently accessed data.
+* Database Optimization: Proper indexing, efficient queries (to be managed in implementation).
 ## Deployment Architecture
-
-{{deployment_approach}}
-
+* Frontend: Vercel.
+* Backend: Vercel Serverless Functions (Python).
+* Database: Supabase Managed PostgreSQL.
+* CI/CD: GitHub Actions (for automated testing and deployment to Vercel).
 ## Development Environment
-
 ### Prerequisites
-
-{{development_prerequisites}}
-
+* Node.js (with pnpm)
+* Python (with Poetry/uv)
+* Docker (optional, for local DB/Redis)
 ### Setup Commands
-
-```bash
-{{setup_commands}}
 ```
-
+Frontend initialization:
+Create new repository from https://github.com/michaeltroya/supa-next-starter.
+git clone <your-new-repository-url>
+pnpm install
+Backend setup (manual project creation, followed by installing dependencies):
+cd backend
+poetry init (or uv venv, pip install -r requirements.txt)
+poetry add fastapi uvicorn (and other dependencies)
+Environment variables: .env.local (frontend), .env (backend) for Supabase keys, API keys, etc.
+```
 ## Architecture Decision Records (ADRs)
-
-{{key_architecture_decisions}}
-
----
-
-_Generated by BMAD Decision Architecture Workflow v1.0_
-_Date: {{date}}_
-_For: {{user_name}}_
+Generated by BMAD Decision Architecture Workflow v1.0 Date: tirsdag 25. november 2025 For: BIP
