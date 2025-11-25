@@ -84,7 +84,7 @@ Teachers or teaching assistants (TAs) may also use the tool to quickly generate 
    - Title, summary 
    - Option to "Genrate Quiz"
 
-## Flow 4: Generate & take a quiz
+### Flow 4: Generate & take a quiz
 **Goal**: Test understanding of lecture content using generated quiz. 
 **Steps**: 
 1. from summary-page or home-page -> click "Generate Quiz" 
@@ -106,7 +106,7 @@ Teachers or teaching assistants (TAs) may also use the tool to quickly generate 
    - Time used
    - Score
 
-## Flow 5: Review result & history 
+### Flow 5: Review result & history 
 **Goal**: let user view past performance and summaries
 **Steps**: 
 1. From dashboard you can click on "my History" 
@@ -118,6 +118,143 @@ Teachers or teaching assistants (TAs) may also use the tool to quickly generate 
    - Past summaries
    - Past quiz attempts 
    - Quiz-preview (shows question and answers/explenation)
+--- 
+
+## #Pages Description
+
+### 1. Home Page (Upload + Generate + History Overview)
+The **Home Page** is the main landing page of the application. It allows users to:
+
+- Upload new lecture notes  
+- Generate summaries  
+- Generate quizzes  
+- View their **history of summaries and quizzes**
+
+The Home Page does **not** display full summaries or quizzes.  
+Selecting items opens them on their dedicated pages.
+
+---
+
+#### Home Page Components
+
+#### 1. File Upload Section
+- Drag-and-drop upload zone  
+- File picker button  
+- File validation (e.g., PDF, DOCX, TXT)  
+- Parsing and upload progress bar  
+- After a successful upload:  
+  - **Generate Summary** → Redirects to Summary Page  
+  - **Generate Quiz** → Redirects to Quiz Setup Page  
+
+---
+
+#### 2. Quick History Overview
+
+##### Recent Summaries
+Displays the latest summaries:
+- Title  
+- Date generated  
+- Source document  
+- **View Summary** (opens Summary Page)
+
+##### Recent Quizzes
+Displays the latest quizzes:
+- Quiz title  
+- Number of questions  
+- Date taken  
+- Score (if available)  
+- **View Quiz Results** (opens Quiz Results Page)
+
+##### View Full History →
+Link to the full History Page.
+
+---
+
+### 2. Summary Page
+Displays the generated or previously saved summary.
+
+### Components:
+- Summary title  
+- the summary generated 
+- Paragraph/block description  
+- **Generate Quiz from Summary** button  
+- **Regenerate Summary** button  
+- **Save to History** option
+
+Accessible from:
+- Home Page  
+- History Page (Summaries tab)  
+- After summary generation  
+
+---
+
+### 3. Quiz Setup Page
+Allows users to configure quiz parameters before generation.
+
+### Components:
+- Number of questions  
+- Quiz type (Multiple Choice, Written, Flashcards)  
+- Difficulty level (optional)  
+- **Generate Quiz** button  
+
+Redirects to Quiz Page after generation.
+
+---
+
+## 4. Quiz Page
+Interactive interface for completing quizzes.
+
+### Components:
+- Question display area  
+- Answer input (MCQ or written response)  
+- Progress indicator  
+- Submit/Next buttons  
+- End-of-quiz results screen  
+
+---
+
+## 5. Quiz Results Page
+Shows final scoring and feedback.
+
+### Components:
+- Final score  
+- Completion time  
+- Summary of user answers vs. correct answers  
+- Explanations (if enabled)  
+- **Save to History** button  
+
+---
+
+## 6. History Page (Full)
+Accessible through the Home Page history section.
+
+Contains three main tabs:
+
+### A. Uploaded Files
+- List of uploaded lecture notes  
+- Actions: Generate Summary / Generate Quiz  
+
+### B. Summaries
+- All saved summaries  
+- Selecting one opens the Summary Page  
+
+### C. Quizzes
+- Past quiz attempts  
+- Selecting one opens the Quiz Results Page  
+
+---
+
+## 7. Analytics Page
+Insight dashboard that visualizes learning progress.
+
+### Includes:
+- Average quiz scores  
+- Score trends over time  
+- Number of summaries created  
+- Number of quiz attempts  
+- Total study time  
+
+---
 
 ## Technical Constraints
 - Must be web-based and accessible via modern browsers (Chrome, Firefox, Safari, Edge)
