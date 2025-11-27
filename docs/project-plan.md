@@ -47,8 +47,8 @@
 ## Fase 3
 
 - [ ] Implementation
-  - [ ] /run-agent-task sm *sprint-planning {prompt / user-input-file}
-    - [ ] File: sprint-artifacts/sprint-status.yaml
+  - [x] /run-agent-task sm *sprint-planning {prompt / user-input-file}
+    - [x] File: sprint-artifacts/sprint-status.yaml
   - foreach epic in sprint planning:
     - [ ] /run-agent-task sm create-epic-tech-context {prompt / user-input-file}
       - [ ] File: sprint-artifacts/tech-spec-epic-{{epic_id}}.md
