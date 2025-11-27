@@ -49,11 +49,11 @@
 - [ ] Implementation
   - [x] /run-agent-task sm *sprint-planning {prompt / user-input-file}
     - [x] File: sprint-artifacts/sprint-status.yaml
-  - foreach epic in sprint planning:
+  - foreach epic in sprint planning: (2/5)
     - [ ] /run-agent-task sm create-epic-tech-context {prompt / user-input-file}
       - [ ] File: sprint-artifacts/tech-spec-epic-{{epic_id}}.md
     - [ ] /run-agent-task sm validate-epic-tech-context {prompt / user-input-file}
-    - foreach story in epic:
+    - foreach story in epic: (current status: E1S1)
       - [ ] /run-agent-task sm *create-story {prompt / user-input-file}
         - [ ] File: sprint-artifacts/{{story_key}}.md
       - [ ] /run-agent-task sm *validate-create-story {prompt / user-input-file}
