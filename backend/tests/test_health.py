@@ -38,5 +38,10 @@ def test_health_check_db_disconnected(monkeypatch, client):
     monkeypatch.setattr("app.main.check_supabase_connection", mock_check_supabase_connection)
 
     response = client.get("/api/v1/health")
-    assert response.status_code == 200
-    assert response.json() == {"status": "error", "database_connection": "Supabase connection failed: Some error."}
+    assert response.status_code == 503
+    assert response.json() == {
+        "detail": {
+            "status": "error",
+            "database_connection": "Supabase connection failed: Some error.",
+        }
+    }

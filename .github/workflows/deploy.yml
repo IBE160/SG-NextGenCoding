@@ -5,19 +5,47 @@ on:
     branches:
       - main
 
+# Note: You will need to configure secrets in your GitHub repository settings
+# for this workflow to run successfully.
+#
+# Required secrets:
+# - VERCEL_ORG_ID: Your Vercel organization ID.
+# - VERCEL_PROJECT_ID: Your Vercel project ID.
+# - VERCEL_TOKEN: An authentication token for your Vercel account.
+#
+# You will also need to set up your Vercel project to correctly
+# identify the frontend and backend directories as a monorepo.
+# See Vercel documentation for monorepo configuration.
+
 jobs:
-  deploy_frontend:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Add steps to deploy frontend to Vercel
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
 
-  deploy_backend:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Deploy Frontend to Vercel
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: vercel --token ${{ secrets.VERCEL_TOKEN }} --prod --scope ${{ secrets.VERCEL_ORG_ID }}
 
-      # Add steps to deploy backend to Vercel
+      # Note: The command above assumes your Vercel project is configured
+      # to handle the monorepo structure. If you have separate projects
+      # for frontend and backend, you would need separate deploy steps
+      # targeting the specific directories.
+      #
+      # Example for separate projects:
+      #
+      # - name: Deploy Frontend
+      #   run: >
+      #     cd frontend &&
+      #     vercel --token ${{ secrets.VERCEL_TOKEN }} --prod
+      #
+      # - name: Deploy Backend
+      #   run: >
+      #     cd backend &&
+      #     vercel --token ${{ secrets.VERCEL_TOKEN }} --prod

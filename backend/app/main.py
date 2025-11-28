@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, status
 from .supabase_client import check_supabase_connection
 
 app = FastAPI()
@@ -9,4 +9,7 @@ def health_check():
     if connected:
         return {"status": "ok", "database_connection": message}
     else:
-        return {"status": "error", "database_connection": message}
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail={"status": "error", "database_connection": message},
+        )
