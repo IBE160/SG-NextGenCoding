@@ -21,7 +21,7 @@ This establishes the base frontend architecture with: Next.js 14, Supabase integ
 | File Storage | Supabase Storage | 2.5 | Content Ingestion | Natural choice given Supabase for database and authentication. |
 | Search Functionality | No Search for MVP, defer to post-MVP. | N/A | N/A (MVP decision) | Simplifies initial build, allows focus on core AI generation features. |
 | Background Jobs | Asynchronous Processing with Background Jobs, with user notifications on completion. | N/A | Content Ingestion (AI generation), Interactive Learning (AI generation) | Improves user experience and responsiveness for time-consuming AI generation tasks. |
-| Deployment Target | Vercel (Next.js frontend, serverless functions for FastAPI). | N/A | All Epics | Covered by starter choice, provides efficient CI/CD and hosting. |
+| Deployment Target | Local Development Environment | N/A | All Epics | Focus on local setup for immediate development and testing. |
 ## Project Structure
 ```
 /
@@ -79,7 +79,7 @@ This establishes the base frontend architecture with: Next.js 14, Supabase integ
 * Email Service: Resend 6.5.2 (Node.js SDK)
 * API Client (Frontend): Axios 1.13.2
 * Frontend State Management: Zustand 5.0.8
-* Deployment: Vercel
+* Deployment: Local Development Environment
 ### Integration Points
 * Frontend to Backend: RESTful API calls via Axios with interceptors.
 * Backend to Supabase: Supabase client library for database and authentication interactions.
@@ -154,10 +154,9 @@ These patterns ensure consistent implementation across all AI agents:
 * Caching: Potential for Redis (future) for AI prompt caching or frequently accessed data.
 * Database Optimization: Proper indexing, efficient queries (to be managed in implementation).
 ## Deployment Architecture
-* Frontend: Vercel.
-* Backend: Vercel Serverless Functions (Python).
-* Database: Supabase Managed PostgreSQL.
-* CI/CD: GitHub Actions (for automated testing and deployment to Vercel).
+* Frontend: Local Development (e.g., `pnpm dev`).
+* Backend: Local Development (e.g., `uvicorn app.main:app --reload`).
+* CI/CD: GitHub Actions (for automated testing only).
 ## Development Environment
 ### Prerequisites
 * Node.js (with pnpm)
