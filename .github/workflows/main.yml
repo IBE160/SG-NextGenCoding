@@ -29,6 +29,14 @@ jobs:
     - name: Build Frontend
       run: pnpm build --dir frontend
 
+    - name: Start Frontend in background
+      run: |
+        pnpm dev --dir frontend &
+        echo "Waiting for frontend to start..."
+        sleep 10 # Give the server some time to start
+        curl -s http://localhost:3000 > /dev/null || (echo "Frontend not responding!" && exit 1)
+        echo "Frontend is up and running."
+
     - name: Run Frontend Tests
       run: pnpm test --dir frontend
 
@@ -44,5 +52,14 @@ jobs:
     - name: Install Backend Dependencies
       run: poetry install --directory backend
 
+    - name: Start Backend in background
+      run: |
+        poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+        echo "Waiting for backend to start..."
+        sleep 10 # Give the server some time to start
+        curl -s http://localhost:8000/health > /dev/null || (echo "Backend not responding!" && exit 1)
+        echo "Backend is up and running."
+      working-directory: backend
+
     - name: Run Backend Tests
-      run: poetry run pytest --ignore=backend/tests/test_health.py --directory backend
+      run: poetry run pytest --directory backend
