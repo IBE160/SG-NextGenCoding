@@ -1,0 +1,2 @@
+The next task requires manual intervention: "Retrieve Supabase Keys: Obtain the Supabase Project URL and Anon Key from the Supabase dashboard."
+Please obtain these keys from your Supabase dashboard. You will need them for the next automated step.

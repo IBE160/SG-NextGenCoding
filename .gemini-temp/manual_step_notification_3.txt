@@ -1,0 +1,2 @@
+The next task requires manual intervention: "Create `profiles` Table`: Define and apply a SQL migration (or use Supabase UI) to create a `profiles` table with columns: `id` (UUID, primary key), `created_at` (timestamp with timezone, default now), `user_id` (UUID, foreign key referencing `auth.users.id`, unique, not null)."
+Please create this table in your Supabase project (either via SQL migration or Supabase UI).

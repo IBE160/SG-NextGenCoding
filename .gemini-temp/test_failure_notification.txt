@@ -1,0 +1,9 @@
+The integration tests for Supabase connection are failing.
+
+The backend is receiving an HTML 404 response from Supabase instead of a JSON response, indicating an incorrect Supabase API URL.
+
+The `SUPABASE_URL` in your `.env` files (both `backend/.env` and `frontend/.env.local`) seems to be pointing to the Supabase dashboard project settings page, not the actual Supabase API URL.
+
+Please ensure that `SUPABASE_URL` is set to your project's API URL, which typically looks like `https://<project_id>.supabase.co`. You can find this in your Supabase dashboard under "Project Settings" -> "API" -> "URL".
+
+Once updated, you can ask me to re-run the tests.

@@ -137,6 +137,13 @@ These patterns ensure consistent implementation across all AI agents:
 * ORM (Backend): SQLModel
 * Frontend Data Access: Supabase client library, React Query/TanStack Query (via michaeltroya/supa-next-starter).
 * Data Models: Pydantic models for API schemas, corresponding database models (SQLAlchemy/SQLModel) for persistence.
+* **Supabase `profiles` table:**
+    *   `id` (UUID, primary key)
+    *   `created_at` (timestamp with timezone, default now)
+    *   `user_id` (UUID, foreign key referencing `auth.users.id`, unique, not null)
+* **Supabase RLS Policies for `profiles` table:**
+    *   `SELECT` Policy: Allows authenticated users to `SELECT` rows where `user_id = auth.uid()`.
+    *   `INSERT` Policy: Allows authenticated users to `INSERT` rows where `user_id = auth.uid()`.
 ## API Contracts
 * Style: RESTful API.
 * Response Format: Wrapped payload for success, standardized error format.
