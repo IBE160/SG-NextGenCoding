@@ -1,12 +1,12 @@
 # Story 1.2: Set Up CI/CD & Build Pipeline
 
-Status: drafted
+Status: ready-for-dev
 
 ## Story
 
 As a developer,
-I want automated deployment for frontend and backend,
-So that I can quickly and reliably deploy changes to development environments.
+I want automated build for frontend and backend,
+So that I can quickly and reliably build changes for local development environments.
 
 ## Acceptance Criteria
 
@@ -21,14 +21,14 @@ Then the Next.js frontend is built successfully and ready for local execution.
 ## Tasks / Subtasks
 
 *   **CI/CD Pipeline Setup (AC: #1, #2, #3)**
-    *   [ ] Create `.github/workflows/main.yml` for CI/CD.
-    *   [ ] Configure workflow to trigger on push to `main` branch.
-    *   [ ] Add a step to install frontend dependencies (`pnpm install`).
-    *   [ ] Add a step to install backend dependencies (`poetry install` or `uv pip install`).
-    *   [ ] Add a step to run frontend tests (if any) (e.g., `pnpm test`).
-    *   [ ] Add a step to run backend tests (if any) (e.g., `poetry run pytest`).
-    *   [ ] Add a step to build the Next.js frontend (e.g., `pnpm build`).
-    *   [ ] Add a step to build the FastAPI backend (e.g., any necessary pre-compilation steps if applicable, though typically Python doesn't require this).
+    *   [x] Create `.github/workflows/main.yml` for CI/CD.
+    *   [x] Configure workflow to trigger on push to `main` branch.
+    *   [x] Add a step to install frontend dependencies (`pnpm install`).
+    *   [x] Add a step to install backend dependencies (`poetry install` or `uv pip install`).
+    *   [x] Add a step to run frontend tests (if any) (e.g., `pnpm test`).
+    *   [x] Add a step to run backend tests (if any) (e.g., `poetry run pytest`).
+    *   [x] Add a step to build the Next.js frontend (e.g., `pnpm build`).
+    *   [x] Add a step to build the FastAPI backend (e.g., any necessary pre-compilation steps if applicable, though typically Python doesn't require this).
 
 *   **Local Build and Run Validation**
     *   [ ] Verify the CI/CD pipeline runs successfully on a push to `main`. (AC: #1, #2, #3)
@@ -86,7 +86,7 @@ Then the Next.js frontend is built successfully and ready for local execution.
 
 ### Context Reference
 
-<!-- Path(s) to story context XML will be added here by context workflow -->
+- [x] docs/sprint-artifacts/1-2-set-up-ci-cd-deployment-pipeline.context.xml
 
 ### Agent Model Used
 
@@ -94,9 +94,16 @@ Then the Next.js frontend is built successfully and ready for local execution.
 
 ### Debug Log References
 
+- [x] Initial Plan (2025-11-28):
+    - Create `.github/workflows/main.yml`.
+    - Set up GitHub Actions workflow: on `push` to `main` branch.
+    - Steps: checkout, setup Node.js/pnpm, install frontend dependencies, build frontend, setup Python/poetry, install backend dependencies, build backend (if applicable), run frontend tests, run backend tests.
+
 ### Completion Notes List
 
 ### File List
+
+- [NEW] .github/workflows/main.yml
 
 ## Requirements Context Summary
 

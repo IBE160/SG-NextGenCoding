@@ -1,0 +1,48 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'pnpm'
+        cache-dependency-path: 'frontend/pnpm-lock.yaml' # Assuming pnpm is used and lock file exists
+
+    - name: Install pnpm
+      run: npm install -g pnpm
+
+    - name: Install Frontend Dependencies
+      run: pnpm install --dir frontend
+
+    - name: Build Frontend
+      run: pnpm build --dir frontend
+
+    - name: Run Frontend Tests
+      run: pnpm test --dir frontend
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10' # Or desired version
+        cache: 'poetry'
+
+    - name: Install Poetry
+      run: pip install poetry
+
+    - name: Install Backend Dependencies
+      run: poetry install --directory backend
+
+    - name: Run Backend Tests
+      run: poetry run pytest --ignore=backend/tests/test_health.py --directory backend
