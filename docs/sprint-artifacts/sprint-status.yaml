@@ -42,10 +42,10 @@ development_status:
   1-4-implement-initial-ui-layout-theming: done
   epic-1-retrospective: completed
   epic-2: contexted
-  2-1-user-registration-with-email-and-password: drafted
-  2-2-user-login-session-management: drafted
-  2-3-guest-access-for-core-features: drafted
-  2-4-password-reset-email-verification: drafted
+  2-1-user-registration-with-email-and-password: ready-for-dev
+  2-2-user-login-session-management: ready-for-dev
+  2-3-guest-access-for-core-features: ready-for-dev
+  2-4-password-reset-email-verification: ready-for-dev
   epic-2-retrospective: optional
   epic-3: backlog
   3-1-file-upload-interface: backlog
