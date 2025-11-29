@@ -1,0 +1,85 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>3</storyId>
+    <title>guest-access-for-core-features</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-29</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a potential user,</asA>
+    <iWant>I want to try the core summary and quiz generation features without immediate registration,</iWant>
+    <soThat>so that I can experience the value of the application before committing to an account.</soThat>
+    <tasks>
+      <task group="Frontend: Implement Guest Usage Tracking" ac-refs="1, 3">
+        <subtask>Create a utility service or a set of functions in `frontend/src/lib/` to manage guest usage.</subtask>
+        <subtask>Use `localStorage` to persist the usage count for a guest user across browser sessions.</subtask>
+        <subtask>The service should provide functions to `getUsageCount`, `incrementUsageCount`, and `checkUsageLimit`.</subtask>
+      </task>
+      <task group="Frontend: Gate Core Features for Guests" ac-refs="2, 4">
+        <subtask>In the UI components responsible for core features (e.g., the file upload page), add logic to check if the user is authenticated.</subtask>
+        <subtask>If the user is a guest, call the usage tracking service to check their limit.</subtask>
+        <subtask>If the limit is not reached, allow the feature to be used and call `incrementUsageCount` on completion.</subtask>
+      </task>
+      <task group="Frontend: Create 'Registration Wall' UI" ac-refs="4">
+        <subtask>Design and build a reusable modal component (using Shadcn UI) that prompts the user to register or log in.</subtask>
+        <subtask>The modal should clearly state why they are being prompted (e.g., "You've used all your free summaries.").</subtask>
+        <subtask>The modal should contain links to the registration and login pages.</subtask>
+      </task>
+      <task group="Testing">
+        <subtask>Write frontend integration tests to simulate a guest user's journey:
+- Using the feature for the first time.
+- Reaching the usage limit.
+- Being blocked by the registration wall.</subtask>
+        <subtask>Verify that an authenticated user is not affected by the guest limit.</subtask>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <item id="1">**Given** I am an unauthenticated (guest) user, **When** I access a core feature (e.g., file upload for summary), **Then** the system checks my usage count.</item>
+    <item id="2">**And** if my usage count is below the limit (e.g., 2), I am allowed to use the feature.</item>
+    <item id="3">**And** after using the feature, my usage count is incremented.</item>
+    <item id="4">**Given** I am a guest user who has reached the usage limit, **When** I attempt to use a core feature again, **Then** I am shown a modal or message prompting me to register or log in.</item>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/PRD.md</path>
+        <title>Product Requirements Document</title>
+        <section>Product Scope</section>
+        <snippet>Guest Mode: Allow users to try the core functionality (e.g., 1-2 free uses) before requiring registration.</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epic Breakdown</title>
+        <section>Story 2.3: Guest Access for Core Features</section>
+        <snippet>As a potential user, I want to try the core summary and quiz generation features without immediate registration, so that I can experience the value of the application before committing to an account.</snippet>
+      </doc>
+    </docs>
+    <code></code>
+    <dependencies></dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>
+      <type>Consistency Rule</type>
+      <description>Code Formatting: ESLint/Prettier (frontend), Ruff (backend), with automated checks.</description>
+      <source>docs/architecture.md#Code-Formatting</source>
+    </constraint>
+  </constraints>
+  <interfaces></interfaces>
+  <tests>
+    <standards>Integration tests to verify interactions between frontend and backend API, and backend and AI service.</standards>
+    <locations>
+      <location>frontend/tests/</location>
+    </locations>
+    <ideas>
+      <idea ac-ref="1,2,3,4">Write frontend integration tests to simulate a guest user's journey</idea>
+    </ideas>
+  </tests>
+</story-context>
