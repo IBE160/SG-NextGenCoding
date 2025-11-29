@@ -39,8 +39,8 @@ development_status:
   1-1-initialize-project-structure-tools: done
   1-2-set-up-ci-cd-deployment-pipeline: done
   1-3-integrate-supabase-for-basic-data-auth: done
-  1-4-implement-initial-ui-layout-theming: review
-  epic-1-retrospective: optional
+  1-4-implement-initial-ui-layout-theming: done
+  epic-1-retrospective: completed
   epic-2: contexted
   2-1-user-registration-with-email-and-password: backlog
   2-2-user-login-session-management: backlog
