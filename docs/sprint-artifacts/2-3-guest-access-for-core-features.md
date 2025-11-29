@@ -10,22 +10,20 @@ so that I can experience the value of the application before committing to an ac
 
 ## Acceptance Criteria
 
-1.  **Given** I am an unauthenticated (guest) user, **When** I access a core feature (e.g., file upload for summary), **Then** the system checks my usage count. [Source: docs/epics.md#Story-2.3]
-2.  **And** if my usage count is below the limit (e.g., 2), I am allowed to use the feature. [Source: docs/epics.md#Story-2.3]
-3.  **And** after using the feature, my usage count is incremented. [Source: docs/epics.md#Story-2.3]
-4.  **Given** I am a guest user who has reached the usage limit, **When** I attempt to use a core feature again, **Then** I am shown a modal or message prompting me to register or log in. [Source: docs/epics.md#Story-2.3]
+1.  **AC-UM-5**: An unauthenticated user must be able to use the core application features for a limited number of times (e.g., 2 times) before being prompted to register or log in. [Source: docs/sprint-artifacts/tech-spec-epic-2.md#Acceptance-Criteria-Authoritative]
+2.  **AC-UM-6**: After exceeding the guest usage limit, the user must be prevented from further use of core features and be directed to the registration/login page. [Source: docs/sprint-artifacts/tech-spec-epic-2.md#Acceptance-Criteria-Authoritative]
 
 ## Tasks / Subtasks
 
-- [ ] **Frontend: Implement Guest Usage Tracking** (AC: #1, #3)
+- [ ] **Frontend: Implement Guest Usage Tracking** (AC: #1)
     - [ ] Create a utility service or a set of functions in `frontend/src/lib/` to manage guest usage.
     - [ ] Use `localStorage` to persist the usage count for a guest user across browser sessions.
     - [ ] The service should provide functions to `getUsageCount`, `incrementUsageCount`, and `checkUsageLimit`.
-- [ ] **Frontend: Gate Core Features for Guests** (AC: #2, #4)
+- [ ] **Frontend: Gate Core Features for Guests** (AC: #1, #2)
     - [ ] In the UI components responsible for core features (e.g., the file upload page), add logic to check if the user is authenticated.
     - [ ] If the user is a guest, call the usage tracking service to check their limit.
     - [ ] If the limit is not reached, allow the feature to be used and call `incrementUsageCount` on completion.
-- [ ] **Frontend: Create "Registration Wall" UI** (AC: #4)
+- [ ] **Frontend: Create "Registration Wall" UI** (AC: #2)
     - [ ] Design and build a reusable modal component (using Shadcn UI) that prompts the user to register or log in.
     - [ ] The modal should clearly state why they are being prompted (e.g., "You've used all your free summaries.").
     - [ ] The modal should contain links to the registration and login pages.
@@ -61,6 +59,8 @@ This story introduces the "Guest Mode," a key feature of the MVP designed to low
 
 ### References
 
+- [Source: docs/sprint-artifacts/tech-spec-epic-2.md]
+- [Source: docs/architecture.md]
 - [Source: docs/epics.md#Story-2.3-Guest-Access-for-Core-Features]
 - [Source: docs/PRD.md#FR-UM-2]
 
@@ -77,3 +77,9 @@ This story introduces the "Guest Mode," a key feature of the MVP designed to low
 ### Completion Notes List
 
 ### File List
+
+## Change Log
+
+<!--
+- YYYY-MM-DD: Description of change.
+-->

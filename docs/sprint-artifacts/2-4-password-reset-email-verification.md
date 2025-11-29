@@ -10,9 +10,8 @@ so that I can maintain access to my account and ensure its security.
 
 ## Acceptance Criteria
 
-1.  **Given** I have an account but have forgotten my password, **When** I request a password reset from the "Forgot Password" page, **Then** I receive an email with a password reset link. [Source: docs/epics.md#Story-2.4]
-2.  **And** upon clicking the link and submitting a new password, my password is changed, and I can log in with the new password. [Source: docs/epics.md#Story-2.4]
-3.  **Given** I have just registered for a new account, **When** I click the link in my verification email, **Then** my email address is marked as verified in the system. [Source: docs/epics.md#Story-2.4]
+1.  **AC-UM-4**: A user who has forgotten their password must be able to request a password reset link to be sent to their registered email address. Following the link must allow them to set a new password. [Source: docs/sprint-artifacts/tech-spec-epic-2.md#Acceptance-Criteria-Authoritative]
+2.  **AC-UM-7**: A user's account must remain in an "unverified" state until they click the verification link sent to their email. [Source: docs/sprint-artifacts/tech-spec-epic-2.md#Acceptance-Criteria-Authoritative]
 
 ## Tasks / Subtasks
 
@@ -23,13 +22,13 @@ so that I can maintain access to my account and ensure its security.
     - [ ] Create a "Forgot Password" page at `frontend/src/app/(auth)/forgot-password/page.tsx`.
     - [ ] The page should have a form with an email input field and a submit button.
     - [ ] On submit, call the backend endpoint.
-- [ ] **Backend: Password Update Endpoint** (AC: #2)
+- [ ] **Backend: Password Update Endpoint** (AC: #1)
     - [ ] Supabase handles the password update via its redirect flow. A backend endpoint may be needed to handle the callback from Supabase to finalize the password update if not handled client-side.
-- [ ] **Frontend: "Reset Password" UI** (AC: #2)
+- [ ] **Frontend: "Reset Password" UI** (AC: #1)
     - [ ] Create a "Reset Password" page at `frontend/src/app/(auth)/reset-password/page.tsx`.
     - [ ] This page will be loaded when the user clicks the link in their email. It will handle the token from Supabase.
     - [ ] The form will allow the user to enter and confirm their new password.
-- [ ] **Frontend: Email Verification Handling** (AC: #3)
+- [ ] **Frontend: Email Verification Handling** (AC: #2)
     - [ ] Create a specific callback page (e.g., `frontend/src/app/auth/callback/page.tsx`) to handle the redirect from Supabase after a user clicks the verification link.
     - [ ] This page should inform the user that their email has been verified and direct them to the login page.
 - [ ] **Testing**
@@ -60,6 +59,7 @@ This story completes the core user authentication lifecycle by adding essential 
 
 ### References
 
+- [Source: docs/sprint-artifacts/tech-spec-epic-2.md]
 - [Source: docs/epics.md#Story-2.4-Password-Reset-and-Email-Verification]
 - [Source: docs/PRD.md#FR-UM-1]
 - [Source: docs/architecture.md#Security-Architecture]
@@ -77,3 +77,9 @@ This story completes the core user authentication lifecycle by adding essential 
 ### Completion Notes List
 
 ### File List
+
+## Change Log
+
+<!--
+- YYYY-MM-DD: Description of change.
+-->

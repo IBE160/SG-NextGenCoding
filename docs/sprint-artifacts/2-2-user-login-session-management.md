@@ -10,10 +10,8 @@ so that I can access my saved content and continue my learning journey.
 
 ## Acceptance Criteria
 
-1.  **Given** I have a registered account from Story 2.1, **When** I enter my correct email and password on the login page, **Then** I am authenticated via Supabase Auth. [Source: docs/epics.md#Story-2.2]
-2.  **And** a session (e.g., JWT in a cookie) is established, allowing me access to protected routes. [Source: docs/epics.md#Story-2.2]
-3.  **Given** I am logged in, **When** I visit a protected route, **Then** I can access the content. [Source: docs/epics.md#Story-2.2]
-4.  **Given** I am not logged in, **When** I attempt to visit a protected route, **Then** I am redirected to the login page. [Source: docs/architecture.md#Security-Architecture]
+1.  **AC-UM-2**: A registered and verified user must be able to log in with their correct credentials. Upon successful login, a session must be established, granting access to protected routes. [Source: docs/sprint-artifacts/tech-spec-epic-2.md#Acceptance-Criteria-Authoritative]
+2.  **AC-UM-8**: A logged-in user's session should persist across browser tabs and sessions until they explicitly log out. [Source: docs/sprint-artifacts/tech-spec-epic-2.md#Acceptance-Criteria-Authoritative]
 
 ## Tasks / Subtasks
 
@@ -26,11 +24,11 @@ so that I can access my saved content and continue my learning journey.
     - [ ] Create the login page component at `frontend/src/app/(auth)/login/page.tsx`.
     - [ ] Build the form using Shadcn UI components, consistent with the registration form.
     - [ ] Implement form state management with `React Hook Form` and validation with `Zod`.
-- [ ] **Frontend: Handle Login and Session** (AC: #2)
+- [ ] **Frontend: Handle Login and Session** (AC: #1, #2)
     - [ ] On form submission, call the backend login endpoint.
     - [ ] Securely store the returned session/JWT (e.g., in an HttpOnly cookie).
     - [ ] Redirect the user to a dashboard or home page on successful login.
-- [ ] **Frontend: Implement Protected Routes** (AC: #3, #4)
+- [ ] **Frontend: Implement Protected Routes** (AC: #1)
     - [ ] Create a Next.js middleware file (`frontend/src/middleware.ts`) to handle route protection.
     - [ ] The middleware should check for a valid session cookie.
     - [ ] If the session is invalid, redirect the user to the login page.
@@ -65,6 +63,7 @@ This story builds directly on the registration functionality from Story 2.1. It 
 
 ### References
 
+- [Source: docs/sprint-artifacts/tech-spec-epic-2.md]
 - [Source: docs/epics.md#Story-2.2-User-Login-and-Session-Management]
 - [Source: docs/PRD.md#FR-UM-1]
 - [Source: docs/architecture.md#Security-Architecture]
@@ -82,3 +81,9 @@ This story builds directly on the registration functionality from Story 2.1. It 
 ### Completion Notes List
 
 ### File List
+
+## Change Log
+
+<!--
+- YYYY-MM-DD: Description of change.
+-->

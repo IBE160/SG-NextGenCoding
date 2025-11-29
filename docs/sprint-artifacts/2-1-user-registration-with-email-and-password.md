@@ -10,10 +10,8 @@ so that I can access personalized features and save my progress.
 
 ## Acceptance Criteria
 
-1.  **Given** I am on the registration page, **When** I provide a valid email and a secure password (and confirm password), **Then** my account is successfully created in Supabase Auth. [Source: docs/epics.md#Story-2.1]
-2.  **And** a confirmation email is sent to my provided email address. [Source: docs/epics.md#Story-2.1]
-3.  **And** I am redirected to a success page or login page after registration. [Source: docs/epics.md#Story-2.1]
-4.  **Given** the registration form, **When** I submit invalid data (e.g., mismatched passwords, invalid email format), **Then** I see clear, inline validation errors. [Source: docs/architecture.md#Implementation-Patterns]
+1.  **AC-UM-1**: A new user must be able to create an account using a valid email and password. Upon successful registration, a verification email must be sent to the provided address. [Source: docs/sprint-artifacts/tech-spec-epic-2.md#Acceptance-Criteria-Authoritative]
+
 
 ## Tasks / Subtasks
 
@@ -22,17 +20,17 @@ so that I can access personalized features and save my progress.
     - [ ] The endpoint should accept email and password.
     - [ ] Implement logic to call `supabase.auth.sign_up()` with the provided credentials.
     - [ ] Handle potential errors from Supabase (e.g., user already exists) and return appropriate HTTP status codes.
-- [ ] **Backend: Integrate Email Service for Confirmation** (AC: #2)
+- [ ] **Backend: Integrate Email Service for Confirmation** (AC: #1)
     - [ ] Configure the `Resend` email service in the backend.
     - [ ] After a successful sign-up, trigger an email to be sent to the user's email address for confirmation.
-- [ ] **Frontend: Build Registration UI Form** (AC: #1, #4)
+- [ ] **Frontend: Build Registration UI Form** (AC: #1)
     - [ ] Create the registration page component at `frontend/src/app/(auth)/register/page.tsx`.
     - [ ] Build the form using Shadcn UI components (`Input`, `Button`, `Label`). Reuse the button from `frontend/components/ui/button.tsx`.
     - [ ] Implement client-side form state management with `React Hook Form`.
-- [ ] **Frontend: Implement Form Validation** (AC: #4)
+- [ ] **Frontend: Implement Form Validation**
     - [ ] Define a `Zod` schema for registration form validation (email, password, confirm password).
     - [ ] Integrate the Zod schema with `React Hook Form` to provide real-time validation feedback.
-- [ ] **Frontend: Handle Form Submission** (AC: #1, #3)
+- [ ] **Frontend: Handle Form Submission** (AC: #1)
     - [ ] On form submission, call the backend registration endpoint.
     - [ ] On success, redirect the user to a "check your email" page or the login page.
     - [ ] On failure, display a user-friendly error message (e.g., using a Toast component).
@@ -70,6 +68,7 @@ This story initiates **Epic 2: User Access & Authentication**. The primary goal 
 
 ### References
 
+- [Source: docs/sprint-artifacts/tech-spec-epic-2.md]
 - [Source: docs/epics.md#Story-2.1-User-Registration-with-Email-and-Password]
 - [Source: docs/PRD.md#FR-UM-1]
 - [Source: docs/architecture.md#Epic-to-Architecture-Mapping]
@@ -89,3 +88,9 @@ This story initiates **Epic 2: User Access & Authentication**. The primary goal 
 ### Completion Notes List
 
 ### File List
+
+## Change Log
+
+<!--
+- YYYY-MM-DD: Description of change.
+-->

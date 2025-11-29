@@ -61,8 +61,24 @@
         <snippet>As a potential user, I want to try the core summary and quiz generation features without immediate registration, so that I can experience the value of the application before committing to an account.</snippet>
       </doc>
     </docs>
-    <code></code>
-    <dependencies></dependencies>
+    <code>
+      <reference>
+        <path>frontend/src/lib/guest-usage.ts</path>
+        <reason>Hypothetical location for the utility service to manage guest usage tracking via localStorage.</reason>
+      </reference>
+      <reference>
+        <path>frontend/src/components/ui/registration-wall.tsx</path>
+        <reason>Hypothetical location for the reusable modal component that prompts guest users to register or log in.</reason>
+      </reference>
+    </code>
+    <dependencies>
+      <dependency name="localStorage API" version="Web Standard">
+        <reason>Used to persist the usage count for a guest user across browser sessions.</reason>
+      </dependency>
+      <dependency name="Shadcn UI" version="latest">
+        <reason>UI component library used to build the registration wall modal.</reason>
+      </dependency>
+    </dependencies>
   </artifacts>
 
   <constraints>
@@ -72,7 +88,9 @@
       <source>docs/architecture.md#Code-Formatting</source>
     </constraint>
   </constraints>
-  <interfaces></interfaces>
+  <interfaces>
+    <note>This story focuses on client-side gating and does not introduce new backend API contracts. It relies on the existing API contracts for the core features being gated (e.g., summary and quiz generation).</note>
+  </interfaces>
   <tests>
     <standards>Integration tests to verify interactions between frontend and backend API, and backend and AI service.</standards>
     <locations>

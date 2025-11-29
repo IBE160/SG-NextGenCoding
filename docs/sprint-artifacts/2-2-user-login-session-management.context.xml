@@ -71,8 +71,37 @@
         <snippet>As a registered user, I want to log in to my account, so that I can access my saved content and continue my learning journey.</snippet>
       </doc>
     </docs>
-    <code></code>
-    <dependencies></dependencies>
+    <code>
+      <reference>
+        <path>backend/app/api/auth/login.py</path>
+        <reason>Primary location for the backend login endpoint logic.</reason>
+      </reference>
+      <reference>
+        <path>frontend/src/app/(auth)/login/page.tsx</path>
+        <reason>Main UI component for the user login form.</reason>
+      </reference>
+      <reference>
+        <path>frontend/src/middleware.ts</path>
+        <reason>Location for Next.js middleware to handle route protection.</reason>
+      </reference>
+    </code>
+    <dependencies>
+      <dependency name="Supabase" version="latest">
+        <reason>Used for authentication (sign-in) and user management.</reason>
+      </dependency>
+      <dependency name="FastAPI" version="latest">
+        <reason>Backend framework for creating the API endpoint.</reason>
+      </dependency>
+      <dependency name="Next.js" version="latest">
+        <reason>Frontend framework, used for UI and middleware-based route protection.</reason>
+      </dependency>
+      <dependency name="React Hook Form" version="latest">
+        <reason>Used for client-side form state management in the login UI.</reason>
+      </dependency>
+      <dependency name="Zod" version="latest">
+        <reason>Used for client-side form validation.</reason>
+      </dependency>
+    </dependencies>
   </artifacts>
 
   <constraints>
@@ -82,7 +111,31 @@
       <source>docs/architecture.md#Structure-Patterns</source>
     </constraint>
   </constraints>
-  <interfaces></interfaces>
+  <interfaces>
+    <api-contract>
+      <endpoint>POST /api/auth/login</endpoint>
+      <description>Authenticates a user and returns a session.</description>
+      <request>
+        <payload>
+          <field name="email" type="string" required="true">User's email address.</field>
+          <field name="password" type="string" required="true">User's password.</field>
+        </payload>
+      </request>
+      <response status="200 OK">
+        <description>User successfully authenticated. Session is returned.</description>
+        <payload>
+          <field name="access_token" type="string">The JWT for the session.</field>
+          <field name="token_type" type="string">"bearer"</field>
+        </payload>
+      </response>
+      <response status="401 Unauthorized">
+        <description>Invalid credentials provided.</description>
+      </response>
+      <response status="422 Unprocessable Entity">
+        <description>Invalid input data (e.g., invalid email format).</description>
+      </response>
+    </api-contract>
+  </interfaces>
   <tests>
     <standards>Unit tests for both frontend and backend code to ensure individual components function correctly. Integration tests to verify interactions between frontend and backend API, and backend and AI service.</standards>
     <locations>
