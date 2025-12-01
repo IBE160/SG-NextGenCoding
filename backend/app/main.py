@@ -3,8 +3,11 @@ load_dotenv()
 
 from fastapi import FastAPI, HTTPException, status
 from .supabase_client import check_supabase_connection
+from .api.auth import register
 
 app = FastAPI()
+
+app.include_router(register.router, prefix="/api/v1/auth")
 
 @app.get("/api/v1/health")
 def health_check():
