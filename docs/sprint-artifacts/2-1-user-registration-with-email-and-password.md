@@ -1,6 +1,6 @@
 # Story 2.1: User Registration with Email and Password
 
-Status: drafted
+Status: review
 
 ## Story
 
@@ -15,28 +15,28 @@ so that I can access personalized features and save my progress.
 
 ## Tasks / Subtasks
 
-- [ ] **Backend: Create User Registration Endpoint** (AC: #1)
-    - [ ] Create a new API route in FastAPI under `backend/app/api/auth/register.py`.
-    - [ ] The endpoint should accept email and password.
-    - [ ] Implement logic to call `supabase.auth.sign_up()` with the provided credentials.
-    - [ ] Handle potential errors from Supabase (e.g., user already exists) and return appropriate HTTP status codes.
-- [ ] **Backend: Integrate Email Service for Confirmation** (AC: #1)
-    - [ ] Configure the `Resend` email service in the backend.
-    - [ ] After a successful sign-up, trigger an email to be sent to the user's email address for confirmation.
-- [ ] **Frontend: Build Registration UI Form** (AC: #1)
-    - [ ] Create the registration page component at `frontend/src/app/(auth)/register/page.tsx`.
-    - [ ] Build the form using Shadcn UI components (`Input`, `Button`, `Label`). Reuse the button from `frontend/components/ui/button.tsx`.
-    - [ ] Implement client-side form state management with `React Hook Form`.
-- [ ] **Frontend: Implement Form Validation**
-    - [ ] Define a `Zod` schema for registration form validation (email, password, confirm password).
-    - [ ] Integrate the Zod schema with `React Hook Form` to provide real-time validation feedback.
-- [ ] **Frontend: Handle Form Submission** (AC: #1)
-    - [ ] On form submission, call the backend registration endpoint.
-    - [ ] On success, redirect the user to a "check your email" page or the login page.
-    - [ ] On failure, display a user-friendly error message (e.g., using a Toast component).
-- [ ] **Testing**
-    - [ ] Write a backend unit test for the registration endpoint.
-    - [ ] Write a frontend integration test for the registration form, covering success and failure cases.
+- [x] **Backend: Create User Registration Endpoint** (AC: #1)
+    - [x] Create a new API route in FastAPI under `backend/app/api/auth/register.py`.
+    - [x] The endpoint should accept email and password.
+    - [x] Implement logic to call `supabase.auth.sign_up()` with the provided credentials.
+    - [x] Handle potential errors from Supabase (e.g., user already exists) and return appropriate HTTP status codes.
+- [x] **Backend: Integrate Email Service for Confirmation** (AC: #1)
+    - [x] Configure the `Resend` email service in the backend.
+    - [x] After a successful sign-up, trigger an email to be sent to the user's email address for confirmation.
+- [x] **Frontend: Build Registration UI Form** (AC: #1)
+    - [x] Create the registration page component at `frontend/src/app/(auth)/register/page.tsx`.
+    - [x] Build the form using Shadcn UI components (`Input`, `Button`, `Label`). Reuse the button from `frontend/components/ui/button.tsx`.
+    - [x] Implement client-side form state management with `React Hook Form`.
+- [x] **Frontend: Implement Form Validation**
+    - [x] Define a `Zod` schema for registration form validation (email, password, confirm password).
+    - [x] Integrate the Zod schema with `React Hook Form` to provide real-time validation feedback.
+- [x] **Frontend: Handle Form Submission** (AC: #1)
+    - [x] On form submission, call the backend registration endpoint.
+    - [x] On success, redirect the user to a "check your email" page or the login page.
+    - [x] On failure, display a user-friendly error message (e.g., using a Toast component).
+- [x] **Testing**
+    - [x] Write a backend unit test for the registration endpoint.
+    - [x] Write a frontend integration test for the registration form, covering success and failure cases.
 
 ## Dev Notes
 
@@ -88,9 +88,18 @@ This story initiates **Epic 2: User Access & Authentication**. The primary goal 
 ### Completion Notes List
 
 ### File List
+- `backend/app/api/auth/register.py` (new)
+- `backend/app/schemas/user.py` (new)
+- `backend/app/main.py` (modified)
+- `backend/tests/test_auth.py` (new)
+- `backend/pyproject.toml` (modified)
+- `frontend/src/app/auth/register/page.tsx` (new)
+- `frontend/src/app/auth/check-email/page.tsx` (new)
+- `frontend/src/components/ui/form.tsx` (new)
+- `frontend/src/components/ui/card.tsx` (added during shadcn install, may already exist)
+- `frontend/src/components/ui/alert.tsx` (added during shadcn install, may already exist)
+- `frontend/__tests__/register.test.tsx` (new)
 
 ## Change Log
 
-<!--
-- YYYY-MM-DD: Description of change.
--->
+- 2025-12-02: Implemented user registration endpoint, UI, and tests for Story 2.1.
