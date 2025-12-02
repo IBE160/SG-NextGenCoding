@@ -1,33 +1,38 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status, Response
 from supabase import Client
 from app.schemas.user import UserCreate
 from app.supabase_client import get_supabase_client
 from gotrue.errors import GotrueApiError
+import logging
 
 router = APIRouter()
 
-@router.post("/register", status_code=201)
-def create_user(user: UserCreate, supabase: Client = Depends(get_supabase_client)):
+@router.post("/register", status_code=status.HTTP_201_CREATED)
+def create_user(user: UserCreate, response: Response, supabase: Client = Depends(get_supabase_client)):
     """
     Create a new user.
     """
     try:
-        response = supabase.auth.sign_up({
+        res = supabase.auth.sign_up({
             "email": user.email,
             "password": user.password,
         })
-        if response.user and response.user.identities == []:
-             return {"message": "User already exists but is unconfirmed. A new confirmation email has been sent."}
-        if not response.user:
-             raise HTTPException(status_code=400, detail="Could not create user for an unknown reason.")
+        if res.user and res.user.identities == []:
+            response.status_code = status.HTTP_200_OK
+            return {"message": "User already exists but is unconfirmed. A new confirmation email has been sent."}
+        if not res.user:
+             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Could not create user for an unknown reason.")
 
     except GotrueApiError as e:
         if "User already registered" in e.message:
-            raise HTTPException(status_code=409, detail="A user with this email already exists.")
-        if "Password should be at least 6 characters" in e.message:
-            raise HTTPException(status_code=422, detail="Password should be at least 6 characters.")
-        raise HTTPException(status_code=500, detail=f"An unexpected authentication error occurred: {e.message}")
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="A user with this email already exists.")
+        if "Password should be at least 8 characters" in e.message or "Password should be at least 6 characters" in e.message:
+            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Password must be at least 8 characters.")
+        logging.error(f"Gotrue API Error during user registration: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"An unexpected authentication error occurred.")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logging.error(f"Unexpected error during user registration: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An unexpected error occurred.")
 
     return {"message": "User created successfully. Please check your email for verification."}
+
