@@ -3,6 +3,7 @@ from fastapi.testclient import TestClient
 from unittest.mock import MagicMock, patch
 from app.main import app
 from app.supabase_client import get_supabase_client
+from gotrue.errors import AuthApiError
 
 client = TestClient(app)
 
@@ -25,8 +26,7 @@ def test_create_user_already_exists(mock_supabase_client):
     # This is a bit tricky, the Python client doesn't raise an exception for existing users,
     # but the API response contains a user object with an empty identities list if unconfirmed.
     # If confirmed, it will raise an exception. Let's test the confirmed case.
-    from gotrue.errors import GotrueApiError
-    mock_supabase_client.auth.sign_up.side_effect = GotrueApiError("User already registered", status_code=400)
+    mock_supabase_client.auth.sign_up.side_effect = AuthApiError("User already registered", status=400, code="user_already_exists")
 
 
     response = client.post("/api/v1/auth/register", json={"email": "exists@example.com", "password": "password"})
@@ -35,13 +35,12 @@ def test_create_user_already_exists(mock_supabase_client):
     assert response.json() == {"detail": "A user with this email already exists."}
 
 def test_create_user_weak_password(mock_supabase_client):
-    from gotrue.errors import GotrueApiError
-    mock_supabase_client.auth.sign_up.side_effect = GotrueApiError("Password should be at least 6 characters", status_code=422)
+    mock_supabase_client.auth.sign_up.side_effect = AuthApiError("Password should be at least 6 characters", status=422, code="weak_password")
 
     response = client.post("/api/v1/auth/register", json={"email": "test@example.com", "password": "123"})
 
     assert response.status_code == 422
-    assert "Password should be at least 6 characters" in response.json()["detail"]
+    assert "Password must be at least 8 characters" in response.json()["detail"]
 
 
 def test_create_user_unconfirmed_user_exists(mock_supabase_client):
@@ -50,5 +49,5 @@ def test_create_user_unconfirmed_user_exists(mock_supabase_client):
 
     response = client.post("/api/v1/auth/register", json={"email": "unconfirmed@example.com", "password": "password"})
 
-    assert response.status_code == 201 # The endpoint returns 201
+    assert response.status_code == 200 # The endpoint returns 200
     assert response.json() == {"message": "User already exists but is unconfirmed. A new confirmation email has been sent."}

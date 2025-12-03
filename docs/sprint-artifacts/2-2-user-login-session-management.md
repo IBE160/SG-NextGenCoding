@@ -1,6 +1,6 @@
 # Story 2.2: User Login and Session Management
 
-Status: drafted
+Status: review
 
 ## Story
 
@@ -15,26 +15,26 @@ so that I can access my saved content and continue my learning journey.
 
 ## Tasks / Subtasks
 
-- [ ] **Backend: Create User Login Endpoint** (AC: #1)
-    - [ ] Create a new API route in FastAPI under `backend/app/api/auth/login.py`.
+- [x] **Backend: Create User Login Endpoint** (AC: #1)
+    - [x] Create a new API route in FastAPI under `backend/app/api/auth/login.py`.
     - [ ] The endpoint should accept email and password and use Supabase `signInWithPassword`.
     - [ ] On successful login, it should return the session/JWT to the client.
     - [ ] Handle login errors (e.g., invalid credentials) gracefully.
-- [ ] **Frontend: Build Login UI Form** (AC: #1)
-    - [ ] Create the login page component at `frontend/src/app/(auth)/login/page.tsx`.
+- [x] **Frontend: Build Login UI Form** (AC: #1)
+    - [x] Create the login page component at `frontend/src/app/(auth)/login/page.tsx`.
     - [ ] Build the form using Shadcn UI components, consistent with the registration form.
     - [ ] Implement form state management with `React Hook Form` and validation with `Zod`.
-- [ ] **Frontend: Handle Login and Session** (AC: #1, #2)
+- [x] **Frontend: Handle Login and Session** (AC: #1, #2)
     - [ ] On form submission, call the backend login endpoint.
     - [ ] Securely store the returned session/JWT (e.g., in an HttpOnly cookie).
     - [ ] Redirect the user to a dashboard or home page on successful login.
-- [ ] **Frontend: Implement Protected Routes** (AC: #1)
+- [x] **Frontend: Implement Protected Routes** (AC: #1)
     - [ ] Create a Next.js middleware file (`frontend/src/middleware.ts`) to handle route protection.
     - [ ] The middleware should check for a valid session cookie.
     - [ ] If the session is invalid, redirect the user to the login page.
     - [ ] Create an example protected page (e.g., `frontend/src/app/dashboard/page.tsx`) to test the functionality.
-- [ ] **Testing**
-    - [ ] Write a backend unit test for the login endpoint.
+- [x] **Testing**
+    - [x] Write a backend unit test for the login endpoint.
     - [ ] Write frontend integration tests for the login flow and for accessing a protected route (both authenticated and unauthenticated states).
 
 ## Dev Notes
@@ -74,13 +74,25 @@ This story builds directly on the registration functionality from Story 2.1. It 
 <!-- Path(s) to story context XML will be added here by context workflow -->
 
 ### Agent Model Used
-{{agent_model_name_version}}
-
 ### Debug Log References
+- **2025-12-03:** Created `backend/app/api/auth/login.py` and integrated it into `backend/app/main.py`. This implements the core login endpoint logic for AC-UM-2.
+- **2025-12-03:** Created `frontend/src/app/(auth)/login/page.tsx`, implementing the login UI form with Shadcn UI, React Hook Form, and Zod validation.
+- **2025-12-03:** Implemented `frontend/src/app/api/login/route.ts` to securely handle login and set `HttpOnly` cookies, and updated `frontend/src/app/(auth)/login/page.tsx` to use this new API route.
+- **2025-12-03:** Implemented `frontend/src/middleware.ts` for route protection and created `frontend/src/app/dashboard/page.tsx` as an example protected page.
 
-### Completion Notes List
+- **2025-12-03:** Created `backend/tests/test_login.py` for backend login endpoint unit tests.
+- **2025-12-03:** Created `frontend/__tests__/login.test.tsx` for frontend login UI integration tests.
+- **2025-12-03:** Created `frontend/__tests__/middleware.test.ts` for frontend middleware protected route integration tests.
 
-### File List
+- backend/tests/test_login.py
+- frontend/__tests__/login.test.tsx
+- frontend/__tests__/middleware.test.ts
+- backend/app/api/auth/login.py
+- backend/app/main.py
+- frontend/src/app/(auth)/login/page.tsx
+- frontend/src/app/api/login/route.ts
+- frontend/src/middleware.ts
+- frontend/src/app/dashboard/page.tsx
 
 ## Change Log
 
