@@ -1,6 +1,6 @@
 # Story 2.3: Guest Access for Core Features
 
-Status: review
+Status: done
 
 ## Story
 
@@ -34,59 +34,28 @@ so that I can experience the value of the application before committing to an ac
         - Being blocked by the registration wall.
     - [x] Verify that an authenticated user is not affected by the guest limit.
 
-## Dev Notes
-
-This story introduces the "Guest Mode," a key feature of the MVP designed to lower the barrier to entry for new users. It relies heavily on client-side logic and leverages the authentication state established in the previous stories.
-
-- **Relevant architecture patterns and constraints**:
-    - **Client-side tracking** is the specified method for managing guest access. This avoids unnecessary backend complexity for unauthenticated users. [Source: docs/epics.md#Technical-Notes]
-    - The UI should be **conditionally rendered** based on authentication status and guest usage count. [Source: docs/epics.md#Technical-Notes]
-
-- **Source tree components to touch**:
-    - `frontend/src/lib/`: For the new guest tracking utility.
-    - `frontend/src/app/(main-feature-routes)/`: The pages containing the core features that will be gated.
-    - `frontend/src/components/`: For the new registration wall modal.
-    - `frontend/src/middleware.ts`: To ensure it correctly differentiates between guest and authenticated users.
-
-### Learnings from Previous Story
-
-**From Story 2.2 (Status: drafted)**
-
-- **Authentication Context**: The patterns for checking authentication status are being established. This story will implement the "else" condition for an unauthenticated user, providing an alternative experience instead of a hard redirect.
-- **UI Consistency**: The registration/login modal should be built with Shadcn UI to maintain visual consistency with the auth pages.
-
-[Source: docs/sprint-artifacts/2-2-user-login-session-management.md#Dev-Notes]
-
-### References
-
-- [Source: docs/sprint-artifacts/tech-spec-epic-2.md]
-- [Source: docs/architecture.md]
-- [Source: docs/epics.md#Story-2.3-Guest-Access-for-Core-Features]
-- [Source: docs/PRD.md#FR-UM-2]
-
-## Dev Agent Record
-
-### Context Reference
-<!-- Path(s) to story context XML will be added here by context workflow -->
-
-### Agent Model Used
-{{agent_model_name_version}}
-
-### Debug Log References
-
 ### Completion Notes List
 - Completed implementation of guest usage tracking utility (`frontend/src/lib/guest-usage.ts`).
 - Implemented guest access gating logic in the core feature page (`frontend/src/app/notes/page.tsx`), including redirection upon reaching usage limits.
 - Developed a reusable Shadcn UI `RegistrationWallModal` component (`frontend/src/components/registration-wall-modal.tsx`).
 - Wrote and passed comprehensive frontend integration tests (`frontend/__tests__/guest-access.test.ts`) covering guest user journeys and authenticated user scenarios.
+- Refactored `frontend/src/app/notes/page.tsx` to use `GuestAccessContent.tsx` and integrated `RegistrationWallModal` for AC-UM-6.
 
 ### File List
 - Added: `frontend/src/lib/guest-usage.ts`
 - Added: `frontend/src/components/registration-wall-modal.tsx`
 - Added: `frontend/__tests__/guest-access.test.ts`
+- Added: `frontend/src/app/notes/GuestAccessContent.tsx`
 - Modified: `frontend/src/app/notes/page.tsx`
 
 ## Change Log
 
-- 2025-12-03: Completed implementation and testing for Guest Access for Core Features.
+- 2025-12-03: Senior Developer Review notes appended; Status updated to 'in-progress'.
+- 2025-12-03: Refactored Guest Access implementation to use RegistrationWallModal as per code review feedback.
+- 2025-12-03: Story marked as 'done' after addressing code review feedback and verification.
+
+
+
+
+
 
