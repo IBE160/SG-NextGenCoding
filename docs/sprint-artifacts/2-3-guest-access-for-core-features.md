@@ -1,6 +1,6 @@
 # Story 2.3: Guest Access for Core Features
 
-Status: drafted
+Status: review
 
 ## Story
 
@@ -15,24 +15,24 @@ so that I can experience the value of the application before committing to an ac
 
 ## Tasks / Subtasks
 
-- [ ] **Frontend: Implement Guest Usage Tracking** (AC: #1)
-    - [ ] Create a utility service or a set of functions in `frontend/src/lib/` to manage guest usage.
-    - [ ] Use `localStorage` to persist the usage count for a guest user across browser sessions.
-    - [ ] The service should provide functions to `getUsageCount`, `incrementUsageCount`, and `checkUsageLimit`.
-- [ ] **Frontend: Gate Core Features for Guests** (AC: #1, #2)
-    - [ ] In the UI components responsible for core features (e.g., the file upload page), add logic to check if the user is authenticated.
-    - [ ] If the user is a guest, call the usage tracking service to check their limit.
-    - [ ] If the limit is not reached, allow the feature to be used and call `incrementUsageCount` on completion.
-- [ ] **Frontend: Create "Registration Wall" UI** (AC: #2)
-    - [ ] Design and build a reusable modal component (using Shadcn UI) that prompts the user to register or log in.
-    - [ ] The modal should clearly state why they are being prompted (e.g., "You've used all your free summaries.").
-    - [ ] The modal should contain links to the registration and login pages.
-- [ ] **Testing**
-    - [ ] Write frontend integration tests to simulate a guest user's journey:
+- [x] **Frontend: Implement Guest Usage Tracking** (AC: #1)
+    - [x] Create a utility service or a set of functions in `frontend/src/lib/` to manage guest usage.
+    - [x] Use `localStorage` to persist the usage count for a guest user across browser sessions.
+    - [x] The service should provide functions to `getUsageCount`, `incrementUsageCount`, and `checkUsageLimit`.
+- [x] **Frontend: Gate Core Features for Guests** (AC: #1, #2)
+    - [x] In the UI components responsible for core features (e.g., the file upload page), add logic to check if the user is authenticated.
+    - [x] If the user is a guest, call the usage tracking service to check their limit.
+    - [x] If the limit is not reached, allow the feature to be used and call `incrementUsageCount` on completion.
+- [x] **Frontend: Create "Registration Wall" UI** (AC: #2)
+    - [x] Design and build a reusable modal component (using Shadcn UI) that prompts the user to register or log in.
+    - [x] The modal should clearly state why they are being prompted (e.g., "You've used all your free summaries.").
+    - [x] The modal should contain links to the registration and login pages.
+- [x] **Testing**
+    - [x] Write frontend integration tests to simulate a guest user's journey:
         - Using the feature for the first time.
         - Reaching the usage limit.
         - Being blocked by the registration wall.
-    - [ ] Verify that an authenticated user is not affected by the guest limit.
+    - [x] Verify that an authenticated user is not affected by the guest limit.
 
 ## Dev Notes
 
@@ -75,11 +75,18 @@ This story introduces the "Guest Mode," a key feature of the MVP designed to low
 ### Debug Log References
 
 ### Completion Notes List
+- Completed implementation of guest usage tracking utility (`frontend/src/lib/guest-usage.ts`).
+- Implemented guest access gating logic in the core feature page (`frontend/src/app/notes/page.tsx`), including redirection upon reaching usage limits.
+- Developed a reusable Shadcn UI `RegistrationWallModal` component (`frontend/src/components/registration-wall-modal.tsx`).
+- Wrote and passed comprehensive frontend integration tests (`frontend/__tests__/guest-access.test.ts`) covering guest user journeys and authenticated user scenarios.
 
 ### File List
+- Added: `frontend/src/lib/guest-usage.ts`
+- Added: `frontend/src/components/registration-wall-modal.tsx`
+- Added: `frontend/__tests__/guest-access.test.ts`
+- Modified: `frontend/src/app/notes/page.tsx`
 
 ## Change Log
 
-<!--
-- YYYY-MM-DD: Description of change.
--->
+- 2025-12-03: Completed implementation and testing for Guest Access for Core Features.
+
