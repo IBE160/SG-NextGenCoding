@@ -1,6 +1,6 @@
 # Story 2.4: Password Reset and Email Verification
 
-Status: drafted
+Status: done
 
 ## Story
 
@@ -15,25 +15,25 @@ so that I can maintain access to my account and ensure its security.
 
 ## Tasks / Subtasks
 
-- [ ] **Backend: Password Reset Request Endpoint** (AC: #1)
-    - [ ] Create an API endpoint (e.g., `POST /api/auth/forgot-password`) that accepts a user's email.
-    - [ ] The endpoint should call the Supabase Auth function to trigger the password recovery email (e.g., `auth.resetPasswordForEmail`).
-- [ ] **Frontend: "Forgot Password" UI** (AC: #1)
-    - [ ] Create a "Forgot Password" page at `frontend/src/app/(auth)/forgot-password/page.tsx`.
-    - [ ] The page should have a form with an email input field and a submit button.
-    - [ ] On submit, call the backend endpoint.
-- [ ] **Backend: Password Update Endpoint** (AC: #1)
-    - [ ] Supabase handles the password update via its redirect flow. A backend endpoint may be needed to handle the callback from Supabase to finalize the password update if not handled client-side.
-- [ ] **Frontend: "Reset Password" UI** (AC: #1)
-    - [ ] Create a "Reset Password" page at `frontend/src/app/(auth)/reset-password/page.tsx`.
-    - [ ] This page will be loaded when the user clicks the link in their email. It will handle the token from Supabase.
-    - [ ] The form will allow the user to enter and confirm their new password.
-- [ ] **Frontend: Email Verification Handling** (AC: #2)
-    - [ ] Create a specific callback page (e.g., `frontend/src/app/auth/callback/page.tsx`) to handle the redirect from Supabase after a user clicks the verification link.
-    - [ ] This page should inform the user that their email has been verified and direct them to the login page.
-- [ ] **Testing**
-    - [ ] Write integration tests for the full password reset flow.
-    - [ ] Write a test to ensure the email verification callback route works as expected.
+- [x] **Backend: Password Reset Request Endpoint** (AC: #1)
+    - [x] Create an API endpoint (e.g., `POST /api/auth/forgot-password`) that accepts a user's email.
+    - [x] The endpoint should call the Supabase Auth function to trigger the password recovery email (e.g., `auth.resetPasswordForEmail`).
+- [x] **Frontend: "Forgot Password" UI** (AC: #1)
+    - [x] Create a "Forgot Password" page at `frontend/src/app/(auth)/forgot-password/page.tsx`.
+    - [x] The page should have a form with an email input field and a submit button.
+    - [x] On submit, call the backend endpoint.
+- [x] **Backend: Password Update Endpoint** (AC: #1)
+    - [x] Supabase handles the password update via its redirect flow. A backend endpoint may be needed to handle the callback from Supabase to finalize the password update if not handled client-side.
+- [x] **Frontend: "Reset Password" UI** (AC: #1)
+    - [x] Create a "Reset Password" page at `frontend/src/app/(auth)/reset-password/page.tsx`.
+    - [x] This page will be loaded when the user clicks the link in their email. It will handle the token from Supabase.
+    - [x] The form will allow the user to enter and confirm their new password.
+- [x] **Frontend: Email Verification Handling** (AC: #2)
+    - [x] Create a specific callback page (e.g., `frontend/src/app/auth/callback/page.tsx`) to handle the redirect from Supabase after a user clicks the verification link.
+    - [x] This page should inform the user that their email has been verified and direct them to the login page.
+- [x] **Testing**
+    - [x] Write integration tests for the full password reset flow.
+    - [x] Write a test to ensure the email verification callback route works as expected.
 
 ## Dev Notes
 
