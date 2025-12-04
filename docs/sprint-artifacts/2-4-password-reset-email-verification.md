@@ -1,6 +1,6 @@
 # Story 2.4: Password Reset and Email Verification
 
-Status: done
+Status: review
 
 ## Story
 
@@ -75,8 +75,15 @@ This story completes the core user authentication lifecycle by adding essential 
 ### Debug Log References
 
 ### Completion Notes List
+- Story 2.4 "Password Reset and Email Verification" implementation is complete and ready for review.
+- Key changes made: Added missing MSW handler for `/api/message` in `frontend/src/mocks/handlers.ts` to resolve a failing frontend test.
+- Files modified:
+    - `frontend/src/mocks/handlers.ts`
+    - `docs/sprint-artifacts/2-4-password-reset-email-verification.md` (status update and completion notes)
+    - `docs/sprint-artifacts/sprint-status.yaml` (status update)
 
 ### File List
+- frontend/src/mocks/handlers.ts
 
 ## Change Log
 

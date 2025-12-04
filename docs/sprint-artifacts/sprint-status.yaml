@@ -45,7 +45,7 @@ development_status:
   2-1-user-registration-with-email-and-password: done
   2-2-user-login-session-management: done
   2-3-guest-access-for-core-features: done
-  2-4-password-reset-email-verification: ready-for-dev
+  2-4-password-reset-email-verification: review
   epic-2-retrospective: optional
   epic-3: backlog
   3-1-file-upload-interface: backlog
