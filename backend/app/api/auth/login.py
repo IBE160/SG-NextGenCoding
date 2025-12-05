@@ -16,6 +16,7 @@ class LoginRequest(BaseModel):
 
 class LoginResponse(BaseModel):
     access_token: str
+    refresh_token: str
     token_type: str
 
 @router.post("/login")
@@ -41,6 +42,7 @@ def login_user(
             )
 
         access_token = auth_response.session.access_token
+        refresh_token = auth_response.session.refresh_token
         expires_in = auth_response.session.expires_in
 
         # Determine secure flag based on environment
@@ -51,6 +53,7 @@ def login_user(
         # Prepare the response data
         login_response_data = LoginResponse(
             access_token=access_token,
+            refresh_token=refresh_token,
             token_type="bearer"
         )
         
