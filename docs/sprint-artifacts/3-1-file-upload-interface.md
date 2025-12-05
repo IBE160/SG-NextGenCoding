@@ -181,7 +181,126 @@ As this is the first development story for Epic 3, there are no prior story lear
 - `frontend/cypress/e2e/upload.cy.ts` created for comprehensive E2E scenarios including logged-in/guest uploads, limit enforcement, and error handling.
 - Dummy fixture files created for Cypress tests.
 
-Status: review
+Status: changes requested
+
+### Completion Notes
+
+**2025-12-05:**
+- Story ID: 3.1
+- Story Key: 3-1-file-upload-interface
+- Title: File Upload Interface
+- Key Changes Made:
+  - Frontend: Developed `FileUploadZone` component for drag-and-drop, integrated Supabase for user session, implemented guest user upload limits, and set up the `uploadDocument` service using Axios.
+  - Backend: Created FastAPI endpoint `/api/v1/documents/upload` with server-side validation, integrated with Supabase Storage for file uploads, and persisted document metadata to the database via `Document` SQLModel. Configured database session and global settings.
+- Tests Added:
+  - Backend Unit Tests: `backend/tests/test_documents.py` for endpoint validation, Supabase Storage and DB persistence.
+  - Frontend Integration Tests: `frontend/__tests__/integration/upload.test.tsx` for frontend-to-backend API call simulation and guest limit checks using `msw`.
+  - E2E Tests: `frontend/cypress/e2e/upload.cy.ts` for full user journey simulation (logged-in/guest, valid/invalid files, limit enforcement).
+- Files Modified/Created:
+  - `frontend/src/app/upload/components/FileUploadZone.tsx` (created, modified)
+  - `frontend/src/lib/supabase.ts` (created)
+  - `frontend/src/app/upload/page.tsx` (created, modified)
+  - `frontend/src/services/documents.ts` (created)
+  - `backend/app/schemas/document.py` (created)
+  - `backend/app/db/models.py` (modified)
+  - `backend/app/db/session.py` (created)
+  - `backend/app/core/config.py` (created)
+  - `backend/app/api/summaries/main.py` (created)
+  - `backend/tests/test_documents.py` (created)
+  - `frontend/__tests__/integration/upload.test.tsx` (created)
+  - `frontend/cypress/e2e/upload.cy.ts` (created)
+  - `frontend/cypress/fixtures/test_file.pdf` (created)
+  - `frontend/cypress/fixtures/test_file.txt` (created)
+  - `frontend/cypress/fixtures/test_file.docx` (created)
+  - `frontend/cypress/fixtures/test_image.jpg` (created)
+  - `backend/app/main.py` (modified)
+  - `backend/app/supabase_client.py` (modified)
+  - `docs/sprint-artifacts/sprint-status.yaml` (modified)
+
+---
+## Senior Developer Review (AI)
+
+**Reviewer**: BIP
+**Date**: fredag 5. desember 2025
+**Outcome**: Changes Requested (due to a medium-severity security finding)
+**Summary**:
+The "File Upload Interface" (Story 3.1) has been thoroughly reviewed. All Acceptance Criteria (ACs) and tasks marked as complete in the story were found to be implemented and verified with evidence from the codebase. The overall implementation aligns well with the architectural guidelines and leverages the chosen tech stack effectively. However, a critical security vulnerability was identified regarding the handling of `user_id` on the backend, warranting immediate attention. Additionally, minor improvements for logging and UI/UX were noted.
+
+### Key Findings
+
+*   **MEDIUM severity issues:**
+    *   **Backend Security - `user_id` Validation (`backend/app/api/summaries/main.py`):** The `user_id` received in the `POST /api/v1/documents/upload` endpoint is taken directly from the form data without server-side validation against an authenticated user's ID. This introduces a security risk where a malicious actor could potentially associate uploaded files with another user's account by sending a fabricated `user_id`.
+        - **Rationale:** The backend should never implicitly trust user-provided IDs for sensitive operations like associating data.
+        - **Evidence**: `backend/app/api/summaries/main.py`, line 32 (`user_id: Optional[UUID] = Form(None)`).
+*   **LOW severity issues:**
+    *   **Backend Logging (`backend/app/api/summaries/main.py`):** The generic `except Exception` block uses `print()` statements in generic `except Exception` blocks.
+        - **Rationale:** Production-grade applications benefit from structured logging for better monitoring and debugging.
+        - **Evidence**: `backend/app/api/summaries/main.py`, line 85.
+    *   **Frontend UI/UX (Guest Limit Alert):** An intrusive browser `alert()` is used to notify guest users when they exceed their upload limit.
+        - **Rationale:** A more integrated UI component (e.g., toast, modal) would provide a smoother and more consistent user experience.
+        - **Evidence**: `frontend/src/app/upload/page.tsx`, line 45.
+
+### Acceptance Criteria Coverage
+
+| AC# | Description | Status | Evidence |
+|---|---|---|---|
+| 1 | FR-UM-1 (Partial): Logged-in user upload | IMPLEMENTED | `frontend/src/app/upload/page.tsx`, `frontend/src/services/documents.ts`, `backend/app/api/summaries/main.py` |
+| 2 | FR-UM-2: Guest user free uses | IMPLEMENTED | `frontend/src/app/upload/page.tsx` (lines 11-12, 32-35, 59-64) |
+| 3 | FR-UM-2: Guest limit prompt | IMPLEMENTED | `frontend/src/app/upload/page.tsx` (lines 45, 80-87) |
+| 4 | FR-CIP-1: UI indicates supported types/size | IMPLEMENTED | `frontend/src/app/upload/components/FileUploadZone.tsx` (line 106) |
+| 5 | FR-CIP-1: UI displays selected file name/type | IMPLEMENTED | `frontend/src/app/upload/components/FileUploadZone.tsx` (lines 91-95) |
+| 6 | FR-CIP-1: UI error for unsupported type | IMPLEMENTED | `frontend/src/app/upload/components/FileUploadZone.tsx` (lines 20-21, 24-27, 94, 108) |
+| 7 | FR-CIP-1: UI error for oversized file | IMPLEMENTED | `frontend/src/app/upload/components/FileUploadZone.tsx` (lines 22-23, 24-27, 94, 108) |
+| 8 | FR-CIP-1: Frontend sends multipart/form-data | IMPLEMENTED | `frontend/src/services/documents.ts` (lines 8-20) |
+| 9 | FR-CIP-1: Backend receives, validates, stores | IMPLEMENTED | `backend/app/api/summaries/main.py` (lines 32, 40-45, 52-56, 60-64) |
+| 10 | FR-CIP-1: Frontend confirms with `document_id` | IMPLEMENTED | `backend/app/api/summaries/main.py` (lines 77-80), `frontend/src/services/documents.ts` (lines 4-7, 22), `frontend/src/app/upload/page.tsx` (line 56) |
+
+_Summary: 10 of 10 acceptance criteria fully implemented._
+
+### Task Completion Validation
+
+| Task | Marked As | Verified As | Evidence |
+|---|---|---|---|
+| Create React component for drag-and-drop file zone | `[x]` | VERIFIED COMPLETE | `frontend/src/app/upload/components/FileUploadZone.tsx` |
+| Add standard file input element | `[x]` | VERIFIED COMPLETE | `frontend/src/app/upload/components/FileUploadZone.tsx` (line 80) |
+| Display selected file name and type | `[x]` | VERIFIED COMPLETE | `frontend/src/app/upload/components/FileUploadZone.tsx` (lines 91-95) |
+| Implement client-side validation for file types and size | `[x]` | VERIFIED COMPLETE | `frontend/src/app/upload/components/FileUploadZone.tsx` (lines 19-23) |
+| Display real-time validation error messages | `[x]` | VERIFIED COMPLETE | `frontend/src/app/upload/components/FileUploadZone.tsx` (lines 94, 108) |
+| Integrate with Axios for API calls | `[x]` | VERIFIED COMPLETE | `frontend/src/services/documents.ts` (line 15) |
+| Utilize Supabase Auth client for logged-in vs. guest status | `[x]` | VERIFIED COMPLETE | `frontend/src/app/upload/page.tsx` (line 30) |
+| Implement client-side logic for guest count | `[x]` | VERIFIED COMPLETE | `frontend/src/app/upload/page.tsx` (lines 11-12, 33-34, 59-60) |
+| Display registration/login prompt | `[x]` | VERIFIED COMPLETE | `frontend/src/app/upload/page.tsx` (lines 80-87) |
+| Create `uploadDocument` function | `[x]` | VERIFIED COMPLETE | `frontend/src/services/documents.ts` (lines 6-20) |
+| Implement error handling for API responses (frontend) | `[x]` | VERIFIED COMPLETE | `frontend/src/services/documents.ts` (lines 23-30) |
+| Define `POST /api/v1/documents/upload` endpoint | `[x]` | VERIFIED COMPLETE | `backend/app/api/summaries/main.py` (lines 25-29) |
+| Accept `multipart/form-data` with file and user ID | `[x]` | VERIFIED COMPLETE | `backend/app/api/summaries/main.py` (lines 31-32) |
+| Validate file type and size (server-side) | `[x]` | VERIFIED COMPLETE | `backend/app/api/summaries/main.py` (lines 40-45, 52-56) |
+| Integrate with Supabase Storage client | `[x]` | VERIFIED COMPLETE | `backend/app/api/summaries/main.py` (lines 60-64) |
+| Store `document` metadata | `[x]` | VERIFIED COMPLETE | `backend/app/api/summaries/main.py` (lines 68-75) |
+| Return `202 Accepted` with `document_id` | `[x]` | VERIFIED COMPLETE | `backend/app/api/summaries/main.py` (lines 28, 77-80) |
+| Implement error handling (backend) | `[x]` | VERIFIED COMPLETE | `backend/app/api/summaries/main.py` (lines 82-89) |
+| Define `DocumentUploadRequestFields` and `DocumentUploadResponse` schemas | `[x]` | VERIFIED COMPLETE | `backend/app/schemas/document.py` (lines 6-12) |
+| Define `Document` model | `[x]` | VERIFIED COMPLETE | `backend/app/db/models.py` (lines 16-25) |
+
+_Summary: 19 of 19 completed tasks verified._
+
+### Action Items
+
+**Code Changes Required:**
+- [x] **[Medium] Implement server-side user_id validation for document uploads (AC #1, FR-UM-1, FR-UM-2)**
+    - **Description**: Modified `backend/app/api/summaries/main.py` to securely obtain the user's ID from an authenticated context (e.g., a JWT token from Supabase Auth) rather than directly trusting the `user_id` from the form data. If a `user_id` is passed from the frontend, it *must* match the authenticated user's ID. If no authenticated user is present, the `user_id` should be explicitly set to `None` or handled as a guest user. This prevents malicious users from associating files with arbitrary user accounts.
+    - **File**: `backend/app/api/summaries/main.py`
+
+- [x] **[Low] Implement structured logging in backend error handling**
+    - **Description**: Replaced `print()` statements in generic `except Exception` blocks within `backend/app/api/summaries/main.py` with Python's standard `logging` module. This will improve error traceability and management.
+    - **File**: `backend/app/api/summaries/main.py`
+
+- [ ] **[Medium] Define and configure RLS policies for the `documents` table (Task in Story 3.1)**
+    - **Description**: Ensure that Row Level Security (RLS) policies are correctly defined and applied to the `documents` table in Supabase. This will ensure that users can only access (read, write, update, delete) documents that they own or are authorized to access. This task was marked incomplete in the story. This action item needs to be performed manually in the Supabase dashboard.
+    - **File**: (Supabase configuration, not directly code, but needs to be documented/verified)
+
+**Advisory Notes:**
+- Note: Consider replacing the `alert()` message for guest limit exceeded in `frontend/src/app/upload/page.tsx` with a more seamless UI element like a toast notification or a modal dialog for a better user experience.
 
 ### Completion Notes
 

@@ -14,3 +14,6 @@ Routing guidance:
 | 2025-11-28 | 1.2 | 1 | Enhancement | Medium | TBD | Open | Enhance CI/CD to confirm local execution readiness of backend. [file: .github/workflows/main.yml] |
 | 2025-11-28 | 1.2 | 1 | Enhancement | Low | TBD | Open | Reconsider ignoring backend health check test. [file: .github/workflows/main.yml] |
 | fredag 28. november 2025 | 1.3 | 1 | Bug | Medium | TBD | Open | Add RLS integration test for `profiles` table (AC #3). [file: `backend/tests/test_supabase.py`] |
+| fredag 5. desember 2025 | 3.1 | 3 | Bug | Medium | TBD | Done | Implement server-side user_id validation for document uploads. [file: `backend/app/api/summaries/main.py`] |
+| fredag 5. desember 2025 | 3.1 | 3 | TechDebt | Low | TBD | Done | Implement structured logging in backend error handling. [file: `backend/app/api/summaries/main.py`] |
+| fredag 5. desember 2025 | 3.1 | 3 | Bug | Medium | TBD | Open | Define and configure RLS policies for the `documents` table. [Supabase configuration] |
