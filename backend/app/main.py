@@ -8,6 +8,7 @@ from .api.auth import register as auth_register_router
 from .api.auth import login as auth_login_router
 from .api.auth import forgot_password as auth_forgot_password_router
 from .api.auth import reset_password as auth_reset_password_router
+from .api.summaries.main import router as summaries_router # Add this line
 
 app = FastAPI()
 
@@ -23,6 +24,7 @@ app.include_router(auth_register_router.router, prefix="/api/v1/auth", tags=["au
 app.include_router(auth_login_router.router, prefix="/api/v1/auth", tags=["auth"])
 app.include_router(auth_forgot_password_router.router, prefix="/api/v1/auth", tags=["auth"])
 app.include_router(auth_reset_password_router.router, prefix="/api/v1/auth", tags=["auth"])
+app.include_router(summaries_router, prefix="/api/v1", tags=["summaries"]) # Add this line
 
 @app.get("/api/v1/health")
 def health_check():

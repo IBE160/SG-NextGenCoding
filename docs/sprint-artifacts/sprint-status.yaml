@@ -48,7 +48,7 @@ development_status:
   2-4-password-reset-email-verification: done
   epic-2-retrospective: optional
   epic-3: contexted
-  3-1-file-upload-interface: ready-for-dev
+  3-1-file-upload-interface: review
   3-2-text-extraction-from-uploaded-files: ready-for-dev
   3-3-ai-summary-generation-integration: ready-for-dev
   3-4-display-summary-in-user-interface: ready-for-dev
