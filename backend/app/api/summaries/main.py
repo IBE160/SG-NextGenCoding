@@ -14,7 +14,7 @@ from app.db.session import get_session
 from app.db.models import Document
 from app.schemas.document import DocumentUploadRequestFields, DocumentUploadResponse
 from app.core.config import settings # Assuming settings will contain Supabase client config
-from app.supabase_client import get_supabase_client # Assuming a Supabase client setup
+from app.supabase_client import get_supabase_admin_client # Import admin client for storage operations
 from app.dependencies import get_current_user # Import the new dependency
 
 router = APIRouter()
@@ -41,7 +41,7 @@ async def upload_document_endpoint(
     file: UploadFile = File(...),
     user_id: Optional[UUID] = Form(None), # User ID from frontend (can be None for guest)
     session: AsyncSession = Depends(get_session),
-    supabase = Depends(get_supabase_client),
+    supabase_admin = Depends(get_supabase_admin_client),  # Use admin client for storage operations
     current_user: Optional[User] = Depends(get_current_user) # Authenticated user from token
 ):
     # --- Security: Validate user_id ---
@@ -91,7 +91,7 @@ async def upload_document_endpoint(
 
         # Upload file to Supabase Storage
         # The `upload` method expects bytes for the file content
-        upload_response = await supabase.storage.from_("user_documents").upload(
+        upload_response = await supabase_admin.storage.from_("user_documents").upload(
             path=storage_path,
             file=file_content,
             file_options={"content-type": file.content_type}

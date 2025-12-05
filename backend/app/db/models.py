@@ -16,7 +16,7 @@ class Profile(SQLModel, table=True):
 
 class Document(SQLModel, table=True):
     id: Optional[UUID] = Field(default_factory=uuid4, primary_key=True)
-    user_id: UUID = Field(foreign_key="profile.user_id", nullable=False) # Referencing profile.user_id as per context
+    user_id: Optional[UUID] = Field(foreign_key="profile.user_id", nullable=True) # Optional for guest users
     filename: str = Field(nullable=False)
     file_type: str = Field(nullable=False) # e.g., 'application/pdf', 'text/plain'
     storage_path: str = Field(nullable=False) # Path in Supabase Storage

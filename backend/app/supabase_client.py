@@ -14,6 +14,25 @@ def get_supabase_client() -> Client:
         
     return create_client(url, key)
 
+
+def get_supabase_admin_client() -> Client:
+    """
+    Get a Supabase client with admin (service role) credentials.
+    Used for operations that require elevated privileges (like file uploads to storage).
+    
+    Note: This returns a synchronous client which is fine for FastAPI dependencies.
+    The Supabase Python SDK's storage operations will work with async endpoints.
+    """
+    url: str = settings.SUPABASE_URL
+    # Use JWT_SECRET as the service role key for admin operations
+    key: str = settings.SUPABASE_JWT_SECRET.strip()  # Strip whitespace that might be in .env
+    
+    if not url or not key:
+        raise ValueError("Supabase admin credentials not found in environment variables.")
+    
+    return create_client(url, key)
+
+
 def check_supabase_connection():
     try:
         client = get_supabase_client()
