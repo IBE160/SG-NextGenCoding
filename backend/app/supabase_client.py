@@ -1,5 +1,5 @@
 from supabase import create_client, Client
-from backend.app.core.config import settings
+from app.core.config import settings
 
 def get_supabase_client() -> Client:
     # Use settings from config.py

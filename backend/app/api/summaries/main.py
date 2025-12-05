@@ -8,11 +8,11 @@ import os
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 
-from backend.app.db.session import get_session
-from backend.app.db.models import Document
-from backend.app.schemas.document import DocumentUploadRequestFields, DocumentUploadResponse
-from backend.app.core.config import settings # Assuming settings will contain Supabase client config
-from backend.app.supabase_client import get_supabase_client # Assuming a Supabase client setup
+from app.db.session import get_session
+from app.db.models import Document
+from app.schemas.document import DocumentUploadRequestFields, DocumentUploadResponse
+from app.core.config import settings # Assuming settings will contain Supabase client config
+from app.supabase_client import get_supabase_client # Assuming a Supabase client setup
 
 router = APIRouter()
 
