@@ -4,7 +4,7 @@ from app.core.config import settings
 def get_supabase_client() -> Client:
     # Use settings from config.py
     url: str = settings.SUPABASE_URL
-    key: str = settings.SUPABASE_KEY
+    key: str = settings.SUPABASE_ANON_KEY
     
     if not url or not key:
         # This check is redundant if settings are properly loaded via Pydantic,

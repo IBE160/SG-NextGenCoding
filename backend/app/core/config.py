@@ -6,7 +6,7 @@ import os
 class Settings(BaseSettings):
     # Supabase credentials
     SUPABASE_URL: str
-    SUPABASE_KEY: str
+    SUPABASE_ANON_KEY: str
     # SUPABASE_SERVICE_ROLE_KEY: str # Only if needed for specific backend admin operations
     SUPABASE_JWT_SECRET: str # Needed for validating JWTs from Supabase Auth
 
