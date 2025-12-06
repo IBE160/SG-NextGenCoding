@@ -45,7 +45,7 @@ async def call_gemini_summarize(prompt: str, text: str) -> str:
 
     try:
         logger.info("Initializing Gemini model...")
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        model = genai.GenerativeModel('models/gemini-2.5-flash')
 
         logger.info("Generating content from Gemini model...")
         full_prompt = f"{prompt}\n\n{text}"

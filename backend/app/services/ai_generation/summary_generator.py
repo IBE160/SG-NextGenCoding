@@ -64,7 +64,7 @@ async def generate_summary(
             document_id=document_id,
             user_id=user_id,
             summary_text=summary_text,
-            ai_model="gemini-1.5-flash" # or get from config
+            ai_model="gemini-1.5-flash"
         )
         session.add(new_summary)
 

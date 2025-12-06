@@ -10,11 +10,16 @@ from .api.auth import login as auth_login_router
 from .api.auth import forgot_password as auth_forgot_password_router
 from .api.auth import reset_password as auth_reset_password_router
 from .api.summaries.main import router as summaries_router # Add this line
-from .db.session import get_session
+from .db.session import get_session, create_db_and_tables
 from .core.config import settings
 import os
 
 app = FastAPI()
+
+@app.on_event("startup")
+async def startup_event():
+    """Initialize database tables on startup."""
+    await create_db_and_tables()
 
 app.add_middleware(
     CORSMiddleware,
