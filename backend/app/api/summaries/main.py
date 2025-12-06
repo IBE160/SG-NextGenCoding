@@ -41,7 +41,8 @@ async def run_text_extraction(
     storage_path: str,
     filename: str,
     user_id: Optional[UUID],
-    supabase_admin
+    supabase_admin,
+    db_session: AsyncSession,
 ):
     """
     Background task to extract text from an uploaded file and then trigger summary generation.
@@ -57,43 +58,36 @@ async def run_text_extraction(
         # 2. Extract text from the file content
         extracted_text = extract_text_from_file(file_content, filename)
 
-        # 3. Update the document in the database with a new session
-        async for db_session in get_session():
-            try:
-                document = await db_session.get(Document, document_id)
-                if document:
-                    document.raw_content = extracted_text
-                    document.status = "text-extracted"
-                    await db_session.commit()
-                    await db_session.refresh(document)
-                    logger.info(f"Successfully extracted text and updated status for document_id: {document_id}")
-                    
-                    # 4. If text extraction is successful, trigger summary generation
-                    if user_id and extracted_text:
-                        logger.info(f"Triggering summary generation for document_id: {document_id}")
-                        await generate_summary(
-                            document_id=document.id,
-                            user_id=user_id,
-                            extracted_text=extracted_text,
-                            session=db_session # pass the existing session
-                        )
-                else:
-                    logger.error(f"Document with id {document_id} not found for updating after text extraction.")
-            finally:
-                # Make sure to close the session
-                await db_session.close()
+        # 3. Update the document in the database with the existing session
+        document = await db_session.get(Document, document_id)
+        if document:
+            document.raw_content = extracted_text
+            document.status = "text-extracted"
+            await db_session.commit()
+            await db_session.refresh(document)
+            logger.info(f"Successfully extracted text and updated status for document_id: {document_id}")
+            
+            # 4. If text extraction is successful, trigger summary generation
+            if extracted_text:
+                logger.info(f"Triggering summary generation for document_id: {document_id}")
+                # Use user_id if available, otherwise use a placeholder for guest uploads
+                summary_user_id = user_id if user_id else document_id  # Use document_id as fallback for guest users
+                await generate_summary(
+                    document_id=document.id,
+                    user_id=summary_user_id,
+                    extracted_text=extracted_text,
+                    session=db_session # pass the existing session
+                )
+        else:
+            logger.error(f"Document with id {document_id} not found for updating after text extraction.")
 
     except Exception as e:
         logger.error(f"Error during text extraction for document_id: {document_id}. Error: {e}", exc_info=True)
         try:
-            async for db_session in get_session():
-                try:
-                    document = await db_session.get(Document, document_id)
-                    if document:
-                        document.status = "extraction-failed"
-                        await db_session.commit()
-                finally:
-                    await db_session.close()
+            document = await db_session.get(Document, document_id)
+            if document:
+                document.status = "extraction-failed"
+                await db_session.commit()
         except Exception as db_error:
             logger.error(f"Failed to update document status to extraction-failed: {db_error}")
 
@@ -188,7 +182,8 @@ async def upload_document_endpoint(
                 storage_path=db_document.storage_path,
                 filename=db_document.filename,
                 user_id=effective_user_id,
-                supabase_admin=supabase_admin
+                supabase_admin=supabase_admin,
+                db_session=session
             )
         else:
             logger.warning(f"Skipping text extraction for document {document_id} - not saved to database")

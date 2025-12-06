@@ -27,8 +27,8 @@ async def generate_summary(
     # 1. Update document status to 'summarizing'
     try:
         statement = select(Document).where(Document.id == document_id)
-        results = await session.exec(statement)
-        document = results.one_or_none()
+        results = await session.execute(statement)
+        document = results.scalar_one_or_none()
 
         if not document:
             logger.error(f"Document with id {document_id} not found.")
@@ -82,8 +82,8 @@ async def generate_summary(
             # We need to ensure 'document' is available or re-fetch it
             if not document:
                 statement = select(Document).where(Document.id == document_id)
-                results = await session.exec(statement)
-                document = results.one_or_none()
+                results = await session.execute(statement)
+                document = results.scalar_one_or_none()
 
             if document:
                 document.status = "summary-failed"
