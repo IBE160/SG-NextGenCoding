@@ -26,6 +26,19 @@ class Document(SQLModel, table=True):
     file_type: str = Field(sa_column=Column(Text, nullable=False))
     storage_path: str = Field(sa_column=Column(Text, nullable=False))
     raw_content: Optional[str] = Field(default=None, sa_column=Column(Text))
+    # Status can be: uploaded, processing, processed, failed, summarizing, summarized, summary-failed
     status: str = Field(default="uploaded", sa_column=Column(Text, nullable=False))
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class Summary(SQLModel, table=True):
+    __tablename__ = "summaries"
+
+    id: Optional[UUID] = Field(default_factory=uuid4, primary_key=True)
+    document_id: UUID = Field(foreign_key="documents.id")
+    user_id: UUID = Field(foreign_key="profiles.user_id")
+    summary_text: str = Field(sa_column=Column(Text, nullable=False))
+    generated_at: datetime = Field(default_factory=datetime.utcnow)
+    ai_model: str = Field(default="gemini-1.5-flash", sa_column=Column(Text, nullable=False))
+    feedback: Optional[str] = Field(default=None, sa_column=Column(Text))

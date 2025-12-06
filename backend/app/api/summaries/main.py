@@ -18,6 +18,7 @@ from app.core.config import settings
 from app.supabase_client import get_supabase_admin_client
 from app.dependencies import get_current_user
 from app.services.ai_generation.text_extractor import extract_text_from_file
+from app.services.ai_generation.summary_generator import generate_summary
 
 router = APIRouter()
 
@@ -39,12 +40,16 @@ async def run_text_extraction(
     document_id: UUID,
     storage_path: str,
     filename: str,
+    user_id: Optional[UUID],
     supabase_admin
 ):
     """
-    Background task to extract text from an uploaded file.
+    Background task to extract text from an uploaded file and then trigger summary generation.
     """
     logger.info(f"Starting text extraction for document_id: {document_id}")
+    extracted_text = None
+    document = None
+    
     try:
         # 1. Download the file from Supabase Storage
         file_content = supabase_admin.storage.from_("user_documents").download(storage_path)
@@ -54,25 +59,41 @@ async def run_text_extraction(
 
         # 3. Update the document in the database with a new session
         async for db_session in get_session():
-            document = await db_session.get(Document, document_id)
-            if document:
-                document.raw_content = extracted_text
-                document.status = "text-extracted"
-                await db_session.commit()
-                logger.info(f"Successfully extracted text and updated status for document_id: {document_id}")
-            else:
-                logger.error(f"Document with id {document_id} not found for updating after text extraction.")
-            break  # Exit after first (and only) session
+            try:
+                document = await db_session.get(Document, document_id)
+                if document:
+                    document.raw_content = extracted_text
+                    document.status = "text-extracted"
+                    await db_session.commit()
+                    await db_session.refresh(document)
+                    logger.info(f"Successfully extracted text and updated status for document_id: {document_id}")
+                    
+                    # 4. If text extraction is successful, trigger summary generation
+                    if user_id and extracted_text:
+                        logger.info(f"Triggering summary generation for document_id: {document_id}")
+                        await generate_summary(
+                            document_id=document.id,
+                            user_id=user_id,
+                            extracted_text=extracted_text,
+                            session=db_session # pass the existing session
+                        )
+                else:
+                    logger.error(f"Document with id {document_id} not found for updating after text extraction.")
+            finally:
+                # Make sure to close the session
+                await db_session.close()
 
     except Exception as e:
         logger.error(f"Error during text extraction for document_id: {document_id}. Error: {e}", exc_info=True)
         try:
             async for db_session in get_session():
-                document = await db_session.get(Document, document_id)
-                if document:
-                    document.status = "extraction-failed"
-                    await db_session.commit()
-                break  # Exit after first (and only) session
+                try:
+                    document = await db_session.get(Document, document_id)
+                    if document:
+                        document.status = "extraction-failed"
+                        await db_session.commit()
+                finally:
+                    await db_session.close()
         except Exception as db_error:
             logger.error(f"Failed to update document status to extraction-failed: {db_error}")
 
@@ -139,7 +160,7 @@ async def upload_document_endpoint(
         # TODO: Implement automatic profile creation on user registration
         db_document = Document(
             id=document_id,
-            user_id=None,  # Bypass FK constraint - will implement proper profile management later
+            user_id=effective_user_id,
             filename=file.filename,
             file_type=file.content_type,
             storage_path=storage_path,
@@ -166,6 +187,7 @@ async def upload_document_endpoint(
                 document_id=db_document.id,
                 storage_path=db_document.storage_path,
                 filename=db_document.filename,
+                user_id=effective_user_id,
                 supabase_admin=supabase_admin
             )
         else:
@@ -184,4 +206,38 @@ async def upload_document_endpoint(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An unexpected error occurred: {str(e)}"
+        )
+
+@router.get("/documents/{document_id}/status")
+async def get_document_status(
+    document_id: UUID,
+    session: AsyncSession = Depends(get_session)
+):
+    """
+    Retrieves the status of a document.
+    """
+    logger.info(f"Fetching status for document_id: {document_id}")
+    
+    try:
+        statement = select(Document).where(Document.id == document_id)
+        results = await session.exec(statement)
+        document = results.one_or_none()
+
+        if not document:
+            logger.warning(f"Status query for non-existent document_id: {document_id}")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Document not found."
+            )
+        
+        logger.info(f"Status for document {document_id} is '{document.status}'")
+        return {"document_id": document_id, "status": document.status}
+
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        logger.error(f"Error fetching status for document_id: {document_id}. Error: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An unexpected error occurred while fetching document status."
         )

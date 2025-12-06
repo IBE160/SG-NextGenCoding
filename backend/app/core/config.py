@@ -10,6 +10,9 @@ class Settings(BaseSettings):
     SUPABASE_SERVICE_ROLE_KEY: str  # Required for admin operations on storage
     SUPABASE_JWT_SECRET: str # Needed for validating JWTs from Supabase Auth
 
+    # Gemini API Key
+    GEMINI_API_KEY: str
+
     # Database URL
     DATABASE_URL: str
 
