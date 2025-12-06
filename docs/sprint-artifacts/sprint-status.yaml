@@ -51,7 +51,7 @@ development_status:
   3-1-file-upload-interface: done
   3-2-text-extraction-from-uploaded-files: done
   3-3-ai-summary-generation-integration: done
-  3-4-display-summary-in-user-interface: ready-for-dev
+  3-4-display-summary-in-user-interface: in-progress
   epic-3-retrospective: optional
   epic-4: backlog
   4-1-ai-quiz-generation-integration: backlog
