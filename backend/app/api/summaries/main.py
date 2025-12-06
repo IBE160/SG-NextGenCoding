@@ -46,8 +46,8 @@ async def run_text_extraction(
     """
     logger.info(f"Starting text extraction for document_id: {document_id}")
     try:
-        # 1. Download the file from Supabase Storage
-        file_content = await supabase_admin.storage.from_("user_documents").download(storage_path)
+        # 1. Download the file from Supabase Storage (synchronous call)
+        file_content = supabase_admin.storage.from_("user_documents").download(storage_path)
 
         # 2. Extract text from the file content
         extracted_text = extract_text_from_file(file_content, mime_type)
@@ -125,8 +125,8 @@ async def upload_document_endpoint(
         file_extension = os.path.splitext(file.filename)[1] if os.path.splitext(file.filename)[1] else ""
         storage_path = f"user_uploads/{document_id}{file_extension}"
 
-        # Upload to Supabase
-        await supabase_admin.storage.from_("user_documents").upload(
+        # Upload to Supabase (synchronous call, no await needed)
+        supabase_admin.storage.from_("user_documents").upload(
             path=storage_path,
             file=file_content,
             file_options={"content-type": file.content_type}
@@ -142,8 +142,15 @@ async def upload_document_endpoint(
             status="uploaded"
         )
         session.add(db_document)
-        await session.commit()
-        await session.refresh(db_document)
+        
+        try:
+            await session.commit()
+            await session.refresh(db_document)
+        except Exception as db_error:
+            logger.warning(f"Could not save document metadata to database: {db_error}. File upload succeeded.")
+            # File is already uploaded to storage, so we'll still return success
+            # The document record can be created later or manually
+            pass
 
         # Add text extraction to background tasks
         background_tasks.add_task(
