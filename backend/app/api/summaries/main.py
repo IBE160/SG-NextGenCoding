@@ -52,7 +52,7 @@ async def run_text_extraction(
     
     try:
         # 1. Download the file from Supabase Storage
-        file_content = supabase_admin.storage.from_("user_documents").download(storage_path)
+        file_content = await supabase_admin.storage.from_("user_documents").download(storage_path)
 
         # 2. Extract text from the file content
         extracted_text = extract_text_from_file(file_content, filename)

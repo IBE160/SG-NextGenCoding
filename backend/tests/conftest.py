@@ -18,5 +18,8 @@ if not os.getenv("SUPABASE_KEY"):
     os.environ["SUPABASE_KEY"] = "test_key"
 if not os.getenv("SUPABASE_SERVICE_ROLE_KEY"):
     os.environ["SUPABASE_SERVICE_ROLE_KEY"] = "test_service_key"
+if not os.getenv("GEMINI_API_KEY"):
+    # Set a test API key - tests should mock the actual API calls
+    os.environ["GEMINI_API_KEY"] = "test_gemini_api_key_for_testing"
 
 # Add pytest fixtures here if needed

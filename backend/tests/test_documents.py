@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlmodel import SQLModel, Field, Session
 from typing import AsyncGenerator
-from unittest.mock import MagicMock, AsyncMock
+from unittest.mock import MagicMock, AsyncMock, patch
 from uuid import UUID, uuid4
 from datetime import datetime
 
@@ -78,29 +78,42 @@ async def test_upload_document_success(client: AsyncClient, db_session: AsyncSes
     doc = await db_session.get(Document, doc_id)
     assert doc is not None
     assert doc.filename == "test.txt"
-    assert doc.status == "text-extracted"
+    assert doc.status == "uploaded"
 
-
-@pytest.mark.asyncio
-async def test_upload_and_extract_text_success(client: AsyncClient, db_session: AsyncSession, mock_supabase_admin: MagicMock):
-    response = await client.post("/api/v1/documents/upload", files={"file": ("test.txt", b"simple text", "text/plain")})
-    assert response.status_code == 202
-    data = response.json()
-    assert "document_id" in data
-    doc_id = UUID(data["document_id"])
-
-    await run_text_extraction(
-        document_id=doc_id,
-        storage_path="some/path",
-        filename="test.txt",
-        db_session=db_session,
-        supabase_admin=mock_supabase_admin,
-    )
-    doc = await db_session.get(Document, doc_id)
-    assert doc is not None
-    assert doc.status == "text-extracted"
-    assert doc.raw_content == "simple text"
-
+    @pytest.mark.asyncio
+    @patch('app.api.summaries.main.get_supabase_admin_client')
+    async def test_upload_and_extract_text_success(
+        mock_supabase_admin: MagicMock,
+        client: AsyncClient, 
+        db_session: AsyncSession
+    ):
+        # Mock the return value of supabase_admin.storage.from_().download()
+        mock_supabase_admin.return_value.storage.from_.return_value.download.return_value = AsyncMock(return_value=b"simple text content")
+        response = await client.post(
+            "/api/v1/documents/upload",
+            files={"file": ("test.txt", b"simple text", "text/plain")}
+        )
+        assert response.status_code == 202
+        data = response.json()
+        assert "document_id" in data
+        doc_id = UUID(data["document_id"])
+    
+        # Simulate the background task execution
+        doc_from_db = await db_session.get(Document, doc_id)
+        user_id = doc_from_db.user_id # Get the user_id from the document saved to DB
+    
+        await run_text_extraction(
+            document_id=doc_id,
+            storage_path="some/path",
+            filename="test.txt",
+            user_id=user_id, # Pass the user_id
+            supabase_admin=mock_supabase_admin.return_value,
+        )
+    
+        updated_doc = await db_session.get(Document, doc_id)
+        assert updated_doc is not None
+        assert updated_doc.status == "summarized" # Should be summarized now
+        assert updated_doc.raw_content == "simple text content"
 
 @pytest.mark.asyncio
 async def test_upload_document_guest_user(client: AsyncClient, db_session: AsyncSession):

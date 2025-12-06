@@ -33,13 +33,13 @@ def test_login_valid_credentials(mock_supabase_client):
     Test that the login endpoint returns 200 and a token for valid credentials.
     """
     mock_supabase_client.auth.sign_in_with_password.return_value = MagicMock(
-        session=MagicMock(access_token="test_token")
+        session=MagicMock(access_token="test_token", refresh_token="test_refresh_token"),
+        user=MagicMock(id="b0e6a1d8-5b1f-4c3a-8f1a-0e9e9e9e9e9e", email="test@example.com")
     )
 
     response = client.post(
         "/api/v1/auth/login",
         json={"email": "test@example.com", "password": "password"}
     )
-
     assert response.status_code == 200
-    assert response.json() == {"access_token": "test_token", "token_type": "bearer"}
+    assert response.json() == {"access_token": "test_token", "token_type": "bearer", "refresh_token": "test_refresh_token"}
