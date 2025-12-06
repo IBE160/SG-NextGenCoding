@@ -63,15 +63,6 @@ def login_user(
             status_code=status.HTTP_200_OK
         )
 
-        # Manually set the cookie header (instead of using fastapi_response.set_cookie)
-        # This gives full control over the header string
-        cookie_value = f"{'access_token'}={access_token}; Path=/; Max-Age={expires_in}; HttpOnly; SameSite=Lax"
-        if is_secure:
-            cookie_value += "; Secure"
-        
-        fastapi_response.headers["Set-Cookie"] = cookie_value
-
-
         return fastapi_response
     except AuthApiError as e:
         logging.error(f"AuthApiError in login: {e}, type: {type(e)}")

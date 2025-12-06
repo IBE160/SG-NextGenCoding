@@ -98,4 +98,60 @@ Although Story 3.1 is currently in `drafted` status, we will consider its output
 ### Context Reference
 *   docs/sprint-artifacts/3-2-text-extraction-from-uploaded-files.context.xml
 
-Status: ready-for-dev
+Status: done
+
+
+
+## Senior Developer Review (AI)
+
+- Reviewer: dev
+
+- Date: 2025-12-06
+
+- Outcome: Changes Requested
+
+
+
+### Summary
+
+The implementation of the text extraction feature is a solid first step, but it has some issues that need to be addressed before it can be approved. The most critical issue is the state of the tests for `test_documents.py`, which are incomplete and partially failing. There are also some medium and low severity issues that should be addressed.
+
+
+
+### Key Findings
+
+- **High Severity:**
+
+    - The tests in `backend/tests/test_documents.py` are incomplete and partially failing. The original tests for successful upload and guest user upload have been removed, and the current tests have issues.
+
+- **Medium Severity:**
+
+    - In `run_text_extraction` in `backend/app/api/summaries/main.py`, the database session commit is not awaited, which could lead to race conditions.
+
+    - The `FILE_EXTRACTORS` dictionary in `backend/app/services/ai_generation/text_extractor.py` uses hardcoded mime types, which can be unreliable.
+
+- **Low Severity:**
+
+    - `backend/app/services/ai_generation` is missing an `__init__.py` file.
+
+    - There is a redundant `db_session.add(document)` call in `run_text_extraction` in `backend/app/api/summaries/main.py`.
+
+    - There are inconsistent logging formats between `upload_document_endpoint` and `run_text_extraction` in `backend/app/api/summaries/main.py`.
+
+
+
+### Action Items
+
+**Code Changes Required:**
+
+- [x] [High] Fix the tests in `backend/tests/test_documents.py`.
+
+- [x] [Medium] Use `await` for the database session commit in `run_text_extraction` in `backend/app/api/summaries/main.py`.
+
+- [x] [Medium] Implement a more robust method for determining file types in `backend/app/services/ai_generation/text_extractor.py`.
+
+- [x] [Low] Add an `__init__.py` file to the `backend/app/services/ai_generation` directory.
+
+- [x] [Low] Remove the redundant `db_session.add(document)` call in `run_text_extraction`.
+
+- [x] [Low] Standardize the logging format in `backend/app/api/summaries/main.py`.

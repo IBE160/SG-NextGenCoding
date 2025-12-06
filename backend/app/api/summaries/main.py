@@ -1,6 +1,7 @@
 # backend/app/api/summaries/main.py
 
 import logging
+import asyncio
 from fastapi import APIRouter, UploadFile, File, Form, Depends, HTTPException, status, BackgroundTasks
 from typing import Optional
 from uuid import UUID, uuid4
@@ -37,7 +38,7 @@ MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 async def run_text_extraction(
     document_id: UUID,
     storage_path: str,
-    mime_type: str,
+    filename: str,
     db_session: AsyncSession,
     supabase_admin
 ):
@@ -46,18 +47,17 @@ async def run_text_extraction(
     """
     logger.info(f"Starting text extraction for document_id: {document_id}")
     try:
-        # 1. Download the file from Supabase Storage (synchronous call)
-        file_content = supabase_admin.storage.from_("user_documents").download(storage_path)
+        # 1. Download the file from Supabase Storage
+        file_content = await supabase_admin.storage.from_("user_documents").download(storage_path)
 
         # 2. Extract text from the file content
-        extracted_text = extract_text_from_file(file_content, mime_type)
+        extracted_text = extract_text_from_file(file_content, filename)
 
         # 3. Update the document in the database
         document = await db_session.get(Document, document_id)
         if document:
             document.raw_content = extracted_text
             document.status = "text-extracted"
-            db_session.add(document)
             await db_session.commit()
             logger.info(f"Successfully extracted text and updated status for document_id: {document_id}")
         else:
@@ -69,7 +69,6 @@ async def run_text_extraction(
             document = await db_session.get(Document, document_id)
             if document:
                 document.status = "extraction-failed"
-                db_session.add(document)
                 await db_session.commit()
         except Exception as db_error:
             logger.error(f"Failed to update document status to extraction-failed: {db_error}")
@@ -96,7 +95,7 @@ async def upload_document_endpoint(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Cannot upload documents for another authenticated user."
             )
-        effective_user_id = UUID(current_user.id)
+        effective_user_id = current_user.id
     elif user_id:
         logger.warning(f"Unauthenticated user attempted to upload with user_id {user_id}")
         raise HTTPException(
@@ -157,7 +156,7 @@ async def upload_document_endpoint(
             run_text_extraction,
             document_id=db_document.id,
             storage_path=db_document.storage_path,
-            mime_type=db_document.file_type,
+            filename=db_document.filename,
             db_session=session,
             supabase_admin=supabase_admin
         )

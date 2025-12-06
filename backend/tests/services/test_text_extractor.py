@@ -1,6 +1,7 @@
 import io
 import pytest
 from pathlib import Path
+import pypdf
 from app.services.ai_generation.text_extractor import (
     extract_text_from_txt,
     extract_text_from_docx,
@@ -44,7 +45,7 @@ def test_extract_text_from_file_txt():
     file_path = TEST_FILES_DIR / "test.txt"
     with open(file_path, "rb") as f:
         content = f.read()
-    text = extract_text_from_file(content, "text/plain")
+    text = extract_text_from_file(content, "test.txt")
     assert "This is a test text file." in text
 
 
@@ -54,7 +55,7 @@ def test_extract_text_from_file_docx():
     with open(file_path, "rb") as f:
         content = f.read()
     text = extract_text_from_file(
-        content, "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        content, "test.docx"
     )
     assert "This is a test docx file." in text
 
@@ -64,18 +65,18 @@ def test_extract_text_from_file_pdf():
     file_path = TEST_FILES_DIR / "test.pdf"
     with open(file_path, "rb") as f:
         content = f.read()
-    text = extract_text_from_file(content, "application/pdf")
+    text = extract_text_from_file(content, "test.pdf")
     assert "This is a test pdf file." in text
 
 
 def test_extract_text_from_unsupported_file():
     """Tests the main extractor with an unsupported file type."""
-    text = extract_text_from_file(b"some content", "image/jpeg")
+    text = extract_text_from_file(b"some content", "image.jpeg")
     assert text is None
 
 
 def test_extract_text_from_corrupted_file():
     """Tests the main extractor with a corrupted file."""
-    with pytest.raises(Exception):
-        extract_text_from_file(b"corrupted content", "application/pdf")
+    with pytest.raises(pypdf.errors.PdfStreamError):
+        extract_text_from_file(b"corrupted content", "test.pdf")
 

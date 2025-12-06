@@ -1,4 +1,5 @@
 import io
+import mimetypes
 from typing import Callable, Dict, Union
 
 import docx
@@ -34,18 +35,19 @@ FILE_EXTRACTORS: Dict[str, Callable[[io.BytesIO], str]] = {
 
 def extract_text_from_file(
     file_content: bytes,
-    mime_type: str
+    filename: str
 ) -> Union[str, None]:
     """
     Extracts text from a file based on its mime type.
 
     Args:
         file_content: The content of the file in bytes.
-        mime_type: The mime type of the file.
+        filename: The name of the file.
 
     Returns:
         The extracted text as a string, or None if the mime type is not supported.
     """
+    mime_type, _ = mimetypes.guess_type(filename)
     extractor = FILE_EXTRACTORS.get(mime_type)
     if not extractor:
         # Potentially raise a ValueError for unsupported mime types

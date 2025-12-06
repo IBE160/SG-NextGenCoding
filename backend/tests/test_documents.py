@@ -11,9 +11,10 @@ from datetime import datetime
 
 from app.main import app as fastapi_app
 from app.db.session import get_session
-from app.db.models import Document, Profile
+from app.db.models import Document
 from app.supabase_client import get_supabase_admin_client
 from app.api.summaries.main import run_text_extraction
+from app.dependencies import get_current_user
 
 # Define local User model for testing to avoid circular dependencies with auth schema
 class User(SQLModel, table=True):
@@ -68,23 +69,75 @@ async def test_upload_document_oversized_file(client: AsyncClient):
     assert response.status_code == 400
 
 @pytest.mark.asyncio
-async def test_upload_document_success(client: AsyncClient):
+async def test_upload_document_success(client: AsyncClient, db_session: AsyncSession):
     response = await client.post("/api/v1/documents/upload", files={"file": ("test.txt", b"content", "text/plain")})
     assert response.status_code == 202
     data = response.json()
     assert "document_id" in data
+    doc_id = UUID(data["document_id"])
+    doc = await db_session.get(Document, doc_id)
+    assert doc is not None
+    assert doc.filename == "test.txt"
+    assert doc.status == "text-extracted"
+
 
 @pytest.mark.asyncio
-async def test_upload_and_extract_text_success(client: AsyncClient):
+async def test_upload_and_extract_text_success(client: AsyncClient, db_session: AsyncSession, mock_supabase_admin: MagicMock):
     response = await client.post("/api/v1/documents/upload", files={"file": ("test.txt", b"simple text", "text/plain")})
     assert response.status_code == 202
     data = response.json()
     assert "document_id" in data
+    doc_id = UUID(data["document_id"])
+
+    await run_text_extraction(
+        document_id=doc_id,
+        storage_path="some/path",
+        filename="test.txt",
+        db_session=db_session,
+        supabase_admin=mock_supabase_admin,
+    )
+    doc = await db_session.get(Document, doc_id)
+    assert doc is not None
+    assert doc.status == "text-extracted"
+    assert doc.raw_content == "simple text"
+
 
 @pytest.mark.asyncio
-async def test_upload_document_guest_user(client: AsyncClient):
+async def test_upload_document_guest_user(client: AsyncClient, db_session: AsyncSession):
     response = await client.post("/api/v1/documents/upload", files={"file": ("guest.txt", b"content", "text/plain")})
     assert response.status_code == 202
     data = response.json()
     assert "document_id" in data
     assert "message" in data
+    doc_id = UUID(data["document_id"])
+    doc = await db_session.get(Document, doc_id)
+    assert doc is not None
+    assert doc.user_id is None
+
+
+@pytest.mark.asyncio
+async def test_upload_document_authenticated_user(client: AsyncClient, db_session: AsyncSession):
+    user_id = uuid4()
+    mock_user = MagicMock()
+    mock_user.id = user_id
+
+    async def override_get_current_user() -> MagicMock:
+        return mock_user
+
+    fastapi_app.dependency_overrides[get_current_user] = override_get_current_user
+
+    response = await client.post(
+        "/api/v1/documents/upload",
+        files={"file": ("test.txt", b"content", "text/plain")},
+        headers={"Authorization": "Bearer fake-token"}
+    )
+    assert response.status_code == 202
+    data = response.json()
+    assert "document_id" in data
+    doc_id = UUID(data["document_id"])
+    doc = await db_session.get(Document, doc_id)
+    assert doc is not None
+    assert doc.user_id == user_id
+
+    fastapi_app.dependency_overrides.clear()
+
