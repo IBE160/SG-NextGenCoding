@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Spinner } from '@/components/ui/spinner'
 import { ArrowLeft, AlertCircle } from 'lucide-react'
+import type { Session } from '@supabase/supabase-js'
 
 type ViewState = 'loading' | 'quiz' | 'results' | 'error'
 
@@ -19,6 +20,24 @@ export default function QuizPage() {
   const quizId = params.quiz_id as string
   
   const [viewState, setViewState] = useState<ViewState>('loading')
+  const [session, setSession] = useState<Session | null>(null)
+
+  // Get session for feedback
+  useEffect(() => {
+    const getSession = async () => {
+      try {
+        const { createBrowserClient } = await import('@/utils/supabase')
+        const supabase = createBrowserClient()
+        const { data: { session } } = await supabase.auth.getSession()
+        setSession(session)
+      } catch (error) {
+        console.error('Error getting session:', error)
+      }
+    }
+    getSession()
+  }, [])
+
+  const accessToken = session?.access_token || undefined
   
   const {
     currentQuiz,
@@ -145,6 +164,7 @@ export default function QuizPage() {
         <ResultsView
           onRetakeQuiz={handleRetakeQuiz}
           onBackToDashboard={handleBackToDashboard}
+          accessToken={accessToken}
         />
       )}
     </div>

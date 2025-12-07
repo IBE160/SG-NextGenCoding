@@ -274,6 +274,7 @@ async def get_document_summary(
         logger.info(f"Successfully retrieved summary for document {document_id}")
         return {
             "document_id": document_id,
+            "summary_id": summary.id,
             "summary_text": summary.summary_text,
             "generated_at": summary.generated_at,
             "ai_model": summary.ai_model

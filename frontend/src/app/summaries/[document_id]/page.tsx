@@ -9,6 +9,7 @@ import { useSummaryStore } from '@/lib/store'
 import { getSummary, getSummaryStatus } from '@/services/documents'
 import { Button } from '@/components/ui/button'
 import { GenerateQuizButton } from '@/components/quiz'
+import { FeedbackButton } from '@/components/feedback'
 import type { Session } from '@supabase/supabase-js'
 
 const SummaryDisplayPage = () => {
@@ -83,7 +84,7 @@ const SummaryDisplayPage = () => {
           console.log('Summary completed, fetching summary...')
           const summary = await getSummary(documentId, accessToken)
           console.log('Summary received:', summary)
-          addSummary(documentId, summary.summary_text)
+          addSummary(documentId, summary.summary_text, summary.summary_id)
         } else if (statusData.status === 'failed') {
           console.log('Summary generation failed')
           setSummaryError(documentId, 'Summary generation failed.')
@@ -168,6 +169,13 @@ const SummaryDisplayPage = () => {
           accessToken={accessToken}
           numQuestions={5}
         />
+        {summaryData.summaryId && (
+          <FeedbackButton
+            contentId={summaryData.summaryId}
+            contentType="summary"
+            accessToken={accessToken}
+          />
+        )}
         <Button variant="outline" onClick={() => window.location.href = '/dashboard'}>
           Back to Dashboard
         </Button>

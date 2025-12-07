@@ -6,15 +6,17 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { QuestionCard } from './QuestionCard'
 import { useQuizStore, QuizResults, Question } from '@/lib/quizStore'
+import { FeedbackButton } from '@/components/feedback'
 import { Trophy, RotateCcw, Home, ChevronDown, ChevronUp } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface ResultsViewProps {
   onRetakeQuiz?: () => void
   onBackToDashboard?: () => void
+  accessToken?: string
 }
 
-export function ResultsView({ onRetakeQuiz, onBackToDashboard }: ResultsViewProps) {
+export function ResultsView({ onRetakeQuiz, onBackToDashboard, accessToken }: ResultsViewProps) {
   const { currentQuiz, results, userAnswers } = useQuizStore()
   const [showDetails, setShowDetails] = React.useState(false)
 
@@ -75,7 +77,14 @@ export function ResultsView({ onRetakeQuiz, onBackToDashboard }: ResultsViewProp
           </p>
 
           {/* Action buttons */}
-          <div className="flex gap-4 justify-center pt-4">
+          <div className="flex gap-4 justify-center pt-4 flex-wrap">
+            {currentQuiz && (
+              <FeedbackButton
+                contentId={currentQuiz.id}
+                contentType="quiz"
+                accessToken={accessToken}
+              />
+            )}
             {onRetakeQuiz && (
               <Button variant="outline" onClick={onRetakeQuiz}>
                 <RotateCcw className="w-4 h-4 mr-2" />

@@ -85,3 +85,16 @@ class UserAnswer(SQLModel, table=True):
     user_answer: str = Field(sa_column=Column(Text, nullable=False))
     is_correct: bool = Field(default=False)
     answered_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class Feedback(SQLModel, table=True):
+    """Feedback model for storing user feedback on AI-generated content."""
+    __tablename__ = "feedback"
+
+    id: Optional[UUID] = Field(default_factory=uuid4, primary_key=True)
+    content_id: UUID = Field(nullable=False)  # ID of the summary or quiz
+    content_type: str = Field(sa_column=Column(Text, nullable=False))  # 'summary' or 'quiz'
+    user_id: Optional[UUID] = Field(default=None)  # Optional for guest users
+    rating: int = Field(ge=1, le=5)  # 1-5 star rating
+    comment: Optional[str] = Field(default=None, sa_column=Column(Text))
+    created_at: datetime = Field(default_factory=datetime.utcnow)

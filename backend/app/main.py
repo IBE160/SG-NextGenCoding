@@ -11,6 +11,7 @@ from .api.auth import forgot_password as auth_forgot_password_router
 from .api.auth import reset_password as auth_reset_password_router
 from .api.summaries.main import router as summaries_router
 from .api.quizzes.main import router as quizzes_router
+from .api.feedback.main import router as feedback_router
 from .db.session import get_session, create_db_and_tables
 from .core.config import settings
 import os
@@ -36,6 +37,7 @@ app.include_router(auth_forgot_password_router.router, prefix="/api/v1/auth", ta
 app.include_router(auth_reset_password_router.router, prefix="/api/v1/auth", tags=["auth"])
 app.include_router(summaries_router, prefix="/api/v1", tags=["summaries"])
 app.include_router(quizzes_router, prefix="/api/v1", tags=["quizzes"])
+app.include_router(feedback_router, prefix="/api/v1", tags=["feedback"])
 
 @app.get("/api/v1/health")
 def health_check():
