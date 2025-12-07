@@ -149,13 +149,23 @@ const SummaryDisplayPage = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="mb-4 text-2xl font-bold">Summary</h1>
-      <div className="prose lg:prose-xl">
+      <div className="mb-4 flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Summary</h1>
+        <Button variant="outline" onClick={() => window.location.href = '/dashboard'}>
+          ← Back to Dashboard
+        </Button>
+      </div>
+      <div className="prose lg:prose-xl dark:prose-invert">
         <ReactMarkdown>{summaryData.text}</ReactMarkdown>
       </div>
-      <CopyToClipboard text={summaryData.text} onCopy={() => setCopied(true)}>
-        <Button className="mt-4">{copied ? 'Copied!' : 'Copy Summary'}</Button>
-      </CopyToClipboard>
+      <div className="mt-4 flex gap-2">
+        <CopyToClipboard text={summaryData.text} onCopy={() => setCopied(true)}>
+          <Button>{copied ? 'Copied!' : 'Copy Summary'}</Button>
+        </CopyToClipboard>
+        <Button variant="outline" onClick={() => window.location.href = '/dashboard'}>
+          Back to Dashboard
+        </Button>
+      </div>
     </div>
   )
 }
