@@ -31,7 +31,7 @@ async def test_call_gemini_summarize_success(mock_genai):
     
     # Assert
     assert summary == "This is a summary."
-    mock_genai.GenerativeModel.assert_called_once_with('gemini-1.5-flash')
+    mock_genai.GenerativeModel.assert_called_once_with('models/gemini-2.5-flash')
     mock_model.generate_content.assert_called_once_with("prompt\n\ntext")
 
 @patch('app.services.ai_generation.gemini_client.genai')

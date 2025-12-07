@@ -97,9 +97,8 @@ async def test_upload_and_summarize_success(
     mock_gemini.return_value = "This is a test summary of the document content."
     
     # Mock the return value of supabase_admin.storage.from_().download()
-    mock_download = AsyncMock()
-    mock_download.return_value = b"simple text content"
-    mock_supabase_admin.return_value.storage.from_.return_value.download = mock_download
+    # Use a regular function that returns bytes directly (not async)
+    mock_supabase_admin.return_value.storage.from_.return_value.download = MagicMock(return_value=b"simple text content")
 
     user_id = uuid4()
     mock_user = MagicMock()
