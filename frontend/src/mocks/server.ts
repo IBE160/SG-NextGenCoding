@@ -21,4 +21,5 @@ import { handlers } from './handlers'
 
 server = setupServer(...handlers)
 
-export { server }
+// Export as both 'server' and 'worker' for compatibility with different test imports
+export { server, server as worker }

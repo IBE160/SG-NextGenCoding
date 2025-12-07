@@ -23,17 +23,23 @@ describe('LoginPage', () => {
   ;(useRouter as jest.Mock).mockReturnValue(mockRouter)
 
   let fetchSpy: jest.SpyInstance
+  const originalLocation = window.location
 
   beforeEach(() => {
     jest.clearAllMocks()
     fetchSpy = jest.spyOn(global, 'fetch')
     // Mock NEXT_PUBLIC_BACKEND_URL for the API route fetch
     process.env.NEXT_PUBLIC_BACKEND_URL = 'http://localhost:8000'
+    
+    // Mock window.location
+    delete (window as any).location
+    window.location = { ...originalLocation, href: '' } as any
   })
 
   afterEach(() => {
     fetchSpy.mockRestore()
     delete process.env.NEXT_PUBLIC_BACKEND_URL
+    window.location = originalLocation
   })
 
   it('renders the login form', () => {
@@ -73,7 +79,8 @@ describe('LoginPage', () => {
     await waitFor(() => {
       // Expect fetch to have been called on the local Next.js API route
       expect(fetchSpy).toHaveBeenCalledWith('/api/login', expect.any(Object))
-      expect(mockRouter.push).toHaveBeenCalledWith('/dashboard')
+      // The page uses window.location.href for redirect
+      expect(window.location.href).toBe('/dashboard')
     })
   })
 

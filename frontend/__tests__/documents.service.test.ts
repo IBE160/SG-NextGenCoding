@@ -8,12 +8,22 @@ import {
 jest.mock('axios')
 const mockedAxios = axios as jest.Mocked<typeof axios>
 
+// Helper to create proper axios error mock
+const createAxiosError = (detail: string, statusCode: number) => {
+  const error = new Error(`Request failed with status code ${statusCode}`) as any
+  error.isAxiosError = true
+  error.response = { data: { detail } }
+  return error
+}
+
 describe('documents service', () => {
   const mockDocumentId = 'test-doc-id-123'
   const mockAccessToken = 'test-access-token'
 
   beforeEach(() => {
     jest.clearAllMocks()
+    // Make axios.isAxiosError work properly
+    mockedAxios.isAxiosError = jest.fn((error: any) => error?.isAxiosError === true)
   })
 
   describe('uploadDocument', () => {
@@ -71,11 +81,7 @@ describe('documents service', () => {
         type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       })
       const errorMessage = 'Upload failed due to server error'
-      mockedAxios.post.mockRejectedValueOnce({
-        isAxiosError: true,
-        response: { data: { detail: errorMessage } },
-        message: 'Request failed with status code 500',
-      })
+      mockedAxios.post.mockRejectedValueOnce(createAxiosError(errorMessage, 500))
 
       await expect(uploadDocument(mockFile)).rejects.toThrow(
         `Upload failed: ${errorMessage}`,
@@ -102,11 +108,7 @@ describe('documents service', () => {
 
     it('should throw an error if fetching summary fails', async () => {
       const errorMessage = 'Summary not found'
-      mockedAxios.get.mockRejectedValueOnce({
-        isAxiosError: true,
-        response: { data: { detail: errorMessage } },
-        message: 'Request failed with status code 404',
-      })
+      mockedAxios.get.mockRejectedValueOnce(createAxiosError(errorMessage, 404))
 
       await expect(getSummary(mockDocumentId)).rejects.toThrow(
         `Failed to get summary: ${errorMessage}`,
@@ -130,11 +132,7 @@ describe('documents service', () => {
 
     it('should throw an error if fetching summary status fails', async () => {
       const errorMessage = 'Document not found'
-      mockedAxios.get.mockRejectedValueOnce({
-        isAxiosError: true,
-        response: { data: { detail: errorMessage } },
-        message: 'Request failed with status code 404',
-      })
+      mockedAxios.get.mockRejectedValueOnce(createAxiosError(errorMessage, 404))
 
       await expect(getSummaryStatus(mockDocumentId)).rejects.toThrow(
         `Failed to get summary status: ${errorMessage}`,
