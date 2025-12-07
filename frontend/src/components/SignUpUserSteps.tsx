@@ -16,7 +16,7 @@ values
 `.trim()
 
 const server = `
-import { createServerClient } from '@/utils/supabase'
+import { createServerClient } from '@/utils/supabase-server'
 import { cookies } from 'next/headers'
 
 export default async function Page() {

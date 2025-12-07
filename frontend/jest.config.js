@@ -9,7 +9,7 @@ module.exports = {
   },
   testEnvironment: 'jsdom',
   transform: {
-    '^.+\\.(t|j)sx?$': 'babel-jest',
+    '^.+\\.(t|j)sx?$': ['babel-jest', { configFile: './babel.config.jest.js' }],
   },
   transformIgnorePatterns: [
     'node_modules/(?!(msw|@mswjs|react-markdown|vfile|vfile-message|unist-.*|unified|bail|is-plain-obj|trough|remark-.*|mdast-util-.*|micromark.*|decode-named-character-reference|character-entities)/)',

@@ -1,4 +1,4 @@
-import { createServerClient } from '@/utils/supabase'
+import { createServerClient } from '@/utils/supabase-server'
 import { cookies } from 'next/headers'
 import GuestAccessContent from './GuestAccessContent' // Import the new client component
 // Remove unused imports
