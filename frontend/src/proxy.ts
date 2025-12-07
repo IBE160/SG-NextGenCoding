@@ -13,6 +13,7 @@ export function proxy(request: NextRequest) {
     '/',
     '/forgot-password',
     '/upload',
+    '/summaries',
   ]
 
   // Let static assets, images, and API routes pass through
@@ -25,7 +26,10 @@ export function proxy(request: NextRequest) {
     return NextResponse.next()
   }
 
-  const isPublicPath = publicPaths.includes(pathname)
+  // Check if pathname matches or starts with any public path
+  const isPublicPath = publicPaths.some(
+    (path) => pathname === path || pathname.startsWith(path + '/')
+  )
 
   if (accessToken) {
     // If authenticated and trying to access specifically auth pages (login/register), redirect to dashboard
