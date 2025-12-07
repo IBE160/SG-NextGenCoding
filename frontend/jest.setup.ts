@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import { server } from "src/mocks/server";
+import { server } from "./src/mocks/server.ts";
 
 beforeAll(() => server.listen({ onUnhandledRequest: 'bypass' }));
 afterEach(() => server.resetHandlers());

@@ -16,17 +16,26 @@ const SummaryDisplayPage = () => {
   const documentId = params.document_id as string;
   const supabase = createBrowserClient();
   const [session, setSession] = useState<Session | null>(null);
+  const [isLoadingSession, setIsLoadingSession] = useState(true);
 
   useEffect(() => {
     const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setSession(session);
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        console.log('Session retrieved:', session ? 'authenticated' : 'guest');
+        setSession(session);
+      } catch (error) {
+        console.error('Error getting session:', error);
+      } finally {
+        setIsLoadingSession(false);
+      }
     };
     getSession();
   }, [supabase]);
 
 
-  const accessToken = session?.access_token;
+  // Allow guest users - access token is optional
+  const accessToken = session?.access_token || undefined;
 
   const {
     summaries,
@@ -41,31 +50,58 @@ const SummaryDisplayPage = () => {
   const summaryData = getSummaryById(documentId);
 
   useEffect(() => {
-    if (!documentId || !accessToken) return;
+    // Wait for session check to complete
+    if (isLoadingSession) {
+      console.log('Still loading session...');
+      return;
+    }
+
+    if (!documentId) {
+      console.log('No documentId provided');
+      return;
+    }
+    
+    console.log('Access token:', accessToken ? 'present' : 'not present (guest mode)');
 
     const fetchStatus = async () => {
+      console.log(`Fetching status for document: ${documentId}`);
       setSummaryLoading(documentId, true);
       try {
         const statusData = await getSummaryStatus(documentId, accessToken);
-        if (statusData.status === 'completed') {
+        console.log('Status data received:', statusData);
+        
+        if (statusData.status === 'completed' || statusData.status === 'summarized') {
+          console.log('Summary completed, fetching summary...');
           const summary = await getSummary(documentId, accessToken);
+          console.log('Summary received:', summary);
           addSummary(documentId, summary.summary_text);
         } else if (statusData.status === 'failed') {
+          console.log('Summary generation failed');
           setSummaryError(documentId, 'Summary generation failed.');
         } else {
+          console.log(`Status is ${statusData.status}, polling again in 5s...`);
           // If processing, poll again after a delay
           setTimeout(fetchStatus, 5000);
         }
       } catch (error) {
+        console.error('Error fetching status:', error);
         setSummaryError(documentId, 'Failed to fetch summary status.');
-        console.error(error);
+      } finally {
+        setSummaryLoading(documentId, false);
       }
     };
 
     if (!summaryData) {
+      console.log('No summary data in store, fetching...');
       fetchStatus();
+    } else {
+      console.log('Summary data already in store:', summaryData);
     }
-  }, [documentId, accessToken, summaryData, addSummary, setSummaryLoading, setSummaryError]);
+  }, [documentId, isLoadingSession, accessToken, summaryData, addSummary, setSummaryLoading, setSummaryError]);
+
+  if (isLoadingSession) {
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  }
 
   if (summaryData?.loading) {
     return <div className="flex justify-center items-center h-screen">Loading summary...</div>;

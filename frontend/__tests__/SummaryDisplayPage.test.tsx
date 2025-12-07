@@ -3,18 +3,29 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import SummaryDisplayPage from '../src/app/summaries/[document_id]/page';
-import { useSummaryStore } from '../src/lib/store';
-import * as docService from '../src/services/documents';
-import * as supabaseUtils from '../src/utils/supabase';
 
-// Mock dependencies
+// Mock dependencies BEFORE importing the component
 jest.mock('next/navigation', () => ({
   useParams: () => ({ document_id: 'test-doc-id' }),
 }));
 
+jest.mock('react-markdown', () => {
+  return function ReactMarkdown({ children }: { children: string }) {
+    return <div data-testid="markdown-content">{children}</div>;
+  };
+});
+
+jest.mock('react-copy-to-clipboard', () => ({
+  CopyToClipboard: ({ children, onCopy }: any) => <div onClick={onCopy}>{children}</div>,
+}));
+
 jest.mock('../src/services/documents');
 jest.mock('../src/utils/supabase');
+
+import SummaryDisplayPage from '../src/app/summaries/[document_id]/page';
+import { useSummaryStore } from '../src/lib/store';
+import * as docService from '../src/services/documents';
+import * as supabaseUtils from '../src/utils/supabase';
 
 const mockGetSummary = docService.getSummary as jest.Mock;
 const mockGetSummaryStatus = docService.getSummaryStatus as jest.Mock;

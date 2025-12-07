@@ -12,7 +12,7 @@ from sqlmodel import select
 from gotrue.types import User # Import Supabase User type
 
 from app.db.session import get_session
-from app.db.models import Document
+from app.db.models import Document, Summary
 from app.schemas.document import DocumentUploadRequestFields, DocumentUploadResponse
 from app.core.config import settings
 from app.supabase_client import get_supabase_admin_client
@@ -215,8 +215,8 @@ async def get_document_status(
     
     try:
         statement = select(Document).where(Document.id == document_id)
-        results = await session.exec(statement)
-        document = results.one_or_none()
+        results = await session.execute(statement)
+        document = results.scalar_one_or_none()
 
         if not document:
             logger.warning(f"Status query for non-existent document_id: {document_id}")
@@ -236,3 +236,56 @@ async def get_document_status(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An unexpected error occurred while fetching document status."
         )
+
+@router.get("/documents/{document_id}/summary")
+async def get_document_summary(
+    document_id: UUID,
+    session: AsyncSession = Depends(get_session)
+):
+    """
+    Retrieves the summary for a document.
+    """
+    logger.info(f"Fetching summary for document_id: {document_id}")
+    
+    try:
+        # First check if document exists
+        doc_statement = select(Document).where(Document.id == document_id)
+        doc_results = await session.execute(doc_statement)
+        document = doc_results.scalar_one_or_none()
+
+        if not document:
+            logger.warning(f"Summary query for non-existent document_id: {document_id}")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Document not found."
+            )
+        
+        # Then fetch the summary
+        summary_statement = select(Summary).where(Summary.document_id == document_id)
+        summary_results = await session.execute(summary_statement)
+        summary = summary_results.scalar_one_or_none()
+
+        if not summary:
+            logger.warning(f"Summary not found for document_id: {document_id}")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Summary not found. The document may still be processing."
+            )
+        
+        logger.info(f"Successfully retrieved summary for document {document_id}")
+        return {
+            "document_id": document_id,
+            "summary_text": summary.summary_text,
+            "generated_at": summary.generated_at,
+            "ai_model": summary.ai_model
+        }
+
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        logger.error(f"Error fetching summary for document_id: {document_id}. Error: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An unexpected error occurred while fetching summary."
+        )
+
