@@ -1,0 +1,181 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>2</storyId>
+    <title>Set Up CI/CD & Build Pipeline</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-28</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/1-2-set-up-ci-cd-deployment-pipeline.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a developer,</asA>
+    <iWant>I want automated build for frontend and backend,</iWant>
+    <soThat>So that I can quickly and reliably build changes for local development environments.</soThat>
+    <tasks>
+    &lt;ul&gt;
+        &lt;li&gt;&lt;strong&gt;CI/CD Pipeline Setup (AC: #1, #2, #3)&lt;/strong&gt;
+            &lt;ul&gt;
+                &lt;li&gt;[ ] Create &lt;code&gt;.github/workflows/main.yml&lt;/code&gt; for CI/CD.&lt;/li&gt;
+                &lt;li&gt;[ ] Configure workflow to trigger on push to &lt;code&gt;main&lt;/code&gt; branch.&lt;/li&gt;
+                &lt;li&gt;[ ] Add a step to install frontend dependencies (&lt;code&gt;pnpm install&lt;/code&gt;).&lt;/li&gt>
+                &lt;li&gt;[ ] Add a step to install backend dependencies (&lt;code&gt;poetry install&lt;/code&gt; or &lt;code&gt;uv pip install&lt;/code&gt;).&lt;/li&gt;
+                &lt;li&gt;[ ] Add a step to run frontend tests (if any) (e.g., &lt;code&gt;pnpm test&lt;/code&gt;).&lt;/li&gt;
+                &lt;li&gt;[ ] Add a step to run backend tests (if any) (e.g., &lt;code&gt;poetry run pytest&lt;/code&gt;).&lt;/li&gt;
+                &lt;li&gt;[ ] Add a step to build the Next.js frontend (e.g., &lt;code&gt;pnpm build&lt;/code&gt;).&lt;/li&gt;
+                &lt;li&gt;[ ] Add a step to build the FastAPI backend (e.g., any necessary pre-compilation steps if applicable, though typically Python doesn't require this).&lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;/li&gt;
+        &lt;li&gt;&lt;strong&gt;Local Build and Run Validation&lt;/strong&gt;
+            &lt;ul&gt;
+                &lt;li&gt;[ ] Verify the CI/CD pipeline runs successfully on a push to &lt;code&gt;main&lt;/code&gt;. (AC: #1, #2, #3)&lt;/li&gt;
+                &lt;li&gt;[ ] Confirm successful local build of frontend (e.g., &lt;code&gt;pnpm build&lt;/code&gt; completes without errors). (AC: #1)&lt;/li&gt;
+                &lt;li&gt;[ ] Confirm successful local execution of frontend (e.g., &lt;code&gt;pnpm dev&lt;/code&gt; starts and serves the application). (AC: #1)&lt;/li&gt;
+                &lt;li&gt;[ ] Confirm successful local build of backend. (AC: #2)&lt;/li&gt;
+                &lt;li&gt;[ ] Confirm successful local execution of backend (e.g., &lt;code&gt;uvicorn app.main:app --reload&lt;/code&gt; starts and serves the API). (AC: #2)&lt;/li&gt;
+                &lt;li&gt;[ ] Validate that all existing unit tests (frontend and backend) are executed successfully within the pipeline. (AC: #3)&lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;/li&gt;
+    &lt;/ul&gt;
+</tasks>
+  </story>
+
+  <acceptanceCriteria>
+    &lt;p&gt;&lt;strong&gt;Given&lt;/strong&gt; a code commit to the main branch,&lt;br /&gt;&lt;strong&gt;When&lt;/strong&gt; the CI/CD pipeline runs,&lt;br /&gt;&lt;strong&gt;Then&lt;/strong&gt; the Next.js frontend is built successfully and ready for local execution.&lt;/p&gt;
+    &lt;p&gt;&lt;strong&gt;And&lt;/strong&gt; the FastAPI backend is built successfully and ready for local execution.&lt;/p&gt;
+    &lt;p&gt;&lt;strong&gt;And&lt;/strong&gt; unit tests (if any exist) are run successfully before deployment.&lt;/p&gt;
+</acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/PRD.md</path>
+        <title>ibe160 - Product Requirements Document</title>
+        <section>Web App Specific Requirements</section>
+        <snippet>The FastAPI backend will expose a RESTful API with clearly defined endpoints for: User Management: Registration, login, profile management. File Upload: Securely receiving and processing lecture notes. Summary Generation: Triggering AI summarization. Quiz Generation: Requesting AI-generated quizzes based on notes. Quiz Attempts: Submitting user answers and storing results. History/Review: Accessing past summaries, quizzes, and performance data.</snippet>
+      </doc>
+      <doc>
+        <path>docs/PRD.md</path>
+        <title>ibe160 - Product Requirements Document</title>
+        <section>Test Strategy</section>
+        <snippet>Unit Tests: Both frontend and backend code will be covered by unit tests to ensure individual components function correctly. Integration Tests: Integration tests will be written to verify the interactions between different parts of the system, such as the frontend and backend API, and the backend and the AI service. End-to-End (E2E) Tests: E2E tests will simulate user journeys to ensure the entire application works as expected. User Acceptance Testing (UAT): A group of beta testers will be invited to use the application and provide feedback.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Project Initialization</section>
+        <snippet>First implementation story should execute the following steps to initialize the project using the michaeltroya/supa-next-starter template for the frontend: Use the template on GitHub: Create a new repository from https://github.com/michaeltroya/supa-next-starter. Clone the new repository: git clone &lt;your-new-repository-url&gt; Install dependencies: pnpm install</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Project Structure</section>
+        <snippet>Project structure: /frontend/ (Next.js application), /backend/ (FastAPI application), /shared/ (Code and types shared), .github/ (GitHub Actions workflows).</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Deployment Architecture</section>
+        <snippet>Frontend: Local Development (e.g., `pnpm dev`). Backend: Local Development (e.g., `uvicorn app.main:app --reload`). CI/CD: GitHub Actions (for automated testing only).</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Development Environment</section>
+        <snippet>Prerequisites: Node.js (with pnpm), Python (with Poetry/uv). Setup Commands: Frontend initialization (pnpm install), Backend setup (poetry init).</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>ibe160 - Epic Breakdown</title>
+        <section>Epic 1: Foundation & Core Platform</section>
+        <snippet>Goal: Establish the basic technical infrastructure, deployment pipeline, core security, data handling, and fundamental UI elements. Scope: Project setup, repository structure, build system, deployment pipeline, core dependencies.</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>ibe160 - Epic Breakdown</title>
+        <section>Story 1.2: Set Up CI/CD & Build Pipeline</section>
+        <snippet>Acceptance Criteria: Given a code commit to the main branch, When the CI/CD pipeline runs, Then the Next.js frontend is built successfully and ready for local execution. And the FastAPI backend is built successfully and ready for local execution. And unit tests (if any exist) are run successfully before deployment.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>frontend/package.json</path>
+        <kind>config</kind>
+        <symbol>scripts/dependencies</symbol>
+        <reason>Frontend build, test, and dev scripts, and dependencies.</reason>
+      </artifact>
+      <artifact>
+        <path>backend/pyproject.toml</path>
+        <kind>config</kind>
+        <symbol>dependencies/dev-dependencies</symbol>
+        <reason>Backend dependencies and dev dependencies for local execution.</reason>
+      </artifact>
+      <artifact>
+        <path>.github/workflows/deploy.yml</path>
+        <kind>ci-cd-workflow</kind>
+        <symbol>GitHub Actions Workflow</symbol>
+        <reason>Illustrates previous CI/CD setup, will need modification for local-only context.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem type="npm">
+        <manifest>frontend/package.json</manifest>
+        <package>next: ^14.1.0</package>
+        <package>react: 18.2.0</package>
+        <package>axios: ^1.6.5</package>
+        <package>zustand: 5.0.8</package>
+        <package>jest: ^29.7.0</package>
+        <package>typescript: 5.1.3</package>
+      </ecosystem>
+      <ecosystem type="poetry">
+        <manifest>backend/pyproject.toml</manifest>
+        <package>fastapi: ^0.122.0</package>
+        <package>uvicorn: ^0.38.0</package>
+        <package>supabase: ^2.24.0</package>
+        <package>pytest: >=9.0.1,&lt;10.0.0</package>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>
+      <type>Architectural</type>
+      <description>Adherence to monorepo structure with distinct frontend and backend directories.</description>
+    </constraint>
+    <constraint>
+      <type>Deployment</type>
+      <description>Focus on local execution of both frontend and backend for development and testing purposes.</description>
+    </constraint>
+    <constraint>
+      <type>CI/CD</type>
+      <description>Implement robust CI/CD practices using GitHub Actions to ensure automated testing and reliable builds.</description>
+    </constraint>
+    <constraint>
+      <type>Testing</type>
+      <description>Unit tests must be run for both frontend and backend as part of the CI/CD pipeline.</description>
+    </constraint>
+    <constraint>
+      <type>Security</type>
+      <description>Environment variables for sensitive information must be securely managed.</description>
+    </constraint>
+  </constraints>
+  <interfaces></interfaces>
+  <tests>
+    <standards>
+      Frontend: Jest (JavaScript/TypeScript).
+      Backend: Pytest (Python).
+      Tests should be co-located with code where appropriate.
+    </standards>
+    <locations>
+      Frontend: frontend/jest.config.js, frontend/jest.setup.ts, frontend/src/**/*.test.ts(x)
+      Backend: backend/tests/, backend/tests/**/*.py
+    </locations>
+    <ideas>
+      Verify successful execution of frontend unit tests in CI (AC: #3).
+      Verify successful execution of backend unit tests in CI (AC: #3).
+      Verify successful local build and execution of frontend.
+      Verify successful local build and execution of backend.
+    </ideas>
+  </tests>
+</story-context>

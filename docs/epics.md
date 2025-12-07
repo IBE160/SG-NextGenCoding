@@ -103,17 +103,16 @@ So that I can quickly and reliably deploy changes to development environments.
 
 **Given** a code commit to the main branch,
 **When** the CI/CD pipeline runs,
-**Then** the Next.js frontend is deployed to Vercel.
+Then the Next.js frontend is built successfully and ready for local execution.
 
-**And** the FastAPI backend is deployed to Vercel (or a suitable serverless function if using Vercel for backend).
-
+**And** the FastAPI backend is built successfully and ready for local execution.
 **And** unit tests (if any exist) are run successfully before deployment.
 
 **Prerequisites:** Story 1.1
 
 Scope: MVP
 
-**Technical Notes:** This involves Vercel project setup, linking GitHub repository, and configuring Vercel for both frontend and backend.
+**Technical Notes:** This involves configuring build scripts for both frontend and backend for local execution.
 
 ### Story 1.3: Integrate Supabase for Basic Data & Auth
 

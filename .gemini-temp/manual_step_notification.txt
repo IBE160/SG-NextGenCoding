@@ -1,0 +1,2 @@
+As the Dev agent, I cannot directly perform the task: "Create Supabase Project: Set up a new Supabase project (if not already provisioned)." This step requires manual interaction with the Supabase dashboard.
+Please ensure you have created a Supabase project before I proceed with the next steps.

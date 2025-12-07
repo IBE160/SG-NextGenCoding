@@ -1,0 +1,241 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>3</storyId>
+    <title>Integrate Supabase for Basic Data &amp; Auth</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-28</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/1-3-integrate-supabase-for-basic-data-auth.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>Supabase to be integrated</iWant>
+    <soThat>I can manage basic user data and authentication state.</soThat>
+    <tasks>The following tasks and subtasks are required to implement Story 1.3, aligning with the project's architecture and addressing learnings from previous stories:
+
+*   **Setup Supabase Project &amp; Credentials (AC: #1, #2)**
+    *   [ ] **Create Supabase Project**: Set up a new Supabase project (if not already provisioned).
+    *   [ ] **Retrieve Supabase Keys**: Obtain the Supabase Project URL and Anon Key from the Supabase dashboard.
+    *   [ ] **Configure Environment Variables**:
+        *   [ ] Add `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` to `frontend/.env.local`
+        *   [ ] Add `SUPABASE_URL`, `SUPABASE_ANON_KEY` to `backend/.env`
+    *   [ ] **Initialize Frontend Supabase Client**: Update `frontend/src/lib/supabase.ts` (or equivalent) to use the new environment variables for client initialization.
+    *   [ ] **Initialize Backend Supabase Client**: Implement Supabase client initialization in the FastAPI backend (e.g., `backend/app/core/config.py` or `backend/app/main.py`) to use environment variables.
+
+*   **Database Schema &amp; RLS Implementation (AC: #3)**
+    *   [ ] **Create `profiles` Table**: Define and apply a SQL migration (or use Supabase UI) to create a `profiles` table with columns:
+        *   `id` (UUID, primary key)
+        *   `created_at` (timestamp with timezone, default now)
+        *   `user_id` (UUID, foreign key referencing `auth.users.id`, unique, not null)
+    *   [ ] **Enable RLS**: Enable Row Level Security on the `profiles` table in Supabase.
+    *   [ ] **Create RLS `SELECT` Policy**: Add a policy that allows authenticated users to `SELECT` rows where `user_id = auth.uid()`.
+    *   [ ] **Create RLS `INSERT` Policy**: Add a policy that allows authenticated users to `INSERT` rows where `user_id = auth.uid()`.
+
+*   **Verify Supabase Connection &amp; Health (AC: #1, #4)**
+    *   [ ] **Implement Backend Health Endpoint**: Create a new FastAPI endpoint (e.g., `GET /health/supabase`) that:
+        *   Attempts a simple Supabase database query (e.g., `SELECT 1`) to verify connection.
+        *   Returns HTTP 200 OK on success, HTTP 500 on failure with an appropriate error message.
+    *   [ ] **Write Integration Test**: Add an integration test in `backend/tests/test_supabase.py` to call the `/health/supabase` endpoint and assert its successful response. This addresses the &quot;Verifying backend Supabase connection&quot; warning from Story 1.2.
+
+*   **Documentation Updates**
+    *   [ ] **Update Architecture Documentation**: Add details about the `profiles` table schema and the RLS policies to `docs/architecture.md` (e.g., in a &quot;Data Architecture&quot; section or specific ADR).
+    *   [ ] **Update Local Development Guide**: Add clear instructions to `README.md` or a dedicated `docs/development-guide.md` regarding Supabase project setup, API key retrieval, and environment variable configuration for local development.</tasks>
+  </story>
+
+  <acceptanceCriteria>1.  **AC: Connection**: The application can successfully connect to the configured Supabase project.
+    *   **Given** a Supabase project is created,
+    *   **When** configuring the application,
+    *   **Then** the application can connect to Supabase.
+
+2.  **AC: Env Vars**: Environment variables for Supabase Project URL and Anon Key are correctly configured and accessible by both the frontend and backend in the local development environment.
+    *   **Given** the application is configured for local development,
+    *   **When** starting the local development environment,
+    *   **Then** environment variables for Supabase URL and Anon Key are configured and accessible by both frontend and backend.
+
+3.  **AC: RLS**: A basic `profiles` (or `users`) table is created in Supabase with Row Level Security (RLS) enabled and configured to allow authenticated users to read and insert their own data.
+    *   **Given** Supabase is integrated,
+    *   **When** inspecting the Supabase project,
+    *   **Then** a basic `profiles` table is created,
+    *   **And** Row Level Security (RLS) is enabled on the `profiles` table,
+    *   **And** RLS policies exist that allow authenticated users to `SELECT` and `INSERT` data where their `user_id` matches `auth.uid()`.
+
+4.  **AC: Health Check**: A basic API endpoint in the backend exists for checking the Supabase connection status and returns a successful response upon successful connection.
+    *   **Given** the backend is running,
+    *   **When** making a request to the `/health/supabase` endpoint (or similar),
+    *   **Then** a successful response (e.g., HTTP 200 OK) is returned, indicating a valid connection to Supabase.
+
+[Source: docs/epics.md#Story-1.3-Integrate-Supabase-for-Basic-Data-&amp;-Auth]
+[Source: docs/PRD.md#Functional-Requirements]
+[Source: docs/architecture.md#Decision-Summary]
+[Source: docs/architecture.md#Security-Architecture]</acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <artifact>
+        <path>docs/PRD.md</path>
+        <title>ibe160 - Product Requirements Document</title>
+        <section>Functional Requirements</section>
+        <snippet>FR-DM-1: Data Persistence: The system shall securely store user data, uploaded lecture notes, generated summaries, quizzes, and quiz results between user sessions for logged-in users. Domain Constraint: Full GDPR, FERPA, and potentially COPPA compliance for all stored data. Row Level Security (RLS) must be rigorously applied.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/PRD.md</path>
+        <title>ibe160 - Product Requirements Document</title>
+        <section>Web App Specific Requirements</section>
+        <snippet>Database: Supabase (PostgreSQL) will serve as the managed database, leveraging its real-time capabilities and Row Level Security (RLS) for data protection. Authentication: Supabase Auth. RLS will be rigorously applied within Supabase to ensure users can only access their own data, providing robust authorization.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Decision Summary</section>
+        <snippet>Data Persistence: Supabase (PostgreSQL). Authentication: Supabase Auth. File Storage: Supabase Storage. Aligns with tech stack choice, provides robust user authentication, handles data persistence.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Project Structure</section>
+        <snippet>backend/app/db/: Database models (SQLAlchemy/SQLModel), migrations (Alembic). frontend/src/lib/: Utility functions, Supabase client setup, helpers.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Technology Stack Details</section>
+        <snippet>Database &amp; Auth: Supabase (PostgreSQL for DB, Supabase Auth for Authentication, Supabase-js, Supabase-py). ORM (Backend): SQLModel.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Security Architecture</section>
+        <snippet>Authentication: Supabase Auth (JWT-based, email/password, email verification, password reset). Authorization: Supabase Row Level Security (RLS) for data, backend API route protection.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Deployment Architecture</section>
+        <snippet>Deployment Target: Local Development Environment. Focus on local setup for immediate development and testing.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Development Environment</section>
+        <snippet>Environment variables: .env.local (frontend), .env (backend) for Supabase keys, API keys, etc.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/epics.md</path>
+        <title>ibe160 - Epic Breakdown</title>
+        <section>Epic 1: Foundation &amp; Core Platform</section>
+        <snippet>Scope: Project setup, repository structure, build system, deployment pipeline, core dependencies, Supabase integration (initial setup, Row Level Security), basic FastAPI API setup, initial UI framework, basic data persistence for user profiles and uploaded file metadata.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/epics.md</path>
+        <title>ibe160 - Epic Breakdown</title>
+        <section>Story 1.3: Integrate Supabase for Basic Data &amp; Auth</section>
+        <snippet>As a developer, I want Supabase to be integrated, So that I can manage basic user data and authentication state. Acceptance Criteria: Then the application can connect to Supabase. And environment variables for Supabase URL and Anon Key are configured. And a basic `users` table (or similar) is created with Row Level Security (RLS) enabled and configured to allow authenticated users to read their own data. And a basic API endpoint for checking Supabase connection status exists. FRs: [FR-DM-1]</snippet>
+      </artifact>
+    </docs>
+    <code>
+      <artifact>
+        <path>frontend/src/utils/supabase.ts</path>
+        <kind>Utility/Client Configuration</kind>
+        <symbol>createBrowserClient, createServerClient, createMiddlewareClient</symbol>
+        <lines></lines>
+        <reason>Centralized Supabase client creation for frontend, handles environment variables and cookie management.</reason>
+      </artifact>
+      <artifact>
+        <path>backend/app/supabase_client.py</path>
+        <kind>Utility/Client Configuration</kind>
+        <symbol>get_supabase_client, check_supabase_connection</symbol>
+        <lines></lines>
+        <reason>Centralized Supabase client creation for backend and a connection health check function.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <npm>
+        <package name="@supabase/ssr" version="^0.1.0" />
+        <package name="@supabase/supabase-js" version="^2.39.3" />
+        <package name="next" version="^14.1.0" />
+        <package name="react" version="18.2.0" />
+        <package name="react-dom" version="18.2.0" />
+        <package name="tailwindcss" version="3.3.3" />
+        <package name="typescript" version="5.1.3" />
+        <package name="@types/node" version="20.3.1" />
+        <package name="@types/react" version="18.2.8" />
+        <package name="@types/react-dom" version="18.2.5" />
+        <package name="jest" version="^29.7.0" />
+        <package name="jest-environment-jsdom" version="^29.7.0" />
+        <package name="eslint" version="8.56.0" />
+        <package name="prettier" version="^3.1.1" />
+      </npm>
+      <poetry>
+        <package name="python" version="&gt;=3.10" />
+        <package name="fastapi" version="^0.122.0" />
+        <package name="uvicorn" version="^0.38.0" />
+        <package name="supabase" version="^2.24.0" />
+        <package name="pytest" version="&gt;=9.0.1,&lt;10.0.0" />
+        <package name="httpx" version="&gt;=0.28.1,&lt;0.29.0" />
+      </poetry>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>
+      <type>architectural</type>
+      <description>The integration should primarily focus on local development and testing configurations, aligning with the "Local Development Environment" deployment target.</description>
+    </constraint>
+    <constraint>
+      <type>security</type>
+      <description>Environment Variables: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY (frontend), SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY (backend) must be securely configured.</description>
+    </constraint>
+    <constraint>
+      <type>security</type>
+      <description>RLS Enforcement: Row Level Security must be rigorously applied for data protection.</description>
+    </constraint>
+    <constraint>
+      <type>functional</type>
+      <description>Backend Health Check: Verification of backend Supabase connection after environment variables are set and Supabase project is configured (locally) is a critical warning from Story 1.2 that needs to be addressed.</description>
+    </constraint>
+  </constraints>
+  <interfaces>
+    <interface>
+      <name>Supabase Authentication API</name>
+      <kind>Third-party API</kind>
+      <signature>Implied through createClient calls; methods like signUp, signInWithPassword, getSession would be used in future stories.</signature>
+      <path>https://supabase.com/docs/reference/javascript/auth-signup</path>
+    </interface>
+    <interface>
+      <name>Supabase Database API</name>
+      <kind>Third-party API</kind>
+      <signature>Implied through client.table("users").select("*") calls; methods like insert, update, delete.</signature>
+      <path>https://supabase.com/docs/reference/javascript/data-access/select</path>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>Both frontend and backend code will be covered by unit tests. Integration tests will verify interactions between frontend, backend API, and AI service. Story 1.3 tasks explicitly mention writing integration tests for Supabase connection.</standards>
+    <locations>
+      <location>frontend/src/__tests__/</location>
+      <location>backend/tests/</location>
+      <location>backend/tests/test_supabase.py</location>
+    </locations>
+    <ideas>
+      <test-idea ac-id="#1">
+        <description>Verify backend's `check_supabase_connection` returns True with valid credentials.</description>
+      </test-idea>
+      <test-idea ac-id="#1">
+        <description>Verify frontend Supabase client initialization is successful.</description>
+      </test-idea>
+      <test-idea ac-id="#2">
+        <description>Unit test frontend Supabase client configuration uses correct environment variables.</description>
+      </test-idea>
+      <test-idea ac-id="#2">
+        <description>Unit test backend Supabase client configuration retrieves correct environment variables.</description>
+      </test-idea>
+      <test-idea ac-id="#3">
+        <description>Integration test to verify RLS policies: ensure a user can only SELECT/INSERT their own `profiles` data.</description>
+      </test-idea>
+      <test-idea ac-id="#4">
+        <description>Integration test: Call `GET /health/supabase` endpoint and assert a 200 OK response.</description>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

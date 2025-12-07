@@ -1,0 +1,2 @@
+The next task requires manual intervention: "Create RLS `SELECT` Policy: Add a policy that allows authenticated users to `SELECT` rows where `user_id = auth.uid()`."
+Please create this RLS SELECT policy in your Supabase project.

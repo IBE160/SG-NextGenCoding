@@ -1,0 +1,137 @@
+# Story 2.1: User Registration with Email and Password
+
+Status: review
+
+## Story
+
+As a new user,
+I want to create an account using my email and a secure password,
+so that I can access personalized features and save my progress.
+
+## Acceptance Criteria
+
+1.  **AC-UM-1**: A new user must be able to create an account using a valid email and password. Upon successful registration, a verification email must be sent to the provided address. [Source: docs/sprint-artifacts/tech-spec-epic-2.md#Acceptance-Criteria-Authoritative]
+
+
+## Tasks / Subtasks
+
+- [x] **Backend: Create User Registration Endpoint** (AC: #1)
+    - [x] Create a new API route in FastAPI under `backend/app/api/auth/register.py`.
+    - [x] The endpoint should accept email and password.
+    - [x] Implement logic to call `supabase.auth.sign_up()` with the provided credentials.
+    - [x] Handle potential errors from Supabase (e.g., user already exists) and return appropriate HTTP status codes.
+- [x] **Backend: Integrate Email Service for Confirmation** (AC: #1)
+    - [x] Configure the `Resend` email service in the backend.
+    - [x] After a successful sign-up, trigger an email to be sent to the user's email address for confirmation.
+- [x] **Frontend: Build Registration UI Form** (AC: #1)
+    - [x] Create the registration page component at `frontend/src/app/(auth)/register/page.tsx`.
+    - [x] Build the form using Shadcn UI components (`Input`, `Button`, `Label`). Reuse the button from `frontend/components/ui/button.tsx`.
+    - [x] Implement client-side form state management with `React Hook Form`.
+- [x] **Frontend: Implement Form Validation**
+    - [x] Define a `Zod` schema for registration form validation (email, password, confirm password).
+    - [x] Integrate the Zod schema with `React Hook Form` to provide real-time validation feedback.
+- [x] **Frontend: Handle Form Submission** (AC: #1)
+    - [x] On form submission, call the backend registration endpoint.
+    - [x] On success, redirect the user to a "check your email" page or the login page.
+    - [x] On failure, display a user-friendly error message (e.g., using a Toast component).
+- [x] **Testing**
+    - [x] Write a backend unit test for the registration endpoint.
+    - [x] Write a frontend integration test for the registration form, covering success and failure cases.
+
+## Dev Notes
+
+This story initiates **Epic 2: User Access & Authentication**. The primary goal is to implement the user registration flow as defined in the PRD and epics.
+
+- **Relevant architecture patterns and constraints**:
+    - Authentication is handled by **Supabase Auth**. [Source: docs/architecture.md#Authentication]
+    - The API will be a **RESTful API** built with **FastAPI**. [Source: docs/architecture.md#API-Pattern]
+    - The **Resend** service is specified for transactional emails. [Source: docs/architecture.md#Decision-Summary]
+    - Frontend forms should use **React Hook Form with Zod** for validation. [Source: docs/PRD.md#Web-App-Specific-Requirements]
+
+- **Source tree components to touch**:
+    - `backend/app/api/auth/`: For the new registration endpoint.
+    - `frontend/src/app/(auth)/register/`: For the new registration page and UI.
+    - `frontend/src/lib/supabase.ts`: To ensure the Supabase client is correctly configured.
+
+- **Testing standards summary**:
+    - Backend and frontend code should be covered by unit and integration tests. [Source: docs/PRD.md#Test-Strategy]
+
+### Learnings from Previous Story
+
+**From Story 1.4 (Status: review)**
+
+- **New UI Patterns Established**: The initial UI layout, theming, and component library (`Shadcn UI`) are in place. The registration form should adhere to this theme. The button at `frontend/components/ui/button.tsx` should be reused.
+- **File Structure**: The frontend project structure is established. New UI components should be placed appropriately.
+- **Warning**: A minor horizontal scrolling issue was noted on very small displays. While not a blocker, frontend implementation for this story should be mindful of responsive design principles.
+
+[Source: docs/sprint-artifacts/1-4-implement-initial-ui-layout-theming.md#Dev-Agent-Record]
+
+### References
+
+- [Source: docs/sprint-artifacts/tech-spec-epic-2.md]
+- [Source: docs/epics.md#Story-2.1-User-Registration-with-Email-and-Password]
+- [Source: docs/PRD.md#FR-UM-1]
+- [Source: docs/architecture.md#Epic-to-Architecture-Mapping]
+
+## Dev Agent Record
+
+### Context Reference
+
+<!-- Path(s) to story context XML will be added here by context workflow -->
+
+### Agent Model Used
+
+{{agent_model_name_version}}
+
+### Debug Log References
+
+### Completion Notes List
+
+### File List
+- `backend/app/api/auth/register.py` (new)
+- `backend/app/schemas/user.py` (new)
+- `backend/app/main.py` (modified)
+- `backend/tests/test_auth.py` (new)
+- `backend/pyproject.toml` (modified)
+- `frontend/src/app/auth/register/page.tsx` (new)
+- `frontend/src/app/auth/check-email/page.tsx` (new)
+- `frontend/src/components/ui/form.tsx` (new)
+- `frontend/src/components/ui/card.tsx` (added during shadcn install, may already exist)
+- `frontend/src/components/ui/alert.tsx` (added during shadcn install, may already exist)
+- `frontend/__tests__/register.test.tsx` (new)
+
+## Change Log
+
+- 2025-12-02: Implemented user registration endpoint, UI, and tests for Story 2.1.
+
+## Code Review Feedback
+
+### Summary:
+Implementation is functional but has deviations from the `story-context.xml` and areas for improvement in user experience and robustness.
+
+### File Analysis:
+
+#### `backend/app/main.py`
+*   **Deviation:** Mounts auth router at `/api/v1/auth`. `story-context.xml` specifies `/api/auth`.
+
+#### `backend/app/api/auth/register.py`
+*   **Inconsistency:** Handles unconfirmed users with a `201 Created` and a message, which is ambiguous. A `200 OK` would be clearer.
+*   **Improvement:** Generic `except Exception` leaks internal error details to the client. Should return a generic error message.
+*   **Inconsistency:** Password validation is for 6 characters, while the frontend requires 8.
+
+#### `frontend/src/app/(auth)/register/page.tsx`
+*   **Improvement:** Lacks a loading indicator on submission, allowing for potential multiple clicks.
+*   **Improvement:** Uses a simple text field for API errors instead of the recommended Toast component.
+*   **Inconsistency:** `zod` schema requires an 8-character password.
+
+### Actionable Recommendations:
+
+1.  **Align API Path:** Update `docs/sprint-artifacts/2-1-user-registration-with-email-and-password.context.xml` to change `POST /api/auth/register` to `POST /api/v1/auth/register`.
+2.  **Unify Password Rule:** Standardize password length to 8 characters across both `register.py` and `page.tsx`.
+3.  **Refine Backend Logic:**
+    *   Change the response for unconfirmed users to `200 OK`.
+    *   Mask detailed server errors in the final `except` block.
+4.  **Enhance Frontend UX:**
+    *   Add a disabled/loading state to the submit button.
+    *   Replace the error `div` with a Toast notification.
+

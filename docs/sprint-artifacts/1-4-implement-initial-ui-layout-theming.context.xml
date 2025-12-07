@@ -1,0 +1,262 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>4</storyId>
+    <title>Implement Initial UI Layout &amp; Theming</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-28</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/1-4-implement-initial-ui-layout-theming.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>UX designer / developer</asA>
+    <iWant>a basic, consistent UI layout and theming</iWant>
+    <soThat>subsequent feature development has a visual foundation.</soThat>
+    <tasks>The following tasks and subtasks are required to implement Story 1.4, aligning with the project's architecture and addressing learnings from previous stories:
+
+*   **Implement Basic Responsive Layout (AC: #1)**
+    *   [ ] Create or modify `frontend/src/app/layout.tsx` to define a basic HTML structure with a header, main content area, and footer.
+    *   [ ] Ensure the layout is responsive using Tailwind CSS utility classes (e.g., `flex`, `container`, `max-w-screen-xl`).
+
+*   **Integrate Tailwind CSS &amp; Define Basic Theme (AC: #2)**
+    *   [ ] Verify `tailwind.config.ts` exists in `frontend/`.
+    *   [ ] Define a primary and secondary color palette in `tailwind.config.ts`.
+    *   [ ] Define basic typography styles (e.g., font families, sizes) in `tailwind.config.ts`.
+    *   [ ] Create or update `frontend/src/styles/globals.css` to import Tailwind base styles.
+    *   [ ] Apply initial global styles and theme variables.
+
+*   **Integrate Shadcn UI (AC: #3)**
+    *   [ ] Follow Shadcn UI installation instructions for Next.js and Tailwind CSS (e.g., `npx shadcn-ui@latest init`).
+    *   [ ] Add at least one Shadcn UI component (e.g., `Button`) to a test page or component to verify correct integration.
+
+*   **Validate UI Responsiveness &amp; Theming (AC: #1, #2, #3)**
+    *   [ ] Manually test the application in various browser window sizes (desktop, tablet breakpoints) to ensure layout responsiveness.
+    *   [ ] Verify that the defined color palette and typography are applied correctly to UI elements.
+    *   [ ] Confirm that Shadcn UI components render with the applied theme.
+
+*   **Documentation Updates**
+    *   [ ] Update `docs/architecture.md` (e.g., in &quot;Technology Stack Details&quot; or &quot;Frontend&quot; sections) to confirm Tailwind CSS and Shadcn UI integration.
+    *   [ ] Add notes to `README.md` (or a `frontend/README.md`) on how to use Shadcn UI components and extend the Tailwind theme.</tasks>
+  </story>
+
+  <acceptanceCriteria>1.  **AC: Basic Layout**: A responsive basic layout (e.g., header, main content area, footer) is visible when viewing the application.
+    *   **Given** the Next.js project is set up,
+    *   **When** viewing the application in a web browser,
+    *   **Then** a responsive basic layout (header, main content area, footer) is visibly rendered.
+
+2.  **AC: Tailwind &amp; Theming**: Tailwind CSS is integrated, and a basic theme (colors, typography) is applied across the application.
+    *   **Given** Tailwind CSS is configured,
+    *   **When** developing new UI components,
+    *   **Then** Tailwind utility classes can be used for styling,
+    *   **And** the application adheres to a basic, consistent visual theme (e.g., defined color palette, font styles).
+
+3.  **AC: Shadcn UI Components**: Shadcn UI components can be imported and used within the project.
+    *   **Given** Shadcn UI is integrated,
+    *   **When** importing a Shadcn UI component (e.g., Button, Card) into a React component,
+    *   **Then** the component renders correctly and is functional.
+
+[Source: docs/epics.md#Story-1.4-Implement-Initial-UI-Layout-&amp;-Theming]
+[Source: docs/PRD.md#Functional-Requirements]
+[Source: docs/architecture.md#Decision-Summary]</acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <artifact>
+        <path>docs/PRD.md</path>
+        <title>ibe160 - Product Requirements Document</title>
+        <section>Web App Specific Requirements</section>
+        <snippet>Frontend: Built with Next.js 14+ (App Router) and TypeScript. Styling will use Tailwind CSS and Shadcn UI for rapid, responsive development. Platform &amp; Responsiveness: The application will be primarily web-based, optimized for desktop and laptop browsers, with adaptability for tablets. Mobile support is optional for MVP.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/PRD.md</path>
+        <title>ibe160 - Product Requirements Document</title>
+        <section>User Experience Principles</section>
+        <snippet>The application's UX will embody a professional, clean, and intuitive design aesthetic. The primary goal is to make the process of transforming notes into learning tools feel effortless, efficient, and rewarding. The design will emphasize clarity and reduce cognitive load.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/PRD.md</path>
+        <title>ibe160 - Product Requirements Document</title>
+        <section>Functional Requirements</section>
+        <snippet>FR-UI-1: Responsive User Interface: The system shall provide a responsive web interface compatible with modern browsers (Chrome, Firefox, Safari, Edge - latest two versions) on desktop, laptop, and tablet devices. Domain Constraint: WCAG 2.1 AA accessibility guidelines must be met for all UI components and content.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/PRD.md</path>
+        <title>ibe160 - Product Requirements Document</title>
+        <section>Non-Functional Requirements</section>
+        <snippet>Accessibility: The application must comply with Web Content Accessibility Guidelines (WCAG) 2.1 Level AA to ensure it is usable by all students, including those with disabilities.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Project Structure</section>
+        <snippet>frontend/: Next.js application. frontend/src/app/: Next.js App Router (pages, layouts, etc.). frontend/src/components/: Reusable UI components (shadcn/ui overrides, custom components). frontend/src/styles/: Tailwind CSS configuration, global styles.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Technology Stack Details</section>
+        <snippet>Frontend: Next.js 16.0.3, TypeScript, React, Tailwind CSS, Shadcn UI.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Implementation Patterns</section>
+        <snippet>Naming Conventions: Frontend Components: PascalCase for components, kebab-case for file names. Structure Patterns: Frontend Component Organization: By feature. Format Patterns: API Response Wrapper, API Error Format, Date Format in JSON.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Consistency Rules</section>
+        <snippet>Date/Time Formatting in UI, Logging Strategy, User-facing Error Messages, Code Formatting: ESLint/Prettier (frontend), Ruff (backend), with automated checks.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/epics.md</path>
+        <title>ibe160 - Epic Breakdown</title>
+        <section>Epic 1: Foundation &amp; Core Platform</section>
+        <snippet>Scope: Establish the basic technical infrastructure, deployment pipeline, core security, data handling, and fundamental UI elements. Initial UI framework (Next.js, Tailwind, Shadcn UI basics).</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/epics.md</path>
+        <title>ibe160 - Epic Breakdown</title>
+        <section>Story 1.4: Implement Initial UI Layout &amp; Theming</section>
+        <snippet>As a UX designer / developer, I want a basic, consistent UI layout and theming, So that subsequent feature development has a visual foundation. Acceptance Criteria: Then a responsive basic layout is visible. And Tailwind CSS is integrated and a basic theme is applied. And Shadcn UI components can be imported and used. FRs: [FR-UI-1]</snippet>
+      </artifact>
+    </docs>
+    <code>
+      <artifact>
+        <path>frontend/tailwind.config.js</path>
+        <kind>Configuration</kind>
+        <symbol></symbol>
+        <lines></lines>
+        <reason>Defines Tailwind CSS settings, theme extensions (colors, keyframes), and plugins.</reason>
+      </artifact>
+      <artifact>
+        <path>frontend/postcss.config.js</path>
+        <kind>Configuration</kind>
+        <symbol></symbol>
+        <lines></lines>
+        <reason>Configures PostCSS for Tailwind CSS processing.</reason>
+      </artifact>
+      <artifact>
+        <path>frontend/components.json</path>
+        <kind>Configuration</kind>
+        <symbol></symbol>
+        <lines></lines>
+        <reason>Shadcn UI configuration, specifying Tailwind and CSS paths.</reason>
+      </artifact>
+      <artifact>
+        <path>frontend/src/app/layout.tsx</path>
+        <kind>Next.js Layout Component</kind>
+        <symbol>RootLayout</symbol>
+        <lines></lines>
+        <reason>Defines the basic HTML structure, integrates globals.css and ThemeProvider, and includes header/footer.</reason>
+      </artifact>
+      <artifact>
+        <path>frontend/src/app/globals.css</path>
+        <kind>Stylesheet</kind>
+        <symbol></symbol>
+        <lines></lines>
+        <reason>Global styles, imports Tailwind, defines CSS variables for theming.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <npm>
+        <package name="@next/bundle-analyzer" version="^14.0.4" />
+        <package name="@radix-ui/react-dropdown-menu" version="^2.0.6" />
+        <package name="@radix-ui/react-icons" version="^1.3.0" />
+        <package name="@radix-ui/react-slot" version="^1.0.2" />
+        <package name="@supabase/ssr" version="^0.1.0" />
+        <package name="@supabase/supabase-js" version="^2.39.3" />
+        <package name="@tanstack/react-query" version="^5.17.15" />
+        <package name="@tanstack/react-query-devtools" version="^5.17.15" />
+        <package name="@vercel/analytics" version="^1.1.1" />
+        <package name="axios" version="^1.6.5" />
+        <package name="class-variance-authority" version="^0.7.0" />
+        <package name="clsx" version="^2.1.0" />
+        <package name="geist" version="^1.0.0" />
+        <package name="lucide-react" version="^0.304.0" />
+        <package name="next" version="^14.1.0" />
+        <package name="next-themes" version="^0.2.1" />
+        <package name="nextjs-toploader" version="^1.6.4" />
+        <package name="react" version="18.2.0" />
+        <package name="react-dom" version="18.2.0" />
+        <package name="tailwind-merge" version="^2.2.0" />
+        <package name="undici" version="^5.28.2" />
+        <package name="@swc/core" version="^1.3.102" />
+        <package name="@swc/jest" version="^0.2.29" />
+        <package name="@testing-library/dom" version="^9.3.3" />
+        <package name="@testing-library/jest-dom" version="^6.2.0" />
+        <package name="@testing-library/react" version="^14.1.2" />
+        <package name="@testing-library/user-event" version="^14.5.2" />
+        <package name="@types/jest" version="^29.5.11" />
+        <package name="@types/node" version="20.3.1" />
+        <package name="@types/react" version="18.2.8" />
+        <package name="@types/react-dom" version="18.2.5" />
+        <package name="autoprefixer" version="10.4.15" />
+        <package name="encoding" version="^0.1.13" />
+        <package name="eslint" version="8.56.0" />
+        <package name="eslint-config-next" version="14.0.4" />
+        <package name="husky" version="^8.0.0" />
+        <package name="jest" version="^29.7.0" />
+        <package name="jest-environment-jsdom" version="^29.7.0" />
+        <package name="lint-staged" version="^15.2.0" />
+        <package name="msw" version="^2.1.1" />
+        <package name="postcss" version="8.4.29" />
+        <package name="prettier" version="^3.1.1" />
+        <package name="prettier-plugin-tailwindcss" version="^0.5.10" />
+        <package name="tailwindcss" version="3.3.3" />
+        <package name="tailwindcss-animate" version="^1.0.7" />
+        <package name="typescript" version="5.1.3" />
+      </npm>
+      <poetry>
+        <package name="python" version="&gt;=3.10" />
+        <package name="fastapi" version="^0.122.0" />
+        <package name="uvicorn" version="^0.38.0" />
+        <package name="supabase" version="^2.24.0" />
+        <package name="pytest" version="&gt;=9.0.1,&lt;10.0.0" />
+        <package name="httpx" version="&gt;=0.28.1,&lt;0.29.0" />
+      </poetry>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>
+      <type>design</type>
+      <description>Responsive Design: The UI must be responsive and adapt to different screen sizes (desktop, laptop, tablet).</description>
+    </constraint>
+    <constraint>
+      <type>accessibility</type>
+      <description>WCAG 2.1 AA Compliance: Future accessibility efforts must not be hindered by the foundational layout and theming.</description>
+    </constraint>
+    <constraint>
+      <type>design</type>
+      <description>Consistent Theming: Use Tailwind CSS and Shadcn UI to maintain a consistent visual theme.</description>
+    </constraint>
+    <constraint>
+      <type>architecture</type>
+      <description>Next.js App Router: Development must adhere to the Next.js App Router structure.</description>
+    </constraint>
+  </constraints>
+  <interfaces></interfaces>
+  <tests>
+    <standards>Frontend code will be covered by unit tests. Manual testing for responsiveness and visual correctness is expected. Visual regression testing can be considered for future automation.</standards>
+    <locations>
+      <location>frontend/src/__tests__/</location>
+    </locations>
+    <ideas>
+      <test-idea ac-id="#1">
+        <description>Manual Test: Verify responsive basic layout (header, main content, footer) across different browser window sizes.</description>
+      </test-idea>
+      <test-idea ac-id="#2">
+        <description>Manual Test: Inspect CSS properties to confirm Tailwind classes and theme colors/fonts are applied correctly.</description>
+      </test-idea>
+      <test-idea ac-id="#3">
+        <description>Unit Test: Create a test component to import and render a Shadcn UI Button and assert its presence.</description>
+      </test-idea>
+      <test-idea ac-id="#3">
+        <description>Manual Test: Verify Shadcn UI components render correctly and are functional.</description>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

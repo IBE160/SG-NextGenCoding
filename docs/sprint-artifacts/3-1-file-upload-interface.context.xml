@@ -1,0 +1,235 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>1</storyId>
+    <title>File Upload Interface</title>
+    <status>drafted</status>
+    <generatedAt>2025-12-04</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/3-1-file-upload-interface.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a user,</asA>
+    <iWant>I want to easily upload my lecture notes in PDF, TXT, or DOCX format,</iWant>
+    <soThat>So that the system can process them.</soThat>
+    <tasks>
+      ### Frontend Development
+      *   **Implement File Upload UI Component (`frontend/src/app/upload/`)**
+          *   Create React component for drag-and-drop file zone.
+          *   Add standard file input element.
+          *   Display selected file name and type.
+          *   Implement client-side validation for file types (PDF, TXT, DOCX) and size (<= 20MB).
+          *   Display real-time validation error messages for invalid files.
+          *   Integrate with Axios for API calls to the backend.
+      *   **Integrate User/Guest Status for Upload Limits**
+          *   Utilize Supabase Auth client to determine logged-in vs. guest status.
+          *   Implement client-side logic (e.g., local storage for guest count) to enforce 2-use limit for guests.
+          *   Display registration/login prompt when guest limit is reached.
+      *   **Develop Frontend API Service (`frontend/src/services/documents.ts`)**
+          *   Create function `uploadDocument(file: File, userId?: string)` to handle `multipart/form-data` requests to `POST /api/v1/documents/upload`.
+          *   Implement error handling for API responses.
+
+      ### Backend Development
+      *   **Create FastAPI Endpoint (`backend/app/api/summaries/main.py`)**
+          *   Define `POST /api/v1/documents/upload` endpoint.
+          *   Accept `multipart/form-data` with the file and user ID.
+          *   Validate file type (PDF, TXT, DOCX) and size (max 20MB) on the server-side using Pydantic schemas.
+          *   Integrate with Supabase Storage client to upload the file.
+          *   Store `document` metadata (filename, file_type, storage_path, status='processing', user_id) in the `documents` table via `backend/app/db/` models.
+          *   Return a `202 Accepted` response with `document_id`.
+          *   Implement error handling for file operations and database interactions.
+      *   **Define Pydantic Models (`backend/app/schemas/document.py`)**
+          *   Create schema for `DocumentUploadRequest` (e.g., `file: UploadFile`, `user_id: UUID`).
+          *   Create schema for `DocumentUploadResponse` (`document_id: UUID`, `message: str`).
+      *   **Update Database Models (`backend/app/db/models.py`)**
+          *   Define `Document` model (SQLModel) corresponding to the `documents` table, including `id`, `user_id`, `filename`, `file_type`, `storage_path`, `status`, `created_at`, `updated_at`.
+          *   Ensure RLS policies for `documents` table are correctly configured (inherited from previous epics or explicitly defined here).
+
+      ### Testing
+      *   **Unit Tests (Backend `pytest`)**:
+          *   Test file type and size validation logic in the FastAPI endpoint.
+          *   Test Supabase Storage integration for file uploads.
+          *   Test `Document` model creation and persistence.
+      *   **Integration Tests (Frontend `jest`, Backend `pytest`)**:
+          *   Test frontend-to-backend API call for file upload.
+          *   Test guest user usage limit and prompt.
+      *   **E2E Tests (Playwright/Cypress)**:
+          *   Simulate logged-in user uploading valid file and seeing "processing" status.
+          *   Simulate guest user uploading valid file (within limit).
+          *   Simulate guest user uploading valid file (exceeding limit) and seeing registration prompt.
+          *   Simulate uploading unsupported file type, verifying error message.
+          *   Simulate uploading oversized file, verifying error message.
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    1.  **FR-UM-1 (Partial)**: As a logged-in user, I can successfully upload a lecture note file.
+    2.  **FR-UM-2**: As a guest user, I can upload a lecture note file for up to 2 free uses, with the system tracking my usage.
+    3.  **FR-UM-2**: As a guest user who has exceeded the free use limit, I am presented with a clear prompt to register or log in to continue using the file upload feature.
+    4.  **FR-CIP-1**: The file upload interface clearly indicates supported file types (PDF, TXT, DOCX) and maximum file size (20MB).
+    5.  **FR-CIP-1**: When I select or drag-and-drop a supported file, its name and type are immediately displayed in the UI.
+    6.  **FR-CIP-1**: When I attempt to upload an unsupported file type, the UI displays an immediate, user-friendly error message, and the upload is prevented.
+    7.  **FR-CIP-1**: When I attempt to upload a file exceeding 20MB, the UI displays an immediate, user-friendly error message, and the upload is prevented.
+    8.  **FR-CIP-1**: The frontend sends the uploaded file to the backend via the `POST /api/v1/documents/upload` API endpoint using `multipart/form-data`.
+    9.  **FR-CIP-1**: The backend successfully receives the uploaded file, validates its format and size, and stores it securely in Supabase Storage.
+    10. **FR-CIP-1**: Upon successful backend receipt and storage, the frontend receives a confirmation with a `document_id`, and the UI indicates the file is being processed.
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <artifact>
+        <path>docs/PRD.md</path>
+        <title>ibe160 - Product Requirements Document</title>
+        <section>2. Content Ingestion &amp; Processing (FR-CIP)</section>
+        <snippet>FR-CIP-1: Lecture Note Upload: The system shall allow users to upload lecture notes in PDF, TXT, and DOCX formats. It validates file format and size and extracts text for AI processing.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/PRD.md</path>
+        <title>ibe160 - Product Requirements Document</title>
+        <section>Web App Specific Requirements</section>
+        <snippet>Frontend: Built with Next.js 14+ (App Router), TypeScript, React, Tailwind CSS, Shadcn UI. API communication will use Axios with interceptors. Backend: FastAPI (Python). Database: Supabase (PostgreSQL).</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/PRD.md</path>
+        <title>ibe160 - Product Requirements Document</title>
+        <section>User Experience Principles</section>
+        <snippet>Effortless File Upload: A clear, drag-and-drop or simple file selection interface for uploading lecture notes, with immediate visual feedback on progress and success.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/PRD.md</path>
+        <title>ibe160 - Product Requirements Document</title>
+        <section>Edge Cases and Special Scenarios</section>
+        <snippet>Large File Uploads: The system should gracefully handle file uploads that are close to the size limit. Unsupported File Types: The system should provide a clear and immediate error message if a user attempts to upload a file type that is not supported.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Epic to Architecture Mapping</section>
+        <snippet>Epic 3: Content Ingestion &amp; AI Summarization -&gt; frontend/src/app/upload/, frontend/src/services/, backend/app/api/summaries/, backend/app/services/ai_generation/, backend/app/db/, backend/app/schemas/.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Technology Stack Details</section>
+        <snippet>Frontend: Next.js 16.0.3, TypeScript, React, Tailwind CSS, Shadcn UI. Backend: FastAPI 0.122.0 (Python). Database &amp; Auth: Supabase. API Client (Frontend): Axios 1.13.2. Frontend State Management: Zustand 5.0.8. File Storage: Supabase Storage.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/epics.md</path>
+        <title>ibe160 - Epic Breakdown</title>
+        <section>Epic 3: Content Ingestion &amp; AI Summarization</section>
+        <snippet>Goal: Allow users to upload lecture notes and receive AI-generated summaries. Scope: File upload (PDF, TXT, DOCX), file validation, text extraction, integration with Gemini 2.5 for summarization, displaying the summary in the UI.</snippet>
+      </artifact>
+    </docs>
+    <code>
+      <artifact>
+        <path>frontend/src/app/upload/</path>
+        <kind>React Component</kind>
+        <symbol>FileUploadUI</symbol>
+        <reason>New UI components for file selection and drag-and-drop functionality.</reason>
+      </artifact>
+      <artifact>
+        <path>frontend/src/services/documents.ts</path>
+        <kind>TypeScript Service</kind>
+        <symbol>uploadDocument</symbol>
+        <reason>New service function to handle API calls for file uploads.</reason>
+      </artifact>
+      <artifact>
+        <path>backend/app/api/summaries/main.py</path>
+        <kind>FastAPI Endpoint</kind>
+        <symbol>POST /api/v1/documents/upload</symbol>
+        <reason>New FastAPI endpoint to receive, validate, and process uploaded files.</reason>
+      </artifact>
+      <artifact>
+        <path>backend/app/schemas/document.py</path>
+        <kind>Pydantic Schema</kind>
+        <symbol>DocumentUploadRequest, DocumentUploadResponse</symbol>
+        <reason>New Pydantic models for request/response validation of uploaded file metadata.</reason>
+      </artifact>
+      <artifact>
+        <path>backend/app/db/models.py</path>
+        <kind>SQLModel</kind>
+        <symbol>Document</symbol>
+        <reason>Updates to existing or creation of new SQLModel models for tracking uploaded documents.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <nodejs>
+        <package name="@hookform/resolvers" version="^5.2.2"/>
+        <package name="@next/bundle-analyzer" version="^14.0.4"/>
+        <package name="@radix-ui/react-dialog" version="^1.1.15"/>
+        <package name="@radix-ui/react-dropdown-menu" version="^2.0.6"/>
+        <package name="@radix-ui/react-icons" version="^1.3.0"/>
+        <package name="@radix-ui/react-label" version="^2.1.8"/>
+        <package name="@radix-ui/react-slot" version="^1.0.2"/>
+        <package name="@radix-ui/react-toast" version="^1.2.15"/>
+        <package name="@supabase/ssr" version="^0.1.0"/>
+        <package name="@supabase/supabase-js" version="^2.39.3"/>
+        <package name="@tanstack/react-query" version="^5.17.15"/>
+        <package name="@tanstack/react-query-devtools" version="^5.17.15"/>
+        <package name="@vercel/analytics" version="^1.1.1"/>
+        <package name="axios" version="^1.6.5"/>
+        <package name="class-variance-authority" version="^0.7.0"/>
+        <package name="clsx" version="^2.1.0"/>
+        <package name="geist" version="^1.0.0"/>
+        <package name="lucide-react" version="^0.304.0"/>
+        <package name="next" version="^14.1.0"/>
+        <package name="next-themes" version="^0.2.1"/>
+        <package name="nextjs-toploader" version="^1.6.4"/>
+        <package name="react" version="18.2.0"/>
+        <package name="react-dom" version="18.2.0"/>
+        <package name="react-hook-form" version="^7.67.0"/>
+        <package name="tailwind-merge" version="^2.2.0"/>
+        <package name="undici" version="^5.28.2"/>
+        <package name="zod" version="^4.1.13"/>
+      </nodejs>
+      <python>
+        <package name="fastapi" version="^0.122.0"/>
+        <package name="uvicorn" version="^0.38.0"/>
+        <package name="supabase" version="^2.24.0"/>
+        <package name="python-dotenv" version="^1.2.1"/>
+        <package name="email-validator" version="^2.1.1"/>
+      </python>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Client-side validation for file type (PDF, TXT, DOCX) and size (max 20MB).</constraint>
+    <constraint>Server-side validation for file type (PDF, TXT, DOCX) and size (max 20MB).</constraint>
+    <constraint>Supabase Auth for user context and Row Level Security (RLS) policies for document tracking.</constraint>
+    <constraint>Axios must be used for frontend API communication.</constraint>
+    <constraint>File uploads must use multipart/form-data encoding.</constraint>
+  </constraints>
+  <interfaces>
+    <interface>
+      <name>Document Upload API</name>
+      <kind>REST Endpoint</kind>
+      <signature>POST /api/v1/documents/upload (multipart/form-data)</signature>
+      <path>backend/app/api/summaries/main.py</path>
+    </interface>
+    <interface>
+      <name>Supabase Storage Upload</name>
+      <kind>External Service</kind>
+      <signature>supabase.storage.from('bucket_name').upload('file_path_in_storage', file_object)</signature>
+      <path>backend/app/api/summaries/main.py</path>
+    </interface>
+
+  <tests>
+    <standards>Unit, Integration, and E2E tests are required. Frontend testing will utilize Jest, while backend testing will use pytest. Automated testing will be integrated into the CI/CD pipeline via GitHub Actions.</standards>
+    <locations>
+      <location>frontend/__tests__</location>
+      <location>backend/tests/</location>
+    </locations>
+    <ideas>
+      <idea acId="FR-UM-1">Test successful file upload for logged-in users.</idea>
+      <idea acId="FR-UM-2">Test guest user file upload limit enforcement and registration/login prompt display.</idea>
+      <idea acId="FR-CIP-1">Test acceptance of PDF, TXT, and DOCX file types.</idea>
+      <idea acId="FR-CIP-1">Test rejection and error message display for unsupported file types.</idea>
+      <idea acId="FR-CIP-1">Test rejection and error message display for files exceeding 20MB.</idea>
+      <idea acId="FR-CIP-1">Test that the UI correctly displays the selected file's name and type.</idea>
+      <idea acId="FR-CIP-1">Test frontend correctly sends file data using multipart/form-data to the backend.</idea>
+      <idea acId="FR-CIP-1">Test backend successfully receives, validates, and stores the uploaded file in Supabase Storage.</idea>
+      <idea acId="FR-CIP-1">Test frontend receives a confirmation with a document_id upon successful upload and storage.</idea>
+    </ideas>
+  </tests>
+</story-context>

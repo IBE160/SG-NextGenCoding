@@ -1,0 +1,2 @@
+The next task requires manual intervention: "Enable RLS: Enable Row Level Security on the `profiles` table in Supabase."
+Please enable Row Level Security on the `profiles` table in your Supabase project.

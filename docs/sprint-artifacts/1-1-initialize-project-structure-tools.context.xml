@@ -1,0 +1,186 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>1</storyId>
+    <title>initialize-project-structure-tools</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>As a developer,</asA>
+    <iWant>I want a well-defined project structure with essential development tools configured,</iWant>
+    <soThat>So that I can start coding efficiently and maintain consistency across the team.</soThat>
+    <tasks>
+      <task group="Project Scaffolding" ac-refs="1, 2">
+        <subtask>Create a new repository from `https://github.com/michaeltroya/supa-next-starter`.</subtask>
+        <subtask>Clone the new repository to create the `frontend` directory.</subtask>
+        <subtask>Create the `backend` directory.</subtask>
+        <subtask>Initialize a new Python project in the `backend` directory using `poetry init` (or `uv venv`).</subtask>
+        <subtask>Create the `/shared` directory.</subtask>
+        <subtask>Verify `package.json` for frontend and `pyproject.toml` (or `requirements.txt`) for backend are correctly configured. (AC: #2)</subtask>
+      </task>
+      <task group="Dependency Installation" ac-refs="2">
+        <subtask>Run `pnpm install` in the `frontend` directory to install dependencies.</subtask>
+        <subtask>Add `fastapi` and `uvicorn` as dependencies in the `backend` directory using `poetry add fastapi uvicorn`.</subtask>
+      </task>
+      <task group="CI/CD Pipeline" ac-refs="3">
+        <subtask>Create a basic GitHub Actions workflow file in `.github/workflows/` to deploy to Vercel.</subtask>
+        <subtask>Configure Vercel project settings for frontend and backend deployments.</subtask>
+        <subtask>Test the CI/CD pipeline with a push to a test branch.</subtask>
+      </task>
+      <task group="Database and Auth Integration" ac-refs="4, 5, 6">
+        <subtask>Set up a new project in Supabase.</subtask>
+        <subtask>Create `users` and `files` tables in Supabase. (AC: #6)</subtask>
+        <subtask>Enable Row Level Security (RLS) on the tables. (AC: #6)</subtask>
+        <subtask>Add Supabase connection details to `.env.example` files in both `frontend` and `backend`. (AC: #5)</subtask>
+        <subtask>Implement a Supabase client in the backend to verify connection. (AC: #4)</subtask>
+      </task>
+      <task group="Backend Health Check" ac-refs="7">
+        <subtask>Create a `GET /api/v1/health` endpoint in the FastAPI backend.</subtask>
+        <subtask>Implement logic to check database connectivity.</subtask>
+      </task>
+      <task group="UI Foundation" ac-refs="8, 9">
+        <subtask>Verify the basic Next.js application from the starter template runs.</subtask>
+        <subtask>Create a basic responsive layout with a header, main content, and footer. (AC: #8)</subtask>
+        <subtask>Confirm Tailwind CSS and Shadcn UI are correctly configured and can be used for styling. (AC: #9)</subtask>
+      </task>
+      <task group="Version Control & Environment" ac-refs="5">
+        <subtask>Create/update `.gitignore` to include necessary exclusions (e.g., `node_modules`, `__pycache__`, `.env` files).</subtask>
+        <subtask>Create `.env.example` files in both `frontend` and `backend` directories with placeholder variables for Supabase keys and other secrets.</subtask>
+      </task>
+      <task group="Testing and Validation" ac-refs="7, 3, 4, 8, 9, 6">
+        <subtask>(AC: #7) Write a unit test for the `/api/v1/health` endpoint.</subtask>
+        <subtask>(AC: #3) Manually trigger the CI/CD pipeline and verify successful deployment to Vercel.</subtask>
+        <subtask>(AC: #4) Write a script or test to confirm the backend can connect to the Supabase database.</subtask>
+        <subtask>(AC: #8, #9) Manually inspect the deployed frontend to verify the basic layout and that Tailwind/Shadcn styles are applied.</subtask>
+        <subtask>(AC: #6) Manually inspect the Supabase dashboard to confirm tables and RLS policies are created.</subtask>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <item id="1">The repository must contain distinct `frontend` and `backend` directories.</item>
+    <item id="2">The frontend and backend must have their own dependency management files (`package.json` and `pyproject.toml`/`requirements.txt`).</item>
+    <item id="3">A CI/CD pipeline in GitHub Actions must successfully deploy the frontend and backend to Vercel on a push to `main`.</item>
+    <item id="4">The application must successfully connect to the Supabase database.</item>
+    <item id="5">Supabase environment variables must be securely managed and not exposed in the codebase.</item>
+    <item id="6">The `users` and `files` tables must be created in Supabase with RLS enabled.</item>
+    <item id="7">The backend must provide a `GET /api/v1/health` endpoint that returns a `200 OK` status when the service is healthy.</item>
+    <item id="8">The frontend must render a basic responsive layout with a header, main content area, and footer.</item>
+    <item id="9">Tailwind CSS and Shadcn UI must be integrated and functional in the Next.js application.</item>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/PRD.md</path>
+        <title>Product Requirements Document</title>
+        <section>Web App Specific Requirements</section>
+        <snippet>The ibe160 application will use Next.js 14+ (App Router) with TypeScript, Tailwind CSS, and Shadcn UI for the frontend. The backend will be FastAPI (Python). Supabase will manage the PostgreSQL database, and Gemini 2.5 Pro/Flash will be integrated for AI. Deployment will utilize Vercel for both frontend and backend.</snippet>
+      </doc>
+      <doc>
+        <path>docs/PRD.md</path>
+        <title>Product Requirements Document</title>
+        <section>API Specification</section>
+        <snippet>The backend, powered by FastAPI, will provide a RESTful API for user management, file uploads, summary generation, quiz generation, quiz attempts, and user history/review functionality.</snippet>
+      </doc>
+      <doc>
+        <path>docs/PRD.md</path>
+        <title>Product Requirements Document</title>
+        <section>Authentication &amp; Authorization</section>
+        <snippet>Supabase Auth will manage authentication using JWTs, email/password registration, login, verification, and password reset. Row Level Security (RLS) will be strictly enforced in Supabase to ensure robust authorization.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Executive Summary</section>
+        <snippet>The ibe160 application leverages Next.js for the frontend, FastAPI for the backend, and Supabase for database and authentication. The architecture emphasizes asynchronous AI processing, error handling, maintainability, and scalability.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Project Initialization</section>
+        <snippet>Project initialization involves using the `michaeltroya/supa-next-starter` template for the Next.js frontend, establishing a base architecture including Supabase integration, Tailwind CSS, Shadcn UI, TypeScript, Jest, ESLint, Prettier, and GitHub Actions for CI/CD.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Project Structure</section>
+        <snippet>The project will adopt a monorepo structure with distinct `frontend/` (Next.js), `backend/` (FastAPI), and `shared/` directories. It also includes dedicated folders for `docs/` and `.github/` for GitHub Actions CI/CD workflows.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Technology Stack Details</section>
+        <snippet>The core technology stack includes Next.js, TypeScript, React, Tailwind CSS, Shadcn UI for the frontend; FastAPI and Pydantic for the Python backend; Supabase for PostgreSQL database and authentication; Gemini 2.5 Pro/Flash for AI, and Vercel for deployment.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Development Environment</section>
+        <snippet>Development prerequisites include Node.js (pnpm) and Python (Poetry/uv). Frontend initialization uses the `michaeltroya/supa-next-starter` template, while backend setup involves `poetry init` and adding `fastapi` and `uvicorn` dependencies.</snippet>
+      </doc>
+      <doc>
+        <path>docs/design/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Design System Choice</section>
+        <snippet>The chosen design system is `shadcn/ui`, aligning with Next.js, TypeScript, and Tailwind CSS. Its component model provides granular control, lean bundle sizes, and high customizability, ensuring accessibility via Radix UI primitives.</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epic Breakdown</title>
+        <section>Epic 1: Foundation &amp; Core Platform</section>
+        <snippet>Epic 1 aims to establish the foundational technical infrastructure, deployment, security, and UI elements. This includes project setup, repository structure, deployment pipeline, Supabase integration, basic FastAPI API, initial Next.js/Tailwind/Shadcn UI, and user/file metadata persistence.</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epic Breakdown</title>
+        <section>Story 1.1: Initialize Project Structure &amp; Tools</section>
+        <snippet>This story focuses on establishing a well-defined project structure and configuring essential development tools. It involves initial project setup commands for Next.js (frontend) and Python (backend), creating a basic file structure to enable efficient and consistent team coding.</snippet>
+      </doc>
+    </docs>
+    <code></code>
+    <dependencies></dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>
+      <type>Naming Convention</type>
+      <description>API Endpoints: plural nouns, kebab-case. Route Parameters: {id} format. Database Tables/Columns: plural, snake_case. Frontend Components: PascalCase (components), kebab-case (file names).</description>
+      <source>docs/architecture.md#Naming-Conventions</source>
+    </constraint>
+    <constraint>
+      <type>Structure Pattern</type>
+      <description>Tests co-located with code. Frontend components organized by feature. Backend organized by domain/feature. Shared utilities in dedicated `lib/`, `core/`, or `shared/` directories.</description>
+      <source>docs/architecture.md#Structure-Patterns</source>
+    </constraint>
+    <constraint>
+      <type>Format Pattern</type>
+      <description>API Response Wrapper: {"data": ..., "message": ..., "status": ...} for success. API Error Format: {"error": {"message": ..., "code": ...}} for errors. Date Format in JSON: ISO 8601 strings.</description>
+      <source>docs/architecture.md#Format-Patterns</source>
+    </constraint>
+    <constraint>
+      <type>Consistency Rule</type>
+      <description>Code Formatting: ESLint/Prettier (frontend), Ruff (backend), with automated checks.</description>
+      <source>docs/architecture.md#Code-Formatting</source>
+    </constraint>
+  </constraints>
+  <interfaces></interfaces>
+  <tests>
+    <standards>Unit tests for both frontend and backend code to ensure individual components function correctly. Integration tests to verify interactions between frontend and backend API, and backend and AI service. End-to-end (E2E) tests to simulate user journeys like file upload, summary generation, and quiz taking. User Acceptance Testing (UAT) with beta testers. Tests will be co-located with the code.</standards>
+    <locations>
+      <location>frontend/tests/</location>
+      <location>backend/tests/</location>
+    </locations>
+    <ideas>
+      <idea ac-ref="7">Write a unit test for the `/api/v1/health` endpoint.</idea>
+      <idea ac-ref="3">Manually trigger the CI/CD pipeline and verify successful deployment to Vercel.</idea>
+      <idea ac-ref="4">Write a script or test to confirm the backend can connect to the Supabase database.</idea>
+      <idea ac-ref="8, 9">Manually inspect the deployed frontend to verify the basic layout and that Tailwind/Shadcn styles are applied.</idea>
+      <idea ac-ref="6">Manually inspect the Supabase dashboard to confirm tables and RLS policies are created.</idea>
+    </ideas>
+  </tests>
+</story-context>

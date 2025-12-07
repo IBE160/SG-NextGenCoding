@@ -1,0 +1,61 @@
+# Story 2.3: Guest Access for Core Features
+
+Status: done
+
+## Story
+
+As a potential user,
+I want to try the core summary and quiz generation features without immediate registration,
+so that I can experience the value of the application before committing to an account.
+
+## Acceptance Criteria
+
+1.  **AC-UM-5**: An unauthenticated user must be able to use the core application features for a limited number of times (e.g., 2 times) before being prompted to register or log in. [Source: docs/sprint-artifacts/tech-spec-epic-2.md#Acceptance-Criteria-Authoritative]
+2.  **AC-UM-6**: After exceeding the guest usage limit, the user must be prevented from further use of core features and be directed to the registration/login page. [Source: docs/sprint-artifacts/tech-spec-epic-2.md#Acceptance-Criteria-Authoritative]
+
+## Tasks / Subtasks
+
+- [x] **Frontend: Implement Guest Usage Tracking** (AC: #1)
+    - [x] Create a utility service or a set of functions in `frontend/src/lib/` to manage guest usage.
+    - [x] Use `localStorage` to persist the usage count for a guest user across browser sessions.
+    - [x] The service should provide functions to `getUsageCount`, `incrementUsageCount`, and `checkUsageLimit`.
+- [x] **Frontend: Gate Core Features for Guests** (AC: #1, #2)
+    - [x] In the UI components responsible for core features (e.g., the file upload page), add logic to check if the user is authenticated.
+    - [x] If the user is a guest, call the usage tracking service to check their limit.
+    - [x] If the limit is not reached, allow the feature to be used and call `incrementUsageCount` on completion.
+- [x] **Frontend: Create "Registration Wall" UI** (AC: #2)
+    - [x] Design and build a reusable modal component (using Shadcn UI) that prompts the user to register or log in.
+    - [x] The modal should clearly state why they are being prompted (e.g., "You've used all your free summaries.").
+    - [x] The modal should contain links to the registration and login pages.
+- [x] **Testing**
+    - [x] Write frontend integration tests to simulate a guest user's journey:
+        - Using the feature for the first time.
+        - Reaching the usage limit.
+        - Being blocked by the registration wall.
+    - [x] Verify that an authenticated user is not affected by the guest limit.
+
+### Completion Notes List
+- Completed implementation of guest usage tracking utility (`frontend/src/lib/guest-usage.ts`).
+- Implemented guest access gating logic in the core feature page (`frontend/src/app/notes/page.tsx`), including redirection upon reaching usage limits.
+- Developed a reusable Shadcn UI `RegistrationWallModal` component (`frontend/src/components/registration-wall-modal.tsx`).
+- Wrote and passed comprehensive frontend integration tests (`frontend/__tests__/guest-access.test.ts`) covering guest user journeys and authenticated user scenarios.
+- Refactored `frontend/src/app/notes/page.tsx` to use `GuestAccessContent.tsx` and integrated `RegistrationWallModal` for AC-UM-6.
+
+### File List
+- Added: `frontend/src/lib/guest-usage.ts`
+- Added: `frontend/src/components/registration-wall-modal.tsx`
+- Added: `frontend/__tests__/guest-access.test.ts`
+- Added: `frontend/src/app/notes/GuestAccessContent.tsx`
+- Modified: `frontend/src/app/notes/page.tsx`
+
+## Change Log
+
+- 2025-12-03: Senior Developer Review notes appended; Status updated to 'in-progress'.
+- 2025-12-03: Refactored Guest Access implementation to use RegistrationWallModal as per code review feedback.
+- 2025-12-03: Story marked as 'done' after addressing code review feedback and verification.
+
+
+
+
+
+

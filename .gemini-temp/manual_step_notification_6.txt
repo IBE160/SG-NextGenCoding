@@ -1,0 +1,2 @@
+The next task requires manual intervention: "Create RLS `INSERT` Policy: Add a policy that allows authenticated users to `INSERT` rows where `user_id = auth.uid()`."
+Please create this RLS INSERT policy in your Supabase project.
