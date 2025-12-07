@@ -35,8 +35,6 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    "**/*.test.ts",
-    "**/*.test.tsx",
     "types.d.ts",
     "next-env.d.ts",
     ".next/types/**/*.ts",
@@ -48,6 +46,13 @@
     "out",
     "cypress",
     "**/*.cy.ts",
-    "**/*.cy.tsx"
+    "**/*.cy.tsx",
+    "jest.setup.ts",
+    "jest.config.js",
+    "jest.polyfills.js",
+    "__tests__",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "__mocks__"
   ]
 }
