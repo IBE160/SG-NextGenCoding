@@ -1,26 +1,27 @@
 // frontend/src/app/summaries/[document_id]/page.tsx
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { useParams } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { useSummaryStore } from '@/lib/store'
 import { getSummary, getSummaryStatus } from '@/services/documents'
 import { Button } from '@/components/ui/button'
-import { createBrowserClient } from '@/utils/supabase'
 import type { Session } from '@supabase/supabase-js'
 
 const SummaryDisplayPage = () => {
   const params = useParams()
   const documentId = params.document_id as string
-  const supabase = createBrowserClient()
   const [session, setSession] = useState<Session | null>(null)
   const [isLoadingSession, setIsLoadingSession] = useState(true)
 
   useEffect(() => {
     const getSession = async () => {
       try {
+        // Only import and create supabase client on client-side
+        const { createBrowserClient } = await import('@/utils/supabase')
+        const supabase = createBrowserClient()
         const {
           data: { session },
         } = await supabase.auth.getSession()
@@ -33,7 +34,7 @@ const SummaryDisplayPage = () => {
       }
     }
     getSession()
-  }, [supabase])
+  }, [])
 
   // Allow guest users - access token is optional
   const accessToken = session?.access_token || undefined

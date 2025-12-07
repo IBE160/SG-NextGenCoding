@@ -96,11 +96,10 @@ function LoginPageContent() {
   }
 
   const handleGuestLogin = () => {
-    // When guest continues, redirect to upload page (not login page)
-    // Upload page will detect no session and allow guest uploads
-    console.log('Guest login clicked - navigating to /upload')
-    // Use window.location.href instead of router.push to bypass any redirects
-    window.location.href = '/upload'
+    // When guest continues, redirect to dashboard
+    // Dashboard will detect no session and allow guest uploads with limit
+    console.log('Guest login clicked - navigating to /dashboard')
+    window.location.href = '/dashboard'
   }
 
   return (

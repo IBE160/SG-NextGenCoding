@@ -6,7 +6,7 @@ export function proxy(request: NextRequest) {
   const accessToken = request.cookies.get('access_token')?.value
 
   // Paths that are public and don't require authentication
-  // Keep this list minimal — do NOT include protected pages like `/dashboard` or `/notes`.
+  // Keep this list minimal — do NOT include protected pages like `/notes`.
   const publicPaths = [
     '/login',
     '/register',
@@ -14,6 +14,7 @@ export function proxy(request: NextRequest) {
     '/forgot-password',
     '/upload',
     '/summaries',
+    '/dashboard',
   ]
 
   // Let static assets, images, and API routes pass through
