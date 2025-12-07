@@ -13,32 +13,38 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 8
+
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
         cache: 'pnpm'
-        cache-dependency-path: 'frontend/pnpm-lock.yaml' # Assuming pnpm is used and lock file exists
-
-    - name: Install pnpm
-      run: npm install -g pnpm
+        cache-dependency-path: 'frontend/pnpm-lock.yaml'
 
     - name: Install Frontend Dependencies
-      run: pnpm install --dir frontend
+      run: pnpm install
+      working-directory: frontend
 
     - name: Build Frontend
-      run: pnpm build --dir frontend
+      run: pnpm build
+      working-directory: frontend
 
     - name: Start Frontend in background
       run: |
-        pnpm dev --dir frontend &
+        pnpm dev &
         echo "Waiting for frontend to start..."
-        sleep 10 # Give the server some time to start
+        sleep 10
         curl -s http://localhost:3000 > /dev/null || (echo "Frontend not responding!" && exit 1)
         echo "Frontend is up and running."
+      working-directory: frontend
 
     - name: Run Frontend Tests
-      run: pnpm test --dir frontend
+      run: pnpm test
+      working-directory: frontend
 
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -50,7 +56,8 @@ jobs:
       run: pip install poetry
 
     - name: Install Backend Dependencies
-      run: poetry install --directory backend
+      run: poetry install
+      working-directory: backend
 
     - name: Start Backend in background
       run: |
@@ -62,4 +69,5 @@ jobs:
       working-directory: backend
 
     - name: Run Backend Tests
-      run: poetry run pytest --directory backend
+      run: poetry run pytest
+      working-directory: backend
