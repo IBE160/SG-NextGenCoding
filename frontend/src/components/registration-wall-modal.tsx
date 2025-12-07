@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import {
   Dialog,
@@ -6,28 +6,32 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
 interface RegistrationWallModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  message?: string;
+  isOpen: boolean
+  onClose: () => void
+  message?: string
 }
 
-export function RegistrationWallModal({ isOpen, onClose, message }: RegistrationWallModalProps) {
-  const [showDialog, setShowDialog] = useState(isOpen);
+export function RegistrationWallModal({
+  isOpen,
+  onClose,
+  message,
+}: RegistrationWallModalProps) {
+  const [showDialog, setShowDialog] = useState(isOpen)
 
   useEffect(() => {
-    setShowDialog(isOpen);
-  }, [isOpen]);
+    setShowDialog(isOpen)
+  }, [isOpen])
 
   const handleClose = () => {
-    setShowDialog(false);
-    onClose();
-  };
+    setShowDialog(false)
+    onClose()
+  }
 
   return (
     <Dialog open={showDialog} onOpenChange={handleClose}>
@@ -35,7 +39,8 @@ export function RegistrationWallModal({ isOpen, onClose, message }: Registration
         <DialogHeader>
           <DialogTitle>Unlock Full Access</DialogTitle>
           <DialogDescription>
-            {message || "You've reached your limit for free feature usage. Register or log in to continue enjoying all our features!"}
+            {message ||
+              "You've reached your limit for free feature usage. Register or log in to continue enjoying all our features!"}
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
@@ -43,13 +48,15 @@ export function RegistrationWallModal({ isOpen, onClose, message }: Registration
             <Button className="w-full">Log In</Button>
           </Link>
           <Link href="/signup" passHref>
-            <Button variant="outline" className="w-full">Register</Button>
+            <Button variant="outline" className="w-full">
+              Register
+            </Button>
           </Link>
         </div>
-        <p className="text-sm text-center text-muted-foreground">
+        <p className="text-center text-sm text-muted-foreground">
           Don&apos;t worry, it only takes a minute!
         </p>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

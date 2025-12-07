@@ -101,15 +101,17 @@ Websites started using this template:
 
 This project utilizes [shadcn/ui](https://ui.shadcn.com/) for beautifully designed, re-usable components.
 
-*   **Adding Components**: To add a new Shadcn UI component, navigate to the `frontend/` directory and use the `shadcn` CLI:
-    ```bash
-    npx shadcn@latest add <component-name>
-    ```
-    Replace `<component-name>` with the desired component (e.g., `button`, `card`, `dialog`). This will add the component's code to `src/components/ui/`.
+- **Adding Components**: To add a new Shadcn UI component, navigate to the `frontend/` directory and use the `shadcn` CLI:
 
-*   **Extending Tailwind Theme**: The Tailwind CSS configuration is located in `tailwind.config.js` in the `frontend/` directory. You can extend the default Tailwind theme to define custom colors, typography, spacing, and more.
-    *   **Colors**: Customize your application's color palette by modifying the `theme.extend.colors` object in `tailwind.config.js`.
-    *   **Typography**: Adjust font families, sizes, and line heights in `theme.extend.fontFamily` and other typography-related properties.
+  ```bash
+  npx shadcn@latest add <component-name>
+  ```
+
+  Replace `<component-name>` with the desired component (e.g., `button`, `card`, `dialog`). This will add the component's code to `src/components/ui/`.
+
+- **Extending Tailwind Theme**: The Tailwind CSS configuration is located in `tailwind.config.js` in the `frontend/` directory. You can extend the default Tailwind theme to define custom colors, typography, spacing, and more.
+  - **Colors**: Customize your application's color palette by modifying the `theme.extend.colors` object in `tailwind.config.js`.
+  - **Typography**: Adjust font families, sizes, and line heights in `theme.extend.fontFamily` and other typography-related properties.
 
 ### Requirements
 

@@ -1,21 +1,27 @@
-"use client";
+'use client'
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 
 export default function AuthCallbackPage() {
-  const router = useRouter();
+  const router = useRouter()
 
   useEffect(() => {
     // Redirect to login after a few seconds
     const timer = setTimeout(() => {
-      router.push('/login');
-    }, 5000);
+      router.push('/login')
+    }, 5000)
 
-    return () => clearTimeout(timer);
-  }, [router]);
+    return () => clearTimeout(timer)
+  }, [router])
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-950">
@@ -38,5 +44,5 @@ export default function AuthCallbackPage() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

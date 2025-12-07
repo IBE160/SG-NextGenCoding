@@ -9,8 +9,12 @@
  */
 
 const { TextDecoder, TextEncoder } = require('node:util')
-const { ReadableStream, TransformStream, WritableStream } = require('stream/web')
-const { BroadcastChannel } = require('node:worker_threads');
+const {
+  ReadableStream,
+  TransformStream,
+  WritableStream,
+} = require('stream/web')
+const { BroadcastChannel } = require('node:worker_threads')
 
 Object.defineProperties(globalThis, {
   TextDecoder: { value: TextDecoder },
@@ -33,4 +37,3 @@ Object.defineProperties(globalThis, {
   Request: { value: Request, writable: true, configurable: true },
   Response: { value: Response, writable: true, configurable: true },
 })
-

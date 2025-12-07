@@ -26,14 +26,14 @@ const useRouter = jest.fn(() => ({
   query: {},
   route: '',
   // Add other properties if needed for specific tests
-}));
+}))
 
-const usePathname = jest.fn(() => '/mock-path');
-const useSearchParams = jest.fn(() => new URLSearchParams(''));
-const useServerInsertedHTML = jest.fn();
-const useSelectedLayoutSegment = jest.fn();
-const useSelectedLayoutSegments = jest.fn();
-const useCurrentEditor = jest.fn();
+const usePathname = jest.fn(() => '/mock-path')
+const useSearchParams = jest.fn(() => new URLSearchParams(''))
+const useServerInsertedHTML = jest.fn()
+const useSelectedLayoutSegment = jest.fn()
+const useSelectedLayoutSegments = jest.fn()
+const useCurrentEditor = jest.fn()
 
 module.exports = {
   useRouter,
@@ -43,4 +43,4 @@ module.exports = {
   useSelectedLayoutSegment,
   useSelectedLayoutSegments,
   useCurrentEditor,
-};
+}

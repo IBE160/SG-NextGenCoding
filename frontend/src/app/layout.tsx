@@ -22,11 +22,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html
-      lang="en"
-      style={{ colorScheme: 'dark' }}
-      suppressHydrationWarning
-    >
+    <html lang="en" style={{ colorScheme: 'dark' }} suppressHydrationWarning>
       <body className="bg-background text-foreground">
         {/* <NextTopLoader showSpinner={false} height={2} color="#2acf80" /> */}
         <ThemeProvider
@@ -36,14 +32,18 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ReactQueryProvider>
-            <div className="flex min-h-screen flex-col"> {/* Use div as main wrapper */}
+            <div className="flex min-h-screen flex-col">
+              {' '}
+              {/* Use div as main wrapper */}
               <header className="sticky top-0 z-50 w-full border-b bg-background/95 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60">
                 <div className="container flex h-14 items-center">
                   <h1 className="text-lg font-bold">ibe160 Application</h1>
                   {/* Potentially add navigation here later */}
                 </div>
               </header>
-              <main className="flex-grow"> {/* main tag for semantic content */}
+              <main className="flex-grow">
+                {' '}
+                {/* main tag for semantic content */}
                 {children}
               </main>
               <footer className="border-t py-6 md:py-0">

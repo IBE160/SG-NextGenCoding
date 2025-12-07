@@ -1,45 +1,45 @@
-'use client';
-import { useState, useEffect, useRef } from 'react';
+'use client'
+import { useState, useEffect, useRef } from 'react'
 
-type PollingCallback = () => Promise<boolean>;
+type PollingCallback = () => Promise<boolean>
 
 export const usePolling = (callback: PollingCallback, interval: number) => {
-  const [isPolling, setIsPolling] = useState(false);
-  const timeoutIdRef = useRef<NodeJS.Timeout | null>(null);
+  const [isPolling, setIsPolling] = useState(false)
+  const timeoutIdRef = useRef<NodeJS.Timeout | null>(null)
 
   const startPolling = () => {
-    setIsPolling(true);
-  };
+    setIsPolling(true)
+  }
 
   const stopPolling = () => {
-    setIsPolling(false);
+    setIsPolling(false)
     if (timeoutIdRef.current) {
-      clearTimeout(timeoutIdRef.current);
+      clearTimeout(timeoutIdRef.current)
     }
-  };
+  }
 
   useEffect(() => {
     if (!isPolling) {
-      return;
+      return
     }
 
     const poll = async () => {
-      const shouldStop = await callback();
+      const shouldStop = await callback()
       if (shouldStop) {
-        stopPolling();
+        stopPolling()
       } else {
-        timeoutIdRef.current = setTimeout(poll, interval);
+        timeoutIdRef.current = setTimeout(poll, interval)
       }
-    };
+    }
 
-    poll();
+    poll()
 
     return () => {
       if (timeoutIdRef.current) {
-        clearTimeout(timeoutIdRef.current);
+        clearTimeout(timeoutIdRef.current)
       }
-    };
-  }, [isPolling, callback, interval]);
+    }
+  }, [isPolling, callback, interval])
 
-  return { startPolling, stopPolling, isPolling };
-};
+  return { startPolling, stopPolling, isPolling }
+}

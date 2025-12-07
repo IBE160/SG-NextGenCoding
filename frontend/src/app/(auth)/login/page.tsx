@@ -1,39 +1,39 @@
 // frontend/src/app/(auth)/login/page.tsx
 
-"use client";
+'use client'
 
-import { useState } from "react";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { useState } from 'react'
+import Link from 'next/link'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 const formSchema = z.object({
-  email: z.string().email({ message: "Enter a valid email address." }),
+  email: z.string().email({ message: 'Enter a valid email address.' }),
   password: z
     .string()
-    .min(6, { message: "Password must be at least 6 characters." }),
-});
+    .min(6, { message: 'Password must be at least 6 characters.' }),
+})
 
-type FormData = z.infer<typeof formSchema>;
+type FormData = z.infer<typeof formSchema>
 
 export default function LoginPage() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const {
     register,
@@ -41,46 +41,46 @@ export default function LoginPage() {
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
-  });
+  })
 
-  const redirectTo = searchParams.get('redirectedFrom') || '/dashboard';
+  const redirectTo = searchParams.get('redirectedFrom') || '/dashboard'
 
   const onSubmit = async (data: FormData) => {
-    setIsLoading(true);
-    setError(null);
+    setIsLoading(true)
+    setError(null)
     try {
       // Call backend login endpoint
       const response = await fetch('/api/login', {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
         credentials: 'include', // ensure cookies from the server are accepted
-      });
+      })
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || "Login failed.");
+        const errorData = await response.json()
+        throw new Error(errorData.detail || 'Login failed.')
       }
 
       // Handle successful login (e.g., redirect)
-      console.log("Login successful. Redirecting to:", redirectTo); // Log redirectTo
-      window.location.href = redirectTo; // Changed to full page reload
+      console.log('Login successful. Redirecting to:', redirectTo) // Log redirectTo
+      window.location.href = redirectTo // Changed to full page reload
     } catch (err: any) {
-      setError(err.message || "An unexpected error occurred.");
+      setError(err.message || 'An unexpected error occurred.')
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleGuestLogin = () => {
     // When guest continues, redirect to upload page (not login page)
     // Upload page will detect no session and allow guest uploads
-    console.log("Guest login clicked - navigating to /upload");
+    console.log('Guest login clicked - navigating to /upload')
     // Use window.location.href instead of router.push to bypass any redirects
-    window.location.href = '/upload';
-  };
+    window.location.href = '/upload'
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-950">
@@ -93,9 +93,7 @@ export default function LoginPage() {
         </CardHeader>
         <CardContent>
           {error && (
-            <div className="mb-4 text-red-500 text-sm text-center">
-              {error}
-            </div>
+            <div className="mb-4 text-center text-sm text-red-500">{error}</div>
           )}
           <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
             <div className="grid gap-2">
@@ -104,10 +102,10 @@ export default function LoginPage() {
                 id="email"
                 type="email"
                 placeholder="m@example.com"
-                {...register("email")}
+                {...register('email')}
               />
               {errors.email && (
-                <p className="text-red-500 text-sm">{errors.email.message}</p>
+                <p className="text-sm text-red-500">{errors.email.message}</p>
               )}
             </div>
             <div className="grid gap-2">
@@ -120,15 +118,15 @@ export default function LoginPage() {
                   Forgot your password?
                 </Link>
               </div>
-              <Input id="password" type="password" {...register("password")} />
+              <Input id="password" type="password" {...register('password')} />
               {errors.password && (
-                <p className="text-red-500 text-sm">
+                <p className="text-sm text-red-500">
                   {errors.password.message}
                 </p>
               )}
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Logging in..." : "Login"}
+              {isLoading ? 'Logging in...' : 'Login'}
             </Button>
           </form>
           <div className="mt-4 grid gap-4">
@@ -140,7 +138,7 @@ export default function LoginPage() {
               Or continue as guest
             </Button>
             <div className="text-center text-sm">
-              Don&apos;t have an account?{" "}
+              Don&apos;t have an account?{' '}
               <Link href="/register" className="underline">
                 Sign up
               </Link>
@@ -149,5 +147,5 @@ export default function LoginPage() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

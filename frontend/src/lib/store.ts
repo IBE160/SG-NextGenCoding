@@ -1,18 +1,18 @@
 // frontend/src/lib/store.ts
-import { create } from 'zustand';
+import { create } from 'zustand'
 
 interface SummaryData {
-  text: string | null;
-  loading: boolean;
-  error: string | null;
+  text: string | null
+  loading: boolean
+  error: string | null
 }
 
 interface SummaryState {
-  summaries: Record<string, SummaryData>;
-  addSummary: (documentId: string, text: string | null) => void;
-  setSummaryLoading: (documentId: string, loading: boolean) => void;
-  setSummaryError: (documentId: string, error: string | null) => void;
-  getSummaryById: (documentId: string) => SummaryData | undefined;
+  summaries: Record<string, SummaryData>
+  addSummary: (documentId: string, text: string | null) => void
+  setSummaryLoading: (documentId: string, loading: boolean) => void
+  setSummaryError: (documentId: string, error: string | null) => void
+  getSummaryById: (documentId: string) => SummaryData | undefined
 }
 
 export const useSummaryStore = create<SummaryState>((set, get) => ({
@@ -47,4 +47,4 @@ export const useSummaryStore = create<SummaryState>((set, get) => ({
       },
     })),
   getSummaryById: (documentId) => get().summaries[documentId],
-}));
+}))
