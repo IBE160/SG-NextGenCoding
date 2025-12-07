@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<story_context>
+  <story>
+    <as_a>user</as_a>
+    <i_want>to submit my answers and see my performance</i_want>
+    <so_that>I can identify my knowledge gaps</so_that>
+  </story>
+  <acceptance_criteria>
+    <criterion>Given I have completed a quiz, When I submit my answers, Then the system compares my answers to the correct answers.</criterion>
+    <criterion>My score is displayed (e.g., number correct out of total).</criterion>
+    <criterion>I can review which questions I answered correctly or incorrectly.</criterion>
+  </acceptance_criteria>
+  <tasks>
+    <task id="1" ac_refs="1,2,3">Develop Backend for Answer Submission</task>
+    <subtask parent="1" id="1.1">Create a FastAPI endpoint to receive quiz answers.</subtask>
+    <subtask parent="1" id="1.2">Implement logic to compare user answers against the correct answers and calculate a score.</subtask>
+    <subtask parent="1" id="1.3">Return the score and a detailed breakdown of correct/incorrect answers.</subtask>
+    <task id="2" ac_refs="2,3">Create Frontend for Results Display</task>
+    <subtask parent="2" id="2.1">Develop a ResultsView component in React to display the quiz outcome.</subtask>
+    <subtask parent="2" id="2.2">Fetch and display the score prominently.</subtask>
+    <subtask parent="2" id="2.3">Render the list of questions, highlighting the user's answer and the correct answer for each.</subtask>
+  </tasks>
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epic Breakdown</title>
+        <section>Story 4.3: Quiz Answer Submission and Basic Results</section>
+        <snippet>Defines the user story, acceptance criteria, and technical notes for implementing the quiz submission feature.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/tech-spec-epic-4.md</path>
+        <title>Epic Technical Specification: Interactive Quiz Generation &amp; Feedback</title>
+        <section>APIs and Interfaces - Submit Quiz</section>
+        <snippet>Specifies the `POST /api/v1/quizzes/{quiz_id}/submit` endpoint, including request body and success response format.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Project Structure</section>
+        <snippet>Outlines the overall project structure for frontend and backend, guiding where to place new components, services, and APIs.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file>
+        <path>backend/app/api/quizzes/main.py</path>
+        <kind>API Endpoint</kind>
+        <symbol>submit_quiz</symbol>
+        <reason>The existing FastAPI endpoint that handles the quiz submission logic. This is the target for the frontend to call.</reason>
+      </file>
+      <file>
+        <path>backend/app/services/ai_generation/quiz_generator.py</path>
+        <kind>Service</kind>
+        <symbol>grade_quiz</symbol>
+        <reason>The existing service function that contains the business logic for grading the quiz answers against the correct ones.</reason>
+      </file>
+      <file>
+        <path>frontend/src/components/quiz/QuizView.tsx</path>
+        <kind>Component</kind>
+        <symbol>QuizView</symbol>
+        <reason>The existing React component that displays the quiz. The `onSubmit` prop must be wired to call the `submitQuiz` service.</reason>
+      </file>
+      <file>
+        <path>frontend/src/services/quizzes.ts</path>
+        <kind>Service</kind>
+        <symbol>submitQuiz</symbol>
+        <reason>The existing frontend service function responsible for making the API call to the backend submission endpoint.</reason>
+      </file>
+    </code>
+    <dependencies>
+      <ecosystem name="frontend">
+        <package>axios</package>
+        <package>zustand</package>
+      </ecosystem>
+      <ecosystem name="backend">
+        <package>fastapi</package>
+        <package>sqlmodel</package>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+  <interfaces>
+    <interface>
+      <name>Quiz Submission</name>
+      <kind>REST Endpoint</kind>
+      <signature>POST /api/v1/quizzes/{quiz_id}/submit</signature>
+      <path>backend/app/api/quizzes/main.py</path>
+    </interface>
+  </interfaces>
+  <constraints>
+    <constraint>Backend logic should be placed in the `grade_quiz` service function.</constraint>
+    <constraint>Frontend state should be managed via the `useQuizStore`.</constraint>
+    <constraint>A new `ResultsView.tsx` component should be created to display the results.</constraint>
+  </constraints>
+  <tests>
+    <standards>
+      Backend tests use `pytest` and `httpx` for integration testing of API endpoints. Frontend tests use `jest`, `@testing-library/react` and `msw` to mock API calls.
+    </standards>
+    <locations>
+      <location>backend/tests/test_quizzes.py</location>
+      <location>frontend/__tests__/quizzes/quizzes.service.test.ts</location>
+    </locations>
+    <ideas>
+      <idea ac_ref="1,2">Write a backend integration test (`test_submit_quiz_success` in `test_quizzes.py`) that sends a payload of answers to the submission endpoint and asserts the returned score is correct.</idea>
+      <idea ac_ref="3">Write a frontend component test for `ResultsView.tsx` that renders a mock results payload and verifies the score and answer breakdown are displayed correctly.</idea>
+      <idea ac_ref="1">Write a frontend service test (`quizzes.service.test.ts`) that mocks the `axios.post` call for quiz submission and ensures the correct data is returned.</idea>
+    </ideas>
+  </tests>
+</story_context>
