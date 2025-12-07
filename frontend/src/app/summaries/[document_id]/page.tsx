@@ -8,6 +8,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { useSummaryStore } from '@/lib/store'
 import { getSummary, getSummaryStatus } from '@/services/documents'
 import { Button } from '@/components/ui/button'
+import { GenerateQuizButton } from '@/components/quiz'
 import type { Session } from '@supabase/supabase-js'
 
 const SummaryDisplayPage = () => {
@@ -158,10 +159,15 @@ const SummaryDisplayPage = () => {
       <div className="prose lg:prose-xl dark:prose-invert">
         <ReactMarkdown>{summaryData.text}</ReactMarkdown>
       </div>
-      <div className="mt-4 flex gap-2">
+      <div className="mt-4 flex gap-2 flex-wrap">
         <CopyToClipboard text={summaryData.text} onCopy={() => setCopied(true)}>
           <Button>{copied ? 'Copied!' : 'Copy Summary'}</Button>
         </CopyToClipboard>
+        <GenerateQuizButton 
+          documentId={documentId} 
+          accessToken={accessToken}
+          numQuestions={5}
+        />
         <Button variant="outline" onClick={() => window.location.href = '/dashboard'}>
           Back to Dashboard
         </Button>

@@ -15,6 +15,7 @@ export function proxy(request: NextRequest) {
     '/upload',
     '/summaries',
     '/dashboard',
+    '/quizzes',
   ]
 
   // Let static assets, images, and API routes pass through
