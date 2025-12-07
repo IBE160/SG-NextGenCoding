@@ -46,14 +46,14 @@ jobs:
       run: pnpm test
       working-directory: frontend
 
+    - name: Install Poetry
+      run: pipx install poetry
+
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10' # Or desired version
+        python-version: '3.10'
         cache: 'poetry'
-
-    - name: Install Poetry
-      run: pip install poetry
 
     - name: Install Backend Dependencies
       run: poetry install
