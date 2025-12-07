@@ -70,11 +70,10 @@ async def run_text_extraction(
             # 4. If text extraction is successful, trigger summary generation
             if extracted_text:
                 logger.info(f"Triggering summary generation for document_id: {document_id}")
-                # Use user_id if available, otherwise use a placeholder for guest uploads
-                summary_user_id = user_id if user_id else document_id  # Use document_id as fallback for guest users
+                # Pass user_id as-is (None for guests)
                 await generate_summary(
                     document_id=document.id,
-                    user_id=summary_user_id,
+                    user_id=user_id,  # None for guest users is now supported
                     extracted_text=extracted_text,
                     session=db_session # pass the existing session
                 )

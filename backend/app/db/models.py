@@ -37,7 +37,7 @@ class Summary(SQLModel, table=True):
 
     id: Optional[UUID] = Field(default_factory=uuid4, primary_key=True)
     document_id: UUID = Field(foreign_key="documents.id")
-    user_id: UUID = Field(foreign_key="profiles.user_id")
+    user_id: Optional[UUID] = Field(default=None)  # Optional for guest users, no foreign key
     summary_text: str = Field(sa_column=Column(Text, nullable=False))
     generated_at: datetime = Field(default_factory=datetime.utcnow)
     ai_model: str = Field(default="gemini-1.5-flash", sa_column=Column(Text, nullable=False))
