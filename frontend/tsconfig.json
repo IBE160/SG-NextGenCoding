@@ -45,6 +45,9 @@
   "exclude": [
     "node_modules",
     ".next",
-    "out"
+    "out",
+    "cypress",
+    "**/*.cy.ts",
+    "**/*.cy.tsx"
   ]
 }
