@@ -54,7 +54,7 @@ development_status:
   3-4-display-summary-in-user-interface: in-progress
   epic-3-retrospective: optional
     epic-4: contexted
-  4-1-ai-quiz-generation-integration: backlog
+  4-1-ai-quiz-generation-integration: ready-for-dev
   4-2-interactive-quiz-user-interface: backlog
   4-3-quiz-answer-submission-basic-results: backlog
   4-4-content-quality-feedback-mechanism: backlog
