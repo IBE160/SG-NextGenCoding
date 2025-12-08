@@ -91,7 +91,8 @@ const HistoryPage: React.FC = () => {
     if (item.type === 'summary') {
       return `/summaries/${item.document_id}`
     } else {
-      return `/quizzes/${item.id}`
+      // Link to quiz review page (Story 5.2)
+      return `/history/quiz/${item.id}`
     }
   }
 

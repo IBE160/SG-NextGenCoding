@@ -13,7 +13,7 @@ from sqlmodel import select
 from gotrue.types import User
 
 from app.db.session import get_session
-from app.db.models import Document, Summary, Quiz
+from app.db.models import Document, Summary, Quiz, Question, UserAnswer
 from app.dependencies import get_current_user
 from app.schemas.history import (
     SummaryHistoryItem,
@@ -23,6 +23,9 @@ from app.schemas.history import (
     CombinedHistoryItem,
     CombinedHistoryResponse,
     HistoryItemType,
+    QuestionReviewItem,
+    QuizReviewDetail,
+    QuizReviewResponse,
 )
 
 router = APIRouter()
@@ -301,4 +304,151 @@ async def get_combined_history(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to retrieve history"
+        )
+
+
+@router.get(
+    "/history/quizzes/{quiz_id}",
+    response_model=QuizReviewResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Get detailed quiz review with user's answers",
+    description="Retrieves detailed quiz results including all questions, user's answers, and correct answers."
+)
+async def get_quiz_review(
+    quiz_id: UUID,
+    session: AsyncSession = Depends(get_session),
+    current_user: Optional[User] = Depends(get_current_user),
+):
+    """
+    Retrieve detailed quiz review for a specific quiz.
+    
+    Returns the quiz with all questions, the user's submitted answers,
+    correct answers, and score calculation.
+    
+    - **quiz_id**: The UUID of the quiz to review
+    """
+    if not current_user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication required to view quiz review"
+        )
+    
+    user_id = UUID(current_user.id)
+    logger.info(f"Fetching quiz review for quiz {quiz_id} by user {user_id}")
+    
+    try:
+        # Query quiz with document join
+        quiz_query = (
+            select(Quiz, Document)
+            .join(Document, Quiz.document_id == Document.id)
+            .where(Quiz.id == quiz_id)
+        )
+        quiz_result = await session.execute(quiz_query)
+        quiz_row = quiz_result.first()
+        
+        if not quiz_row:
+            logger.warning(f"Quiz {quiz_id} not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Quiz not found"
+            )
+        
+        quiz, document = quiz_row
+        
+        # Check if user owns this quiz
+        if quiz.user_id != user_id:
+            logger.warning(f"User {user_id} attempted to access quiz {quiz_id} owned by {quiz.user_id}")
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You don't have permission to view this quiz"
+            )
+        
+        # Query questions for this quiz
+        questions_query = (
+            select(Question)
+            .where(Question.quiz_id == quiz_id)
+            .order_by(Question.order_index)
+        )
+        questions_result = await session.execute(questions_query)
+        questions = questions_result.scalars().all()
+        
+        # Query user answers for this quiz
+        answers_query = (
+            select(UserAnswer)
+            .where(UserAnswer.quiz_id == quiz_id)
+            .where(UserAnswer.user_id == user_id)
+        )
+        answers_result = await session.execute(answers_query)
+        user_answers = answers_result.scalars().all()
+        
+        # Create a map of question_id -> user_answer
+        answer_map = {answer.question_id: answer for answer in user_answers}
+        
+        # Build question review items
+        question_items: List[QuestionReviewItem] = []
+        correct_count = 0
+        
+        for question in questions:
+            user_answer = answer_map.get(question.id)
+            
+            # Parse options from JSON string if present
+            options = None
+            if question.options:
+                import json
+                try:
+                    options = json.loads(question.options)
+                except json.JSONDecodeError:
+                    options = None
+            
+            is_correct = user_answer.is_correct if user_answer else None
+            if is_correct:
+                correct_count += 1
+            
+            question_items.append(
+                QuestionReviewItem(
+                    id=question.id,
+                    question_text=question.question_text,
+                    question_type=question.question_type,
+                    options=options,
+                    correct_answer=question.correct_answer,
+                    explanation=question.explanation,
+                    user_answer=user_answer.user_answer if user_answer else None,
+                    is_correct=is_correct,
+                    order_index=question.order_index,
+                )
+            )
+        
+        # Calculate score percentage
+        total_questions = len(questions)
+        score_percentage = (correct_count / total_questions * 100) if total_questions > 0 else 0.0
+        
+        # Build the response
+        quiz_detail = QuizReviewDetail(
+            id=quiz.id,
+            document_id=quiz.document_id,
+            document_title=document.filename,
+            title=quiz.title,
+            status=quiz.status,
+            total_questions=total_questions,
+            score=correct_count,
+            score_percentage=round(score_percentage, 1),
+            ai_model=quiz.ai_model,
+            created_at=quiz.created_at,
+            questions=question_items,
+        )
+        
+        logger.info(f"Retrieved quiz review for quiz {quiz_id}: {correct_count}/{total_questions} correct")
+        
+        return QuizReviewResponse(
+            data=quiz_detail,
+            message=f"Quiz review retrieved: {correct_count}/{total_questions} correct ({round(score_percentage, 1)}%)"
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching quiz review for quiz {quiz_id}: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to retrieve quiz review"
         )

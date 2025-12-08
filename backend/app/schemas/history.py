@@ -83,3 +83,46 @@ class CombinedHistoryResponse(BaseModel):
     message: str = "History retrieved successfully"
     status: str = "success"
     total: int = Field(..., description="Total number of history items")
+
+
+# ============================================================================
+# Detailed Quiz Review Schemas (Story 5.2)
+# ============================================================================
+
+class QuestionReviewItem(BaseModel):
+    """Schema for a question in quiz review, including user's answer."""
+    model_config = ConfigDict(from_attributes=True)
+    
+    id: UUID = Field(..., description="Question ID")
+    question_text: str = Field(..., description="The question text")
+    question_type: str = Field(..., description="Type: multiple_choice, true_false, short_answer")
+    options: Optional[List[str]] = Field(None, description="Answer options for multiple choice")
+    correct_answer: str = Field(..., description="The correct answer")
+    explanation: Optional[str] = Field(None, description="Explanation for the answer")
+    user_answer: Optional[str] = Field(None, description="User's submitted answer")
+    is_correct: Optional[bool] = Field(None, description="Whether user's answer was correct")
+    order_index: int = Field(default=0, description="Question order in quiz")
+
+
+class QuizReviewDetail(BaseModel):
+    """Schema for detailed quiz review response."""
+    model_config = ConfigDict(from_attributes=True)
+    
+    id: UUID = Field(..., description="Quiz ID")
+    document_id: UUID = Field(..., description="Source document ID")
+    document_title: str = Field(..., description="Source document filename")
+    title: str = Field(..., description="Quiz title")
+    status: str = Field(..., description="Quiz status")
+    total_questions: int = Field(..., description="Total number of questions")
+    score: int = Field(..., description="Number of correct answers")
+    score_percentage: float = Field(..., description="Score as percentage (0-100)")
+    ai_model: str = Field(..., description="AI model used to generate quiz")
+    created_at: datetime = Field(..., description="When the quiz was created")
+    questions: List[QuestionReviewItem] = Field(..., description="Questions with user answers")
+
+
+class QuizReviewResponse(BaseModel):
+    """Response wrapper for detailed quiz review."""
+    data: QuizReviewDetail
+    message: str = "Quiz review retrieved successfully"
+    status: str = "success"

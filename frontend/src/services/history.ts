@@ -140,3 +140,65 @@ export const getCombinedHistory = async (
     throw new Error(`An unexpected error occurred: ${error.message}`)
   }
 }
+
+// ============================================================================
+// Quiz Review Types and Functions (Story 5.2)
+// ============================================================================
+
+export interface QuestionReviewItem {
+  id: string
+  question_text: string
+  question_type: string
+  options: string[] | null
+  correct_answer: string
+  explanation: string | null
+  user_answer: string | null
+  is_correct: boolean | null
+  order_index: number
+}
+
+export interface QuizReviewDetail {
+  id: string
+  document_id: string
+  document_title: string
+  title: string
+  status: string
+  total_questions: number
+  score: number
+  score_percentage: number
+  ai_model: string
+  created_at: string
+  questions: QuestionReviewItem[]
+}
+
+export interface QuizReviewResponse {
+  data: QuizReviewDetail
+  message: string
+  status: string
+}
+
+/**
+ * Get detailed quiz review with user's answers
+ */
+export const getQuizReview = async (
+  accessToken: string,
+  quizId: string
+): Promise<QuizReviewResponse> => {
+  const headers: Record<string, string> = {
+    Authorization: `Bearer ${accessToken}`,
+  }
+
+  try {
+    const response = await axios.get<QuizReviewResponse>(
+      `/api/v1/history/quizzes/${quizId}`,
+      { headers }
+    )
+    return response.data
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      const errorMessage = error.response?.data?.detail || error.message
+      throw new Error(`Failed to fetch quiz review: ${errorMessage}`)
+    }
+    throw new Error(`An unexpected error occurred: ${error.message}`)
+  }
+}

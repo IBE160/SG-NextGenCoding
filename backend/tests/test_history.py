@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 
 from app.main import app as fastapi_app
 from app.db.session import get_session
-from app.db.models import Document, Summary, Quiz
+from app.db.models import Document, Summary, Quiz, Question, UserAnswer
 from app.supabase_client import get_supabase_admin_client
 from app.dependencies import get_current_user
 
@@ -361,3 +361,224 @@ class TestCombinedHistory:
         
         assert len(data["data"]) == 3
         assert data["total"] == 6
+
+
+# Additional fixtures for quiz review tests
+@pytest_asyncio.fixture
+async def quiz_with_questions(db_session: AsyncSession, sample_documents: list[Document]) -> Quiz:
+    """Create a quiz with questions for testing quiz review."""
+    import json
+    
+    doc = sample_documents[0]
+    quiz = Quiz(
+        id=uuid4(),
+        document_id=doc.id,
+        user_id=TEST_USER_ID,
+        title="Test Quiz with Questions",
+        status="ready",
+        total_questions=3,
+        ai_model="gemini-2.5-flash",
+        created_at=datetime.utcnow()
+    )
+    db_session.add(quiz)
+    await db_session.commit()
+    await db_session.refresh(quiz)
+    
+    # Add questions
+    questions_data = [
+        {
+            "question_text": "What is the capital of France?",
+            "question_type": "multiple_choice",
+            "options": json.dumps(["London", "Paris", "Berlin", "Madrid"]),
+            "correct_answer": "Paris",
+            "explanation": "Paris is the capital and largest city of France.",
+            "order_index": 0,
+        },
+        {
+            "question_text": "Is the Earth flat?",
+            "question_type": "true_false",
+            "options": json.dumps(["True", "False"]),
+            "correct_answer": "False",
+            "explanation": "The Earth is an oblate spheroid.",
+            "order_index": 1,
+        },
+        {
+            "question_text": "What is 2 + 2?",
+            "question_type": "short_answer",
+            "options": None,
+            "correct_answer": "4",
+            "explanation": "Basic arithmetic.",
+            "order_index": 2,
+        },
+    ]
+    
+    for q_data in questions_data:
+        question = Question(
+            id=uuid4(),
+            quiz_id=quiz.id,
+            **q_data,
+            created_at=datetime.utcnow()
+        )
+        db_session.add(question)
+    
+    await db_session.commit()
+    await db_session.refresh(quiz)
+    return quiz
+
+
+@pytest_asyncio.fixture
+async def quiz_with_answers(db_session: AsyncSession, quiz_with_questions: Quiz) -> Quiz:
+    """Create user answers for the quiz."""
+    from sqlmodel import select
+    
+    # Get questions for the quiz
+    result = await db_session.execute(
+        select(Question).where(Question.quiz_id == quiz_with_questions.id).order_by(Question.order_index)
+    )
+    questions = result.scalars().all()
+    
+    # Add user answers (2 correct, 1 wrong)
+    answers_data = [
+        {"user_answer": "Paris", "is_correct": True},  # Correct
+        {"user_answer": "True", "is_correct": False},   # Wrong
+        {"user_answer": "4", "is_correct": True},       # Correct
+    ]
+    
+    for question, answer_data in zip(questions, answers_data):
+        user_answer = UserAnswer(
+            id=uuid4(),
+            quiz_id=quiz_with_questions.id,
+            question_id=question.id,
+            user_id=TEST_USER_ID,
+            user_answer=answer_data["user_answer"],
+            is_correct=answer_data["is_correct"],
+            answered_at=datetime.utcnow()
+        )
+        db_session.add(user_answer)
+    
+    await db_session.commit()
+    return quiz_with_questions
+
+
+@pytest_asyncio.fixture
+async def other_user_quiz(db_session: AsyncSession, sample_documents: list[Document]) -> Quiz:
+    """Create a quiz owned by a different user."""
+    other_user_id = uuid4()  # Different user
+    doc = sample_documents[0]
+    
+    quiz = Quiz(
+        id=uuid4(),
+        document_id=doc.id,
+        user_id=other_user_id,
+        title="Other User's Quiz",
+        status="ready",
+        total_questions=2,
+        ai_model="gemini-2.5-flash",
+        created_at=datetime.utcnow()
+    )
+    db_session.add(quiz)
+    await db_session.commit()
+    await db_session.refresh(quiz)
+    return quiz
+
+
+class TestQuizReview:
+    """Tests for GET /api/v1/history/quizzes/{quiz_id} endpoint."""
+
+    @pytest.mark.asyncio
+    async def test_get_quiz_review_success(
+        self, authenticated_client: AsyncClient, quiz_with_answers: Quiz
+    ):
+        """Test successful quiz review retrieval."""
+        response = await authenticated_client.get(f"/api/v1/history/quizzes/{quiz_with_answers.id}")
+        
+        assert response.status_code == 200
+        data = response.json()
+        
+        assert data["status"] == "success"
+        assert "data" in data
+        
+        quiz_data = data["data"]
+        assert quiz_data["id"] == str(quiz_with_answers.id)
+        assert quiz_data["title"] == "Test Quiz with Questions"
+        assert quiz_data["total_questions"] == 3
+        assert quiz_data["score"] == 2  # 2 correct answers
+        assert quiz_data["score_percentage"] == pytest.approx(66.7, 0.1)
+        
+        # Check questions
+        questions = quiz_data["questions"]
+        assert len(questions) == 3
+        
+        # First question should be correct
+        assert questions[0]["question_text"] == "What is the capital of France?"
+        assert questions[0]["user_answer"] == "Paris"
+        assert questions[0]["is_correct"] is True
+        assert questions[0]["correct_answer"] == "Paris"
+        assert questions[0]["options"] == ["London", "Paris", "Berlin", "Madrid"]
+        
+        # Second question should be incorrect
+        assert questions[1]["is_correct"] is False
+
+    @pytest.mark.asyncio
+    async def test_get_quiz_review_not_found(
+        self, authenticated_client: AsyncClient
+    ):
+        """Test quiz review returns 404 for non-existent quiz."""
+        fake_id = uuid4()
+        response = await authenticated_client.get(f"/api/v1/history/quizzes/{fake_id}")
+        
+        assert response.status_code == 404
+        assert "Quiz not found" in response.json()["detail"]
+
+    @pytest.mark.asyncio
+    async def test_get_quiz_review_unauthorized(
+        self, guest_client: AsyncClient, quiz_with_answers: Quiz
+    ):
+        """Test quiz review requires authentication."""
+        response = await guest_client.get(f"/api/v1/history/quizzes/{quiz_with_answers.id}")
+        
+        assert response.status_code == 401
+        assert "Authentication required" in response.json()["detail"]
+
+    @pytest.mark.asyncio
+    async def test_get_quiz_review_forbidden(
+        self, authenticated_client: AsyncClient, other_user_quiz: Quiz
+    ):
+        """Test quiz review returns 403 for another user's quiz."""
+        response = await authenticated_client.get(f"/api/v1/history/quizzes/{other_user_quiz.id}")
+        
+        assert response.status_code == 403
+        assert "permission" in response.json()["detail"].lower()
+
+    @pytest.mark.asyncio
+    async def test_get_quiz_review_without_answers(
+        self, authenticated_client: AsyncClient, quiz_with_questions: Quiz
+    ):
+        """Test quiz review works when user hasn't answered yet."""
+        response = await authenticated_client.get(f"/api/v1/history/quizzes/{quiz_with_questions.id}")
+        
+        assert response.status_code == 200
+        data = response.json()
+        
+        quiz_data = data["data"]
+        assert quiz_data["score"] == 0
+        assert quiz_data["score_percentage"] == 0.0
+        
+        # Questions should have no user answers
+        for question in quiz_data["questions"]:
+            assert question["user_answer"] is None
+            assert question["is_correct"] is None
+
+    @pytest.mark.asyncio
+    async def test_get_quiz_review_includes_explanation(
+        self, authenticated_client: AsyncClient, quiz_with_answers: Quiz
+    ):
+        """Test quiz review includes explanations for questions."""
+        response = await authenticated_client.get(f"/api/v1/history/quizzes/{quiz_with_answers.id}")
+        
+        assert response.status_code == 200
+        data = response.json()
+        
+        questions = data["data"]["questions"]
+        assert questions[0]["explanation"] == "Paris is the capital and largest city of France."
+        assert questions[1]["explanation"] == "The Earth is an oblate spheroid."
