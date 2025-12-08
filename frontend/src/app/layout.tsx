@@ -5,6 +5,7 @@ import './globals.css'
 // import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import ReactQueryProvider from '@/providers/ReactQueryProvider'
 // import { Toaster } from '@/components/ui/toaster'
+import Link from 'next/link'
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -36,9 +37,18 @@ export default function RootLayout({
               {' '}
               {/* Use div as main wrapper */}
               <header className="sticky top-0 z-50 w-full border-b bg-background/95 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60">
-                <div className="container flex h-14 items-center">
-                  <h1 className="text-lg font-bold">ibe160 Application</h1>
-                  {/* Potentially add navigation here later */}
+                <div className="container flex h-14 items-center justify-between">
+                  <Link href="/dashboard" className="text-lg font-bold hover:opacity-80 transition-opacity">
+                    ibe160 Application
+                  </Link>
+                  <nav className="flex items-center gap-4">
+                    <Link href="/dashboard" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                      Dashboard
+                    </Link>
+                    <Link href="/history" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                      History
+                    </Link>
+                  </nav>
                 </div>
               </header>
               <main className="flex-grow">

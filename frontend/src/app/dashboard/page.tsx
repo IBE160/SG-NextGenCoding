@@ -2,14 +2,18 @@
 
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import FileUploadZone from '@/app/upload/components/FileUploadZone'
 import { uploadDocument, generateSummary, getSummaryStatus } from '@/services/documents'
 import { generateQuiz } from '@/services/quizzes'
+import { getSummaryHistory, getQuizHistory, type SummaryHistoryItem, type QuizHistoryItem } from '@/services/history'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ActionSelectionDialog } from '@/components/upload/ActionSelectionDialog'
+import { Spinner } from '@/components/ui/spinner'
+import { FileText, HelpCircle, Clock, ChevronRight, History } from 'lucide-react'
 
 const MAX_GUEST_UPLOADS = 2
 const GUEST_UPLOAD_KEY = 'guest_uploads_count'
@@ -31,6 +35,11 @@ const DashboardPage: React.FC = () => {
   const [uploadedFileName, setUploadedFileName] = useState<string>('')
   const [processingAction, setProcessingAction] = useState(false)
   const [accessToken, setAccessToken] = useState<string | null>(null)
+
+  // History state
+  const [recentSummaries, setRecentSummaries] = useState<SummaryHistoryItem[]>([])
+  const [recentQuizzes, setRecentQuizzes] = useState<QuizHistoryItem[]>([])
+  const [historyLoading, setHistoryLoading] = useState(false)
 
   useEffect(() => {
     const checkUserStatus = () => {
@@ -60,6 +69,31 @@ const DashboardPage: React.FC = () => {
 
     checkUserStatus()
   }, [])
+
+  // Fetch history for authenticated users
+  const fetchHistory = useCallback(async () => {
+    if (!accessToken) return
+    
+    setHistoryLoading(true)
+    try {
+      const [summariesResponse, quizzesResponse] = await Promise.all([
+        getSummaryHistory(accessToken, 5, 0),
+        getQuizHistory(accessToken, 5, 0)
+      ])
+      setRecentSummaries(summariesResponse.data)
+      setRecentQuizzes(quizzesResponse.data)
+    } catch (error) {
+      console.error('Error fetching history:', error)
+    } finally {
+      setHistoryLoading(false)
+    }
+  }, [accessToken])
+
+  useEffect(() => {
+    if (sessionLoaded && !isGuest && accessToken) {
+      fetchHistory()
+    }
+  }, [sessionLoaded, isGuest, accessToken, fetchHistory])
 
   const handleFileSelect = async (file: File) => {
     if (isGuest && guestUploadsCount >= MAX_GUEST_UPLOADS) {
@@ -308,37 +342,107 @@ const DashboardPage: React.FC = () => {
 
         {/* Recent Summaries Card */}
         <Card className="md:col-span-2 lg:col-span-2">
-          <CardHeader>
-            <CardTitle>📚 Recent Summaries</CardTitle>
-            <CardDescription>Your recently generated summaries</CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5" />
+                Recent Summaries
+              </CardTitle>
+              <CardDescription>Your recently generated summaries</CardDescription>
+            </div>
+            {!isGuest && recentSummaries.length > 0 && (
+              <Link href="/history">
+                <Button variant="ghost" size="sm">
+                  View All <ChevronRight className="h-4 w-4 ml-1" />
+                </Button>
+              </Link>
+            )}
           </CardHeader>
           <CardContent>
-            <div className="flex h-32 items-center justify-center rounded-lg border-2 border-dashed border-gray-200">
-              <p className="text-muted-foreground">
-                {isGuest 
-                  ? 'Log in to see your summary history'
-                  : 'No summaries yet. Upload a document to get started!'
-                }
-              </p>
-            </div>
+            {isGuest ? (
+              <div className="flex h-32 items-center justify-center rounded-lg border-2 border-dashed border-gray-200">
+                <p className="text-muted-foreground">Log in to see your summary history</p>
+              </div>
+            ) : historyLoading ? (
+              <div className="flex h-32 items-center justify-center">
+                <Spinner className="h-6 w-6" />
+              </div>
+            ) : recentSummaries.length === 0 ? (
+              <div className="flex h-32 items-center justify-center rounded-lg border-2 border-dashed border-gray-200">
+                <p className="text-muted-foreground">No summaries yet. Upload a document to get started!</p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {recentSummaries.slice(0, 3).map((summary) => (
+                  <Link key={summary.id} href={`/summaries/${summary.document_id}`}>
+                    <div className="flex items-center gap-3 p-3 rounded-lg border hover:bg-accent/50 transition-colors cursor-pointer">
+                      <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900">
+                        <FileText className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm truncate">{summary.document_title}</p>
+                        <p className="text-xs text-muted-foreground truncate">{summary.summary_preview}</p>
+                      </div>
+                      <div className="text-xs text-muted-foreground flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        {new Date(summary.generated_at).toLocaleDateString()}
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
 
         {/* Quiz History Card */}
         <Card>
-          <CardHeader>
-            <CardTitle>🧠 Quiz History</CardTitle>
-            <CardDescription>Your past quizzes and scores</CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <HelpCircle className="h-5 w-5" />
+                Quiz History
+              </CardTitle>
+              <CardDescription>Your past quizzes</CardDescription>
+            </div>
+            {!isGuest && recentQuizzes.length > 0 && (
+              <Link href="/history">
+                <Button variant="ghost" size="sm">
+                  <History className="h-4 w-4" />
+                </Button>
+              </Link>
+            )}
           </CardHeader>
           <CardContent>
-            <div className="flex h-32 items-center justify-center rounded-lg border-2 border-dashed border-gray-200">
-              <p className="text-sm text-muted-foreground">
-                {isGuest 
-                  ? 'Log in to see your quiz history'
-                  : 'No quizzes yet. Upload a document to get started!'
-                }
-              </p>
-            </div>
+            {isGuest ? (
+              <div className="flex h-32 items-center justify-center rounded-lg border-2 border-dashed border-gray-200">
+                <p className="text-sm text-muted-foreground">Log in to see your quiz history</p>
+              </div>
+            ) : historyLoading ? (
+              <div className="flex h-32 items-center justify-center">
+                <Spinner className="h-6 w-6" />
+              </div>
+            ) : recentQuizzes.length === 0 ? (
+              <div className="flex h-32 items-center justify-center rounded-lg border-2 border-dashed border-gray-200">
+                <p className="text-sm text-muted-foreground">No quizzes yet. Upload a document to get started!</p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {recentQuizzes.slice(0, 3).map((quiz) => (
+                  <Link key={quiz.id} href={`/quizzes/${quiz.id}`}>
+                    <div className="flex items-center gap-3 p-2 rounded-lg border hover:bg-accent/50 transition-colors cursor-pointer">
+                      <div className="p-1.5 rounded-lg bg-green-100 dark:bg-green-900">
+                        <HelpCircle className="h-3 w-3 text-green-600 dark:text-green-400" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-xs truncate">{quiz.title}</p>
+                        <p className="text-xs text-muted-foreground">{quiz.total_questions} questions</p>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
