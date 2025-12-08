@@ -1,0 +1,219 @@
+<story-context id="{bmad_folder}/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>5</epicId>
+    <storyId>5.1</storyId>
+    <title>View History of Summaries and Quizzes</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-12-08</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>C:\git\SG-NextGenCoding\docs\sprint-artifacts\5-1-view-history-summaries-quizzes.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>logged-in user</asA>
+    <iWant>to see a list of my past summaries and quizzes</iWant>
+    <soThat>I can easily access and review my previous learning materials.</soThat>
+    <tasks>
+- [ ] **Task 1: Implement Backend API Endpoint for History Retrieval**
+    - [ ] Subtask 1.1: Define Pydantic models for `SummaryHistoryItem` and `QuizHistoryItem` in `backend/app/schemas/history.py`.
+    - [ ] Subtask 1.2: Create FastAPI router `backend/app/api/history.py`.
+    - [ ] Subtask 1.3: Implement `GET /api/v1/history/summaries` endpoint to fetch summaries for authenticated user from Supabase.
+    - [ ] Subtask 1.4: Implement `GET /api/v1/history/quizzes` endpoint to fetch quizzes for authenticated user from Supabase.
+    - [ ] Subtask 1.5: Implement Supabase queries in `backend/app/db/` to retrieve chronological lists of summaries and quizzes filtered by `user_id`.
+    - [ ] Subtask 1.6: Add unit tests for history API endpoints using `pytest`.
+
+- [ ] **Task 2: Develop Frontend History/Dashboard UI**
+    - [ ] Subtask 2.1: Create `frontend/src/app/history/` directory and page component.
+    - [ ] Subtask 2.2: Integrate API calls to `GET /api/v1/history/summaries` and `GET /api/v1/history/quizzes` using Axios.
+    - [ ] Subtask 2.3: Design and implement UI components to display chronological list of summaries and quizzes.
+    - [ ] Subtask 2.4: Display basic details (date, document title, type) for each item.
+    - [ ] Subtask 2.5: Implement clickable items to navigate to full content view (linking to existing summary/quiz view pages or placeholders).
+    - [ ] Subtask 2.6: Implement loading states and error handling for API calls.
+    - [ ] Subtask 2.7: Add frontend unit tests for history components using `Jest` and `React Testing Library`.
+
+- [ ] **Task 3: Ensure Data Persistence and RLS**
+    - [ ] Subtask 3.1: Verify Supabase `summaries` and `quizzes` tables have `user_id` column and appropriate RLS policies configured to restrict access to owner. (FR-DM-1)
+    - [ ] Subtask 3.2: Confirm `documents` table also has `user_id` and RLS. (FR-DM-1)
+
+- [ ] **Task 4: Integration and E2E Testing**
+    - [ ] Subtask 4.1: Conduct integration tests to ensure data flow from frontend history UI to backend API and Supabase is correct.
+    - [ ] Subtask 4.2: Develop E2E test to simulate a logged-in user navigating to history, viewing the list, and clicking an item.
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1.  **Given** I am logged in,
+    **When** I navigate to my "History" or "Dashboard" section,
+    **Then** I see a chronological list of my generated summaries and quizzes.
+2.  **Given** a chronological list of summaries and quizzes is displayed,
+    **When** viewing each item in the list,
+    **Then** it shows basic details (e.g., date, document title, type).
+3.  **Given** a chronological list of summaries and quizzes is displayed,
+    **When** I click on an item,
+    **Then** I can view its full content.
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/PRD.md</path>
+        <title>ibe160 - Product Requirements Document</title>
+        <section>Functional Requirements -> 4. Data Management & History (FR-DM)</section>
+        <snippet>The system shall securely store user data, uploaded lecture notes, generated summaries, quizzes, and quiz results between user sessions for logged-in users.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/tech-spec-epic-5.md</path>
+        <title>Epic Technical Specification: History, Review & Advanced UI</title>
+        <section>Objectives and Scope</section>
+        <snippet>To provide users with a clear and intuitive interface to access their historical summaries and quiz attempts.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Epic to Architecture Mapping</section>
+        <snippet>Epic 5: History, Review & Advanced UI -> frontend/src/app/dashboard/, frontend/src/app/history/, frontend/src/components/, backend/app/api/history/, backend/app/db/.</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>ibe160 - Epic Breakdown</title>
+        <section>Epic 5: History, Review & Advanced UI -> Story 5.1: View History of Summaries and Quizzes</section>
+        <snippet>As a logged-in user, I want to see a list of my past summaries and quizzes, So that I can easily access and review my previous learning materials.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file>
+        <path>frontend/src/app/dashboard/page.tsx</path>
+        <kind>component</kind>
+        <symbol>DashboardPage</symbol>
+        <reason>This is the main entry point for logged-in users and will be enhanced with an overview of recent activities and navigation to history.</reason>
+      </file>
+      <file>
+        <path>frontend/src/app/summaries/[document_id]/page.tsx</path>
+        <kind>component</kind>
+        <symbol>SummaryViewPage</symbol>
+        <reason>Existing summary view page that history items will link to for viewing full summary content.</reason>
+      </file>
+      <file>
+        <path>frontend/src/app/quizzes/[quiz_id]/page.tsx</path>
+        <kind>component</kind>
+        <symbol>QuizViewPage</symbol>
+        <reason>Existing quiz view page that history items will link to for viewing full quiz content.</reason>
+      </file>
+      <file>
+        <path>backend/app/db/models.py</path>
+        <kind>models</kind>
+        <symbol>Summary, Quiz, Question, UserAnswer, Document</symbol>
+        <reason>Existing database models that define the structure of summaries, quizzes, and related tables. The history feature will query these models.</reason>
+      </file>
+      <file>
+        <path>backend/app/main.py</path>
+        <kind>entrypoint</kind>
+        <symbol>app</symbol>
+        <reason>FastAPI application entry point where the new history router must be registered.</reason>
+      </file>
+      <file>
+        <path>backend/app/api/summaries/main.py</path>
+        <kind>router</kind>
+        <symbol>router</symbol>
+        <reason>Existing summaries API router for reference on API patterns and authentication.</reason>
+      </file>
+      <file>
+        <path>backend/app/api/quizzes/main.py</path>
+        <kind>router</kind>
+        <symbol>router</symbol>
+        <reason>Existing quizzes API router for reference on API patterns and authentication.</reason>
+      </file>
+    </code>
+    <dependencies>
+      <frontend>
+        <package name="@hookform/resolvers" version="^5.2.2"/>
+        <package name="@next/bundle-analyzer" version="^16.0.7"/>
+        <package name="@radix-ui/react-dialog" version="^1.1.15"/>
+        <package name="@radix-ui/react-dropdown-menu" version="^2.0.6"/>
+        <package name="@radix-ui/react-icons" version="^1.3.0"/>
+        <package name="@radix-ui/react-label" version="^2.1.8"/>
+        <package name="@radix-ui/react-slot" version="^1.0.2"/>
+        <package name="@radix-ui/react-toast" version="^1.2.15"/>
+        <package name="@supabase/ssr" version="^0.1.0"/>
+        <package name="@supabase/supabase-js" version="^2.39.3"/>
+        <package name="@tanstack/react-query" version="^5.17.15"/>
+        <package name="@tanstack/react-query-devtools" version="^5.17.15"/>
+        <package name="@types/uuid" version="^11.0.0"/>
+        <package name="@vercel/analytics" version="^1.1.1"/>
+        <package name="axios" version="^1.6.5"/>
+        <package name="class-variance-authority" version="^0.7.0"/>
+        <package name="clsx" version="^2.1.0"/>
+        <package name="geist" version="^1.0.0"/>
+        <package name="lucide-react" version="^0.304.0"/>
+        <package name="next" version="^16.0.7"/>
+        <package name="next-themes" version="^0.4.6"/>
+        <package name="nextjs-toploader" version="^3.9.17"/>
+        <package name="react" version="18.2.0"/>
+        <package name="react-copy-to-clipboard" version="^5.1.0"/>
+        <package name="react-dom" version="18.2.0"/>
+        <package name="react-hook-form" version="^7.67.0"/>
+        <package name="react-markdown" version="^9.1.0"/>
+        <package name="tailwind-merge" version="^2.2.0"/>
+        <package name="undici" version="^5.28.2"/>
+        <package name="uuid" version="^13.0.0"/>
+        <package name="zod" version="^4.1.13"/>
+        <package name="zustand" version="5.0.8"/>
+      </frontend>
+      <backend>
+        <package name="fastapi" version="^0.122.0"/>
+        <package name="uvicorn" version="^0.38.0"/>
+        <package name="supabase" version="^2.24.0"/>
+        <package name="gotrue" version="^2.11.3"/>
+        <package name="python-dotenv" version="^1.2.1"/>
+        <package name="email-validator" version="^2.1.1"/>
+        <package name="pydantic-settings" version="^2.12.0"/>
+        <package name="sqlalchemy" version="^2.0.44"/>
+        <package name="sqlmodel" version="^0.0.27"/>
+        <package name="psycopg2-binary" version="^2.9.11"/>
+        <package name="asyncpg" version="^0.31.0"/>
+        <package name="pypdf" version="^6.4.0"/>
+        <package name="python-docx" version="^1.2.0"/>
+        <package name="google-generativeai" version="^0.7.1"/>
+        <package name="tenacity" version="^8.5.0"/>
+        <package name="python-multipart" version="^0.0.20"/>
+      </backend>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    - Naming Conventions: API Endpoints (plural nouns, kebab-case), Database Tables (plural, snake_case), Frontend Components (PascalCase, kebab-case for filenames).
+    - Structure Patterns: Tests co-located with code, Frontend Component Organization by feature, Backend Organization by domain/feature.
+    - API Contracts: RESTful API, Wrapped payload for success, Standardized error format, JWT tokens via Supabase Auth, HTTP status codes for error handling.
+    - Security Architecture: Supabase Auth (JWT), Supabase Row Level Security (RLS).
+  </constraints>
+  <interfaces>
+    <interface>
+      <name>GET /api/v1/history/summaries</name>
+      <kind>REST endpoint</kind>
+      <signature>GET /api/v1/history/summaries</signature>
+      <path>backend/app/api/history.py</path>
+    </interface>
+    <interface>
+      <name>GET /api/v1/history/quizzes</name>
+      <kind>REST endpoint</kind>
+      <signature>GET /api/v1/history/quizzes</signature>
+      <path>backend/app/api/history.py</path>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>
+      - Unit Tests (frontend Jest, backend Pytest)
+      - Integration Tests
+      - End-to-End (E2E) Tests
+    </standards>
+    <locations>
+      - Tests are co-located with code.
+    </locations>
+    <ideas>
+      - **Unit Test (Backend):** Test the `GET /api/v1/history/summaries` and `GET /api/v1/history/quizzes` endpoints with a mock database to ensure they return the correct data for a given user.
+      - **Unit Test (Frontend):** Test the `HistoryPage` component to ensure it renders a list of summaries and quizzes correctly when provided with mock data.
+      - **Integration Test:** Test the entire flow from the `HistoryPage` component making an API call to the backend, which then fetches data from a test database and returns it to the frontend.
+      - **E2E Test:** Use a testing framework like Cypress or Playwright to simulate a user logging in, navigating to the history page, and verifying that their past summaries and quizzes are displayed.
+    </ideas>
+  </tests>
+</story-context>
