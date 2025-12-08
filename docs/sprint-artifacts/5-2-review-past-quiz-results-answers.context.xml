@@ -1,0 +1,242 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>5</epicId>
+    <storyId>5.2</storyId>
+    <title>Review Past Quiz Results and Answers</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-12-08</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/5-2-review-past-quiz-results-answers.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>logged-in user</asA>
+    <iWant>to review my past quiz attempts, including my answers and the correct answers</iWant>
+    <soThat>I can identify areas where I need to improve</soThat>
+    <tasks>
+- [ ] **Task 1: Backend - Create Endpoint for Detailed Quiz Results** (AC: #1, #2)
+    - [ ] Subtask 1.1: In `backend/app/schemas/history.py`, define Pydantic models for the response, including the quiz questions, user's answers, and correct answers.
+    - [ ] Subtask 1.2: In `backend/app/api/history.py`, create a new GET endpoint `/api/v1/history/quizzes/{quiz_id}` for detailed quiz results.
+    - [ ] Subtask 1.3: Query the `quizzes`, `questions`, and `user_answers` tables to fetch the quiz details with user's past answers, ensuring it's filtered by the authenticated `user_id`.
+    - [ ] Subtask 1.4: Write `pytest` unit tests for the new endpoint, covering success cases, not found errors, and authorization failures.
+
+- [ ] **Task 2: Frontend - Develop Quiz Review UI** (AC: #1, #2)
+    - [ ] Subtask 2.1: Create a new page component `frontend/src/app/history/quiz/[quiz_id]/page.tsx` to display the detailed quiz review.
+    - [ ] Subtask 2.2: Implement the API call using Axios to fetch data from the new `/api/v1/history/quizzes/{quiz_id}` endpoint.
+    - [ ] Subtask 2.3: Design and build UI components using Shadcn UI to clearly display the quiz score, each question, the user's answer, and the correct answer. Indicate visually which answers were correct and incorrect.
+    - [ ] Subtask 2.4: Add loading and error states to the UI for the API call.
+    - [ ] Subtask 2.5: Write Jest/React Testing Library tests for the quiz review components.
+
+- [ ] **Task 3: Integration and Verification**
+    - [ ] Subtask 3.1: Verify the RLS policy on the quiz attempts table correctly prevents users from accessing attempts that are not their own.
+    - [ ] Subtask 3.2: Create an E2E test that simulates a user logging in, navigating to the history, clicking on a past quiz, and verifying the detailed results are displayed correctly.
+</tasks>
+  </story>
+
+  <acceptanceCriteria>
+1.  **Given** I am viewing a past quiz from my history,
+    **When** I select a quiz attempt,
+    **Then** I see the questions, my submitted answers, and the correct answers.
+2.  **Given** I am viewing a past quiz from my history,
+    **When** I select a quiz attempt,
+    **Then** my score for that attempt is clearly visible.
+</acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <artifact>
+        <path>docs/PRD.md</path>
+        <title>ibe160 - Product Requirements Document</title>
+        <section>4. Data Management &amp; History (FR-DM)</section>
+        <snippet>The system shall securely store user data, uploaded lecture notes, generated summaries, quizzes, and quiz results between user sessions for logged-in users. Domain Constraint: Full GDPR, FERPA, and potentially COPPA compliance for all stored data. Row Level Security (RLS) must be rigorously applied.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/PRD.md</path>
+        <title>ibe160 - Product Requirements Document</title>
+        <section>5. User Interface &amp; Experience (FR-UI)</section>
+        <snippet>The system shall provide a responsive web interface compatible with modern browsers (Chrome, Firefox, Safari, Edge - latest two versions) on desktop, laptop, and tablet devices. Domain Constraint: WCAG 2.1 AA accessibility guidelines must be met for all UI components and content.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/PRD.md</path>
+        <title>ibe160 - Product Requirements Document</title>
+        <section>Test Strategy</section>
+        <snippet>Unit Tests: Both frontend and backend code will be covered by unit tests. Integration Tests: Verify interactions between different parts of the system. End-to-End (E2E) Tests: Simulate user journeys.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Epic to Architecture Mapping</section>
+        <snippet>Epic 5: History, Review &amp; Advanced UI maps to frontend/src/app/dashboard/, frontend/src/app/history/, frontend/src/components/, backend/app/api/history/, backend/app/db/.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Technology Stack Details</section>
+        <snippet>Frontend: Next.js 16.0.3, TypeScript, React, Tailwind CSS, Shadcn UI. Backend: FastAPI 0.122.0 (Python), Pydantic 2.12.4. Database &amp; Auth: Supabase (PostgreSQL).</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>API Contracts</section>
+        <snippet>Style: RESTful API. Authentication: JWT tokens via Supabase Auth. Error Handling: HTTP status codes, consistent error body.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Security Architecture</section>
+        <snippet>Authorization: Supabase Row Level Security (RLS) for data, backend API route protection.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/epics.md</path>
+        <title>ibe160 - Epic Breakdown</title>
+        <section>Epic 5: History, Review &amp; Advanced UI</section>
+        <snippet>Goal: Enable users to review their past learning activities and enhance the overall user experience and accessibility. Scope: Displaying user history (past summaries, quizzes, results), advanced UI interactions, and ensuring full WCAG 2.1 AA compliance for the entire application.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/epics.md</path>
+        <title>ibe160 - Epic Breakdown</title>
+        <section>Story 5.2: Review Past Quiz Results and Answers</section>
+        <snippet>As a logged-in user, I want to review my past quiz attempts, including my answers and the correct answers, so that I can identify areas where I need to improve.</snippet>
+      </artifact>
+    </docs>
+    <code>
+      <artifact>
+        <path>backend/app/api/history.py</path>
+        <kind>API Router</kind>
+        <symbol>history_router</symbol>
+        <reason>Existing API routes for history, will be extended for detailed quiz review.</reason>
+      </artifact>
+      <artifact>
+        <path>backend/app/schemas/history.py</path>
+        <kind>Pydantic Schema</kind>
+        <reason>Contains Pydantic models for history related data structures, will be extended for quiz review details.</reason>
+      </artifact>
+      <artifact>
+        <path>backend/app/schemas/quiz.py</path>
+        <kind>Pydantic Schema</kind>
+        <reason>Contains Pydantic models for quiz questions and answers, relevant for displaying detailed quiz results.</reason>
+      </artifact>
+      <artifact>
+        <path>backend/tests/test_history.py</path>
+        <kind>Backend Tests</kind>
+        <reason>Existing tests for history API, will need new tests for the detailed quiz review endpoint.</reason>
+      </artifact>
+      <artifact>
+        <path>frontend/__tests__/history/HistoryPage.test.tsx</path>
+        <kind>Frontend Tests</kind>
+        <reason>Existing frontend tests for history page, new tests will be needed for quiz review UI components.</reason>
+      </artifact>
+      <artifact>
+        <path>frontend/src/app/quizzes/[quiz_id]/page.tsx</path>
+        <kind>Frontend Page</kind>
+        <reason>Existing quiz page that shows quiz taking and results. Reference for UI patterns and ResultsView component usage.</reason>
+      </artifact>
+      <artifact>
+        <path>frontend/src/components/quiz/ResultsView.tsx</path>
+        <kind>Frontend Component</kind>
+        <reason>Existing results view component that displays quiz results. May be reusable or serve as pattern for review UI.</reason>
+      </artifact>
+      <artifact>
+        <path>frontend/src/services/quizzes.ts</path>
+        <kind>Frontend Service</kind>
+        <reason>Existing quiz API service. Reference for patterns when adding history quiz detail function.</reason>
+      </artifact>
+      <artifact>
+        <path>backend/app/db/models.py</path>
+        <kind>Database Models</kind>
+        <reason>Contains Quiz, Question, UserAnswer models. Key reference for understanding data structure.</reason>
+      </artifact>
+      <artifact>
+        <path>frontend/src/app/history/page.tsx</path>
+        <kind>Frontend Page</kind>
+        <reason>History list page implemented in Story 5.1. Update links to point to new quiz review page.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem name="Python">
+        <package name="FastAPI" version="0.122.0"/>
+        <package name="Pydantic" version="2.12.4"/>
+        <package name="SQLModel" version="0.0.27"/>
+        <package name="supabase-py" version="2.24.0"/>
+        <package name="pytest"/>
+      </ecosystem>
+      <ecosystem name="Node.js/TypeScript">
+        <package name="Next.js" version="14+"/>
+        <package name="React"/>
+        <package name="Axios" version="1.13.2"/>
+        <package name="Zustand" version="5.0.8"/>
+        <package name="Tailwind CSS"/>
+        <package name="Shadcn UI"/>
+        <package name="Jest"/>
+        <package name="TypeScript"/>
+      </ecosystem>
+      <frameworks>
+        <framework>Supabase (PostgreSQL, Auth, RLS)</framework>
+        <framework>Google Gemini 2.5 Pro/Flash (AI model)</framework>
+      </frameworks>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>API Design: Adhere to RESTful API patterns and use HTTP status codes appropriately.</constraint>
+    <constraint>Authentication: Use Supabase Auth for user authentication.</constraint>
+    <constraint>Authorization: Implement Row Level Security (RLS) in Supabase to ensure users can only access their own quiz data.</constraint>
+    <constraint>Data Validation: Backend models must use Pydantic for request and response validation.</constraint>
+    <constraint>Frontend API Client: Use Axios with interceptors for all API communication.</constraint>
+    <constraint>Testing: Comprehensive unit, integration, and E2E tests are required.</constraint>
+    <constraint>UI/UX: Ensure responsiveness and adherence to WCAG 2.1 AA accessibility guidelines.</constraint>
+  </constraints>
+  <interfaces>
+    <interface>
+      <name>Get User Summaries History</name>
+      <kind>REST Endpoint</kind>
+      <signature>GET /api/v1/history/summaries</signature>
+      <path>backend/app/api/history.py</path>
+    </interface>
+    <interface>
+      <name>Get User Quizzes History</name>
+      <kind>REST Endpoint</kind>
+      <signature>GET /api/v1/history/quizzes</signature>
+      <path>backend/app/api/history.py</path>
+    </interface>
+    <interface>
+      <name>Get Detailed Quiz Results</name>
+      <kind>REST Endpoint</kind>
+      <signature>GET /api/v1/history/quizzes/{quiz_id}</signature>
+      <path>backend/app/api/history.py</path>
+      <note>New endpoint to be created for this story. Returns quiz with questions, user's answers from user_answers table, and correct answers.</note>
+    </interface>
+  <tests>
+    <standards>
+      <standard>Unit Tests: Jest for frontend components, Pytest for backend API endpoints and business logic.</standard>
+      <standard>Integration Tests: Verify the interaction between frontend and backend, and backend with Supabase.</standard>
+      <standard>End-to-End (E2E) Tests: Simulate full user journeys through the application.</standard>
+      <standard>All tests should be automated and integrated into the CI/CD pipeline.</standard>
+    </standards>
+    <locations>
+      <location>Backend Unit/Integration Tests: `backend/tests/`</location>
+      <location>Frontend Unit Tests: Co-located with components (`frontend/__tests__/` or `frontend/src/**/*.test.tsx`)</location>
+      <location>E2E Tests: Cypress (if adopted) or custom E2E framework.</location>
+    </locations>
+    <ideas>
+      <idea ac_id="1,2">
+        <description>Backend Unit Test: Verify the new GET /api/v1/history/quizzes/{quiz_attempt_id} endpoint returns correct data for a valid `quiz_attempt_id` and authenticated user.</description>
+      </idea>
+      <idea ac_id="1,2">
+        <description>Backend Unit Test: Verify the endpoint handles invalid `quiz_attempt_id` (e.g., returns 404 Not Found).</description>
+      </idea>
+      <idea ac_id="1,2">
+        <description>Backend Unit Test: Verify the endpoint enforces RLS and returns 403 Forbidden for unauthorized access to another user's quiz attempt.</description>
+      </idea>
+      <idea ac_id="1,2">
+        <description>Frontend Unit Test: Test the quiz review UI component renders correctly with mock data, displaying questions, user answers, correct answers, and score.</description>
+      </idea>
+      <idea ac_id="1,2">
+        <description>Integration Test: Simulate fetching detailed quiz results from the frontend, ensuring the API call is successful and data is parsed correctly.</description>
+      </idea>
+      <idea ac_id="1,2">
+        <description>E2E Test: A logged-in user navigates to their history, selects a past quiz, and verifies that the detailed results (questions, answers, score) are displayed accurately.</description>
+      </idea>
+    </ideas>
+  </tests>
+</story-context>
