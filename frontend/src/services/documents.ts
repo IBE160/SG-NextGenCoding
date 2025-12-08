@@ -7,16 +7,23 @@ interface UploadResponse {
   message: string
 }
 
+interface UploadOptions {
+  autoGenerateSummary?: boolean
+}
+
 export const uploadDocument = async (
   file: File,
   userId?: string,
   accessToken?: string,
+  options?: UploadOptions,
 ): Promise<UploadResponse> => {
   const formData = new FormData()
   formData.append('file', file)
   if (userId) {
     formData.append('user_id', userId)
   }
+  // Default to false for new flow - user will choose what to generate
+  formData.append('auto_generate_summary', String(options?.autoGenerateSummary ?? false))
 
   const headers: Record<string, string> = {}
 
@@ -54,6 +61,36 @@ export const uploadDocument = async (
       console.error('Unexpected upload error:', error)
       throw new Error(
         `An unexpected error occurred during upload: ${error.message}`,
+      )
+    }
+  }
+}
+
+/**
+ * Trigger summary generation for a document that has been uploaded but not yet summarized.
+ */
+export const generateSummary = async (documentId: string, accessToken?: string) => {
+  const headers: Record<string, string> = {}
+  if (accessToken) {
+    headers['Authorization'] = `Bearer ${accessToken}`
+  }
+
+  try {
+    const response = await axios.post(
+      `/api/v1/documents/${documentId}/generate-summary`,
+      {},
+      { headers },
+    )
+    return response.data
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      console.error('Generate summary error response:', error.response?.data)
+      const errorMessage = error.response?.data?.detail || error.message
+      throw new Error(`Failed to generate summary: ${errorMessage}`)
+    } else {
+      console.error('Unexpected generate summary error:', error)
+      throw new Error(
+        `An unexpected error occurred while generating summary: ${error.message}`,
       )
     }
   }

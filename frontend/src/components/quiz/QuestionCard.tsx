@@ -104,8 +104,9 @@ export function QuestionCard({
           className={cn(
             'w-full p-4 text-lg border-2 rounded-lg',
             'focus:outline-none focus:border-primary',
-            showResult && isCorrect && 'border-green-500 bg-green-50',
-            showResult && !isCorrect && 'border-red-500 bg-red-50'
+            'text-gray-900 dark:text-gray-100',
+            showResult && isCorrect && 'border-green-500 bg-green-50 dark:bg-green-950 text-green-900 dark:text-green-100',
+            showResult && !isCorrect && 'border-red-500 bg-red-50 dark:bg-red-950 text-red-900 dark:text-red-100'
           )}
         />
         {showResult && correctAnswer && (

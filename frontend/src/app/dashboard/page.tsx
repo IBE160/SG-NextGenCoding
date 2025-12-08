@@ -5,9 +5,11 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import FileUploadZone from '@/app/upload/components/FileUploadZone'
-import { uploadDocument } from '@/services/documents'
+import { uploadDocument, generateSummary, getSummaryStatus } from '@/services/documents'
+import { generateQuiz } from '@/services/quizzes'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { ActionSelectionDialog } from '@/components/upload/ActionSelectionDialog'
 
 const MAX_GUEST_UPLOADS = 2
 const GUEST_UPLOAD_KEY = 'guest_uploads_count'
@@ -22,20 +24,29 @@ const DashboardPage: React.FC = () => {
   const [uploading, setUploading] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
   const [uploadSuccess, setUploadSuccess] = useState<string | null>(null)
+  
+  // New state for action selection
+  const [showActionDialog, setShowActionDialog] = useState(false)
+  const [uploadedDocumentId, setUploadedDocumentId] = useState<string | null>(null)
+  const [uploadedFileName, setUploadedFileName] = useState<string>('')
+  const [processingAction, setProcessingAction] = useState(false)
+  const [accessToken, setAccessToken] = useState<string | null>(null)
 
   useEffect(() => {
     const checkUserStatus = () => {
-      const hasAccessToken = document.cookie
-        .split(';')
-        .some((cookie) => cookie.trim().startsWith('access_token='))
-
-      if (hasAccessToken) {
+      const cookies = document.cookie.split(';')
+      const accessTokenCookie = cookies.find((cookie) => cookie.trim().startsWith('access_token='))
+      
+      if (accessTokenCookie) {
+        const token = accessTokenCookie.split('=')[1]
+        setAccessToken(token)
         setUserSession({ authenticated: true })
         setIsGuest(false)
         setShowLoginPrompt(false)
         setGuestUploadsCount(0)
         localStorage.removeItem(GUEST_UPLOAD_KEY)
       } else {
+        setAccessToken(null)
         setUserSession(null)
         setIsGuest(true)
         const count = parseInt(localStorage.getItem(GUEST_UPLOAD_KEY) || '0', 10)
@@ -62,12 +73,19 @@ const DashboardPage: React.FC = () => {
 
     try {
       const userId = userSession?.user?.id
-      const accessToken = userSession?.access_token
-      const response = await uploadDocument(file, userId, accessToken)
+      // Upload without auto-generating summary - user will choose
+      const response = await uploadDocument(file, userId, accessToken || undefined, {
+        autoGenerateSummary: false
+      })
       setUploadSuccess(`File uploaded successfully!`)
+      setUploadedDocumentId(response.document_id)
+      setUploadedFileName(file.name)
       
-      // Use window.location for full page reload to ensure backend has processed
-      window.location.href = `/summaries/${response.document_id}`
+      // Wait a moment for text extraction to complete, then show dialog
+      // We'll poll for status or just show dialog after a delay
+      setTimeout(() => {
+        setShowActionDialog(true)
+      }, 1500) // Give time for text extraction to start
 
       if (isGuest) {
         const newCount = guestUploadsCount + 1
@@ -82,6 +100,92 @@ const DashboardPage: React.FC = () => {
       setUploadError(error.message)
     } finally {
       setUploading(false)
+    }
+  }
+
+  const handleSelectSummary = async () => {
+    if (!uploadedDocumentId) return
+    
+    setProcessingAction(true)
+    try {
+      // Wait for text extraction to complete, then generate summary
+      let retries = 0
+      const maxRetries = 30
+      let status = null
+      
+      while (retries < maxRetries) {
+        try {
+          status = await getSummaryStatus(uploadedDocumentId, accessToken || undefined)
+          if (status.status === 'text-extracted' || status.status === 'summary-ready') {
+            break
+          }
+        } catch (e) {
+          // Status endpoint might fail if document not ready
+        }
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        retries++
+      }
+      
+      // Trigger summary generation
+      await generateSummary(uploadedDocumentId, accessToken || undefined)
+      
+      // Navigate to summary page
+      window.location.href = `/summaries/${uploadedDocumentId}`
+    } catch (error: any) {
+      console.error('Summary generation error:', error)
+      // Check for quota-related errors
+      const errorMsg = error.message || ''
+      if (errorMsg.includes('quota') || errorMsg.includes('429') || errorMsg.includes('RESOURCE_EXHAUSTED')) {
+        setUploadError('AI service quota exceeded. Please try again later (quota resets daily).')
+      } else {
+        setUploadError(error.message)
+      }
+      setShowActionDialog(false)
+    } finally {
+      setProcessingAction(false)
+    }
+  }
+
+  const handleSelectQuiz = async () => {
+    if (!uploadedDocumentId) return
+    
+    setProcessingAction(true)
+    try {
+      // Wait for text extraction to complete
+      let retries = 0
+      const maxRetries = 30
+      let status = null
+      
+      while (retries < maxRetries) {
+        try {
+          status = await getSummaryStatus(uploadedDocumentId, accessToken || undefined)
+          if (status.status === 'text-extracted' || status.status === 'summary-ready') {
+            break
+          }
+        } catch (e) {
+          // Status endpoint might fail if document not ready
+        }
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        retries++
+      }
+      
+      // Generate quiz
+      const quiz = await generateQuiz(uploadedDocumentId, 5, undefined, accessToken || undefined)
+      
+      // Navigate to quiz page
+      window.location.href = `/quizzes/${quiz.id}`
+    } catch (error: any) {
+      console.error('Quiz generation error:', error)
+      // Check for quota-related errors
+      const errorMsg = error.message || ''
+      if (errorMsg.includes('quota') || errorMsg.includes('429') || errorMsg.includes('RESOURCE_EXHAUSTED')) {
+        setUploadError('AI service quota exceeded. Please try again later (quota resets daily).')
+      } else {
+        setUploadError(error.message)
+      }
+      setShowActionDialog(false)
+    } finally {
+      setProcessingAction(false)
     }
   }
 
@@ -102,6 +206,17 @@ const DashboardPage: React.FC = () => {
 
   return (
     <div className="container mx-auto p-6">
+      {/* Action Selection Dialog */}
+      <ActionSelectionDialog
+        open={showActionDialog}
+        onOpenChange={setShowActionDialog}
+        documentId={uploadedDocumentId}
+        fileName={uploadedFileName}
+        onSelectSummary={handleSelectSummary}
+        onSelectQuiz={handleSelectQuiz}
+        isLoading={processingAction}
+      />
+      
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold">Dashboard</h1>
@@ -134,7 +249,7 @@ const DashboardPage: React.FC = () => {
           <CardHeader>
             <CardTitle>📄 Upload Notes</CardTitle>
             <CardDescription>
-              Upload your lecture notes to generate AI-powered summaries
+              Upload your lecture notes to generate summaries or quizzes
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -163,19 +278,31 @@ const DashboardPage: React.FC = () => {
         {/* Quick Actions Card */}
         <Card>
           <CardHeader>
-            <CardTitle>⚡ Quick Actions</CardTitle>
-            <CardDescription>Get started with common tasks</CardDescription>
+            <CardTitle>✨ How It Works</CardTitle>
+            <CardDescription>Upload a file, then choose your action</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            <Button className="w-full justify-start" variant="outline" disabled>
-              📝 Generate Quiz (Coming Soon)
-            </Button>
-            <Button className="w-full justify-start" variant="outline" disabled>
-              🎯 Create Flashcards (Coming Soon)
-            </Button>
-            <Button className="w-full justify-start" variant="outline" disabled>
-              📊 Study Analytics (Coming Soon)
-            </Button>
+            <div className="flex items-start gap-3 rounded-lg border p-3">
+              <span className="text-2xl">1️⃣</span>
+              <div>
+                <p className="font-medium">Upload Your Notes</p>
+                <p className="text-sm text-muted-foreground">Drop a PDF, TXT, or DOCX file</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 rounded-lg border p-3">
+              <span className="text-2xl">2️⃣</span>
+              <div>
+                <p className="font-medium">Choose Your Action</p>
+                <p className="text-sm text-muted-foreground">Generate a summary or quiz</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 rounded-lg border p-3">
+              <span className="text-2xl">3️⃣</span>
+              <div>
+                <p className="font-medium">Learn & Study</p>
+                <p className="text-sm text-muted-foreground">Review your AI-generated content</p>
+              </div>
+            </div>
           </CardContent>
         </Card>
 
@@ -205,7 +332,12 @@ const DashboardPage: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="flex h-32 items-center justify-center rounded-lg border-2 border-dashed border-gray-200">
-              <p className="text-sm text-muted-foreground">Coming Soon</p>
+              <p className="text-sm text-muted-foreground">
+                {isGuest 
+                  ? 'Log in to see your quiz history'
+                  : 'No quizzes yet. Upload a document to get started!'
+                }
+              </p>
             </div>
           </CardContent>
         </Card>

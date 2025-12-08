@@ -43,9 +43,10 @@ async def run_text_extraction(
     user_id: Optional[UUID],
     supabase_admin,
     db_session: AsyncSession,
+    auto_generate_summary: bool = True,
 ):
     """
-    Background task to extract text from an uploaded file and then trigger summary generation.
+    Background task to extract text from an uploaded file and optionally trigger summary generation.
     """
     logger.info(f"Starting text extraction for document_id: {document_id}")
     extracted_text = None
@@ -67,8 +68,8 @@ async def run_text_extraction(
             await db_session.refresh(document)
             logger.info(f"Successfully extracted text and updated status for document_id: {document_id}")
             
-            # 4. If text extraction is successful, trigger summary generation
-            if extracted_text:
+            # 4. If text extraction is successful and auto_generate_summary is True, trigger summary generation
+            if extracted_text and auto_generate_summary:
                 logger.info(f"Triggering summary generation for document_id: {document_id}")
                 # Pass user_id as-is (None for guests)
                 await generate_summary(
@@ -77,6 +78,8 @@ async def run_text_extraction(
                     extracted_text=extracted_text,
                     session=db_session # pass the existing session
                 )
+            elif extracted_text and not auto_generate_summary:
+                logger.info(f"Skipping auto summary generation for document_id: {document_id} (user will choose)")
         else:
             logger.error(f"Document with id {document_id} not found for updating after text extraction.")
 
@@ -99,6 +102,7 @@ async def upload_document_endpoint(
     background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
     user_id: Optional[UUID] = Form(None), # User ID from frontend (can be None for guest)
+    auto_generate_summary: bool = Form(True), # Whether to auto-generate summary after text extraction
     session: AsyncSession = Depends(get_session),
     supabase_admin = Depends(get_supabase_admin_client),  # Use admin client for storage operations
     current_user: Optional[User] = Depends(get_current_user) # Authenticated user from token
@@ -182,7 +186,8 @@ async def upload_document_endpoint(
                 filename=db_document.filename,
                 user_id=effective_user_id,
                 supabase_admin=supabase_admin,
-                db_session=session
+                db_session=session,
+                auto_generate_summary=auto_generate_summary
             )
         else:
             logger.warning(f"Skipping text extraction for document {document_id} - not saved to database")
@@ -234,6 +239,73 @@ async def get_document_status(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An unexpected error occurred while fetching document status."
+        )
+
+@router.post("/documents/{document_id}/generate-summary")
+async def generate_summary_endpoint(
+    document_id: UUID,
+    background_tasks: BackgroundTasks,
+    session: AsyncSession = Depends(get_session),
+    current_user: Optional[User] = Depends(get_current_user)
+):
+    """
+    Manually trigger summary generation for a document that has extracted text.
+    This is used when the user chooses to generate a summary after uploading.
+    """
+    logger.info(f"Manual summary generation requested for document_id: {document_id}")
+    
+    effective_user_id: Optional[UUID] = None
+    if current_user:
+        effective_user_id = UUID(current_user.id)
+    
+    try:
+        # Check if document exists and has extracted text
+        document = await session.get(Document, document_id)
+        
+        if not document:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Document not found."
+            )
+        
+        if not document.raw_content:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Document text has not been extracted yet. Please wait for processing to complete."
+            )
+        
+        # Check if summary already exists
+        summary_statement = select(Summary).where(Summary.document_id == document_id)
+        summary_results = await session.execute(summary_statement)
+        existing_summary = summary_results.scalar_one_or_none()
+        
+        if existing_summary:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Summary already exists for this document."
+            )
+        
+        # Trigger summary generation
+        await generate_summary(
+            document_id=document.id,
+            user_id=effective_user_id,
+            extracted_text=document.raw_content,
+            session=session
+        )
+        
+        logger.info(f"Summary generation completed for document_id: {document_id}")
+        return {
+            "document_id": document_id,
+            "message": "Summary generation completed."
+        }
+
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        logger.error(f"Error generating summary for document_id: {document_id}. Error: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An unexpected error occurred while generating summary."
         )
 
 @router.get("/documents/{document_id}/summary")
