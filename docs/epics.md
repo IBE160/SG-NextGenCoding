@@ -530,11 +530,7 @@ So that I have an equitable learning experience.
 
 **Prerequisites:** All other epics' stories are largely complete.
 
-Scope: MVP
-
-FRs: [FR-UI-1]
-
-**Technical Notes:** Manual and automated accessibility testing tools, knowledge of WCAG guidelines, remediation of identified issues.
+Scope: Not MVP
 
 ### Story 5.4: Implement Advanced UI Interactions & Polish
 
