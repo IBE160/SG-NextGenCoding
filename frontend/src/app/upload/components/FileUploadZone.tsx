@@ -82,14 +82,24 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({
 
   return (
     <div
-      className={`cursor-pointer rounded-lg border-2 border-dashed p-6 text-center transition-colors duration-200
-        ${isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'}`}
+      className={`cursor-pointer rounded-lg border-2 border-dashed p-6 text-center transition-all duration-200 ease-in-out
+        ${isDragActive 
+          ? 'border-primary bg-primary/10 scale-[1.02]' 
+          : 'border-border hover:border-primary/50 hover:bg-accent/50'}`}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
       onClick={openFileExplorer}
-      aria-label="file upload area"
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          openFileExplorer()
+        }
+      }}
+      aria-label="File upload area. Click or drag and drop to upload a file."
     >
       <input
         type="file"
@@ -97,28 +107,29 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({
         onChange={onFileChange}
         className="hidden"
         accept={acceptedFileTypes.join(',')}
+        aria-hidden="true"
       />
       {selectedFile ? (
-        <div>
-          <p className="font-semibold">Selected File:</p>
-          <p>
+        <div className="animate-in fade-in duration-200">
+          <p className="font-semibold text-foreground">Selected File:</p>
+          <p className="text-muted-foreground">
             {selectedFile.name} ({selectedFile.type})
           </p>
-          {error && <p className="mt-2 text-red-500">{error}</p>}
+          {error && <p className="mt-2 text-destructive">{error}</p>}
         </div>
       ) : (
         <div>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             Drag & drop your file here, or click to select
           </p>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-muted-foreground/70">
             Accepted:{' '}
             {acceptedFileTypes
               .map((type) => type.split('/')[1] || type)
               .join(', ')}{' '}
             | Max size: {maxFileSizeMB}MB
           </p>
-          {error && <p className="mt-2 text-red-500">{error}</p>}
+          {error && <p className="mt-2 text-destructive">{error}</p>}
         </div>
       )}
     </div>

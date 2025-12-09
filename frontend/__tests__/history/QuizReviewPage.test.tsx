@@ -15,15 +15,13 @@ jest.mock("next/navigation", () => ({
   })),
 }));
 
-// Mock Supabase client
-const mockGetSession = jest.fn();
-jest.mock("@/utils/supabase", () => ({
-  createBrowserClient: () => ({
-    auth: {
-      getSession: () => mockGetSession(),
-    },
-  }),
-}));
+// Helper to mock document.cookie
+const mockCookie = (value: string) => {
+  Object.defineProperty(document, 'cookie', {
+    writable: true,
+    value: value,
+  });
+};
 
 const mockGetQuizReview = historyService.getQuizReview as jest.MockedFunction<
   typeof historyService.getQuizReview
@@ -84,16 +82,13 @@ const mockQuizReviewData: historyService.QuizReviewResponse = {
 describe("QuizReviewPage", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    // Setup default session mock
-    mockGetSession.mockResolvedValue({
-      data: {
-        session: {
-          access_token: "test-token",
-          refresh_token: "test-refresh",
-          user: { id: "user-1", email: "test@test.com" },
-        },
-      },
-    });
+    // Setup default cookie with access token
+    mockCookie("access_token=test-token; other_cookie=value");
+  });
+
+  afterEach(() => {
+    // Reset cookie after each test
+    mockCookie("");
   });
 
   it("should render loading state initially", () => {
@@ -171,9 +166,8 @@ describe("QuizReviewPage", () => {
   });
 
   it("should not fetch quiz data if no session", async () => {
-    mockGetSession.mockResolvedValue({
-      data: { session: null },
-    });
+    // Clear the cookie to simulate no session
+    mockCookie("");
 
     render(<QuizReviewPage />);
 

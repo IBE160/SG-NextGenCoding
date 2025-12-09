@@ -209,12 +209,12 @@ const HistoryCard: React.FC<HistoryCardProps> = ({ item, formatDate, getItemLink
   const isSummary = item.type === 'summary'
 
   return (
-    <Link href={getItemLink(item)} className="block">
-      <Card className="hover:bg-accent/50 transition-colors cursor-pointer">
+    <Link href={getItemLink(item)} className="block group">
+      <Card className="hover:bg-accent/50 hover:shadow-md transition-all duration-200 cursor-pointer hover:-translate-y-0.5">
         <CardContent className="p-4">
           <div className="flex items-start gap-4">
             {/* Icon */}
-            <div className={`p-2 rounded-lg ${isSummary ? 'bg-blue-100 dark:bg-blue-900' : 'bg-green-100 dark:bg-green-900'}`}>
+            <div className={`p-2 rounded-lg transition-transform duration-200 group-hover:scale-110 ${isSummary ? 'bg-blue-100 dark:bg-blue-900/50' : 'bg-green-100 dark:bg-green-900/50'}`}>
               {isSummary ? (
                 <FileText className={`h-5 w-5 ${isSummary ? 'text-blue-600 dark:text-blue-400' : 'text-green-600 dark:text-green-400'}`} />
               ) : (
@@ -271,7 +271,7 @@ const HistoryCard: React.FC<HistoryCardProps> = ({ item, formatDate, getItemLink
             </div>
             
             {/* Arrow */}
-            <ChevronRight className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+            <ChevronRight className="h-5 w-5 text-muted-foreground flex-shrink-0 transition-transform duration-200 group-hover:translate-x-1" />
           </div>
         </CardContent>
       </Card>

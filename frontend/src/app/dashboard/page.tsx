@@ -288,13 +288,16 @@ const DashboardPage: React.FC = () => {
           </CardHeader>
           <CardContent>
             {uploading && (
-              <p className="mb-4 text-center text-blue-500">Uploading file...</p>
+              <div className="mb-4 text-center">
+                <Spinner className="mx-auto mb-2" />
+                <p className="text-primary animate-pulse">Uploading file...</p>
+              </div>
             )}
             {uploadError && (
-              <p className="mb-4 text-center text-red-500">{uploadError}</p>
+              <p className="mb-4 text-center text-destructive">{uploadError}</p>
             )}
             {uploadSuccess && (
-              <p className="mb-4 text-center text-green-500">{uploadSuccess}</p>
+              <p className="mb-4 text-center text-green-600 dark:text-green-400">{uploadSuccess}</p>
             )}
             {!showLoginPrompt && (
               <FileUploadZone
@@ -316,21 +319,21 @@ const DashboardPage: React.FC = () => {
             <CardDescription>Upload a file, then choose your action</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div className="flex items-start gap-3 rounded-lg border p-3">
+            <div className="flex items-start gap-3 rounded-lg border p-3 transition-all duration-200 hover:bg-accent/50 hover:shadow-sm">
               <span className="text-2xl">1️⃣</span>
               <div>
                 <p className="font-medium">Upload Your Notes</p>
                 <p className="text-sm text-muted-foreground">Drop a PDF, TXT, or DOCX file</p>
               </div>
             </div>
-            <div className="flex items-start gap-3 rounded-lg border p-3">
+            <div className="flex items-start gap-3 rounded-lg border p-3 transition-all duration-200 hover:bg-accent/50 hover:shadow-sm">
               <span className="text-2xl">2️⃣</span>
               <div>
                 <p className="font-medium">Choose Your Action</p>
                 <p className="text-sm text-muted-foreground">Generate a summary or quiz</p>
               </div>
             </div>
-            <div className="flex items-start gap-3 rounded-lg border p-3">
+            <div className="flex items-start gap-3 rounded-lg border p-3 transition-all duration-200 hover:bg-accent/50 hover:shadow-sm">
               <span className="text-2xl">3️⃣</span>
               <div>
                 <p className="font-medium">Learn & Study</p>
@@ -360,7 +363,7 @@ const DashboardPage: React.FC = () => {
           </CardHeader>
           <CardContent>
             {isGuest ? (
-              <div className="flex h-32 items-center justify-center rounded-lg border-2 border-dashed border-gray-200">
+              <div className="flex h-32 items-center justify-center rounded-lg border-2 border-dashed border-border">
                 <p className="text-muted-foreground">Log in to see your summary history</p>
               </div>
             ) : historyLoading ? (
@@ -368,15 +371,15 @@ const DashboardPage: React.FC = () => {
                 <Spinner className="h-6 w-6" />
               </div>
             ) : recentSummaries.length === 0 ? (
-              <div className="flex h-32 items-center justify-center rounded-lg border-2 border-dashed border-gray-200">
+              <div className="flex h-32 items-center justify-center rounded-lg border-2 border-dashed border-border">
                 <p className="text-muted-foreground">No summaries yet. Upload a document to get started!</p>
               </div>
             ) : (
               <div className="space-y-2">
                 {recentSummaries.slice(0, 3).map((summary) => (
                   <Link key={summary.id} href={`/summaries/${summary.document_id}`}>
-                    <div className="flex items-center gap-3 p-3 rounded-lg border hover:bg-accent/50 transition-colors cursor-pointer">
-                      <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900">
+                    <div className="flex items-center gap-3 p-3 rounded-lg border hover:bg-accent/50 hover:shadow-sm transition-all duration-200 cursor-pointer hover:-translate-y-0.5">
+                      <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/50 transition-transform duration-200 group-hover:scale-110">
                         <FileText className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -415,7 +418,7 @@ const DashboardPage: React.FC = () => {
           </CardHeader>
           <CardContent>
             {isGuest ? (
-              <div className="flex h-32 items-center justify-center rounded-lg border-2 border-dashed border-gray-200">
+              <div className="flex h-32 items-center justify-center rounded-lg border-2 border-dashed border-border">
                 <p className="text-sm text-muted-foreground">Log in to see your quiz history</p>
               </div>
             ) : historyLoading ? (
@@ -423,15 +426,15 @@ const DashboardPage: React.FC = () => {
                 <Spinner className="h-6 w-6" />
               </div>
             ) : recentQuizzes.length === 0 ? (
-              <div className="flex h-32 items-center justify-center rounded-lg border-2 border-dashed border-gray-200">
+              <div className="flex h-32 items-center justify-center rounded-lg border-2 border-dashed border-border">
                 <p className="text-sm text-muted-foreground">No quizzes yet. Upload a document to get started!</p>
               </div>
             ) : (
               <div className="space-y-2">
                 {recentQuizzes.slice(0, 3).map((quiz) => (
                   <Link key={quiz.id} href={`/quizzes/${quiz.id}`}>
-                    <div className="flex items-center gap-3 p-2 rounded-lg border hover:bg-accent/50 transition-colors cursor-pointer">
-                      <div className="p-1.5 rounded-lg bg-green-100 dark:bg-green-900">
+                    <div className="flex items-center gap-3 p-2 rounded-lg border hover:bg-accent/50 hover:shadow-sm transition-all duration-200 cursor-pointer hover:-translate-y-0.5">
+                      <div className="p-1.5 rounded-lg bg-green-100 dark:bg-green-900/50">
                         <HelpCircle className="h-3 w-3 text-green-600 dark:text-green-400" />
                       </div>
                       <div className="flex-1 min-w-0">

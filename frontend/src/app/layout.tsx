@@ -36,16 +36,22 @@ export default function RootLayout({
             <div className="flex min-h-screen flex-col">
               {' '}
               {/* Use div as main wrapper */}
-              <header className="sticky top-0 z-50 w-full border-b bg-background/95 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60">
+              <header className="sticky top-0 z-50 w-full border-b bg-background/95 shadow-sm backdrop-blur-md supports-[backdrop-filter]:bg-background/60 transition-all duration-200">
                 <div className="container flex h-14 items-center justify-between">
-                  <Link href="/dashboard" className="text-lg font-bold hover:opacity-80 transition-opacity">
+                  <Link href="/dashboard" className="text-lg font-bold hover:opacity-80 transition-all duration-200 hover:scale-[1.02]">
                     ibe160 Application
                   </Link>
-                  <nav className="flex items-center gap-4">
-                    <Link href="/dashboard" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  <nav className="flex items-center gap-1">
+                    <Link 
+                      href="/dashboard" 
+                      className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-all duration-200"
+                    >
                       Dashboard
                     </Link>
-                    <Link href="/history" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    <Link 
+                      href="/history" 
+                      className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-all duration-200"
+                    >
                       History
                     </Link>
                   </nav>
