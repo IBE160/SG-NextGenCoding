@@ -239,7 +239,7 @@ const DashboardPage: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto px-6 py-8">
       {/* Action Selection Dialog */}
       <ActionSelectionDialog
         open={showActionDialog}
@@ -252,9 +252,9 @@ const DashboardPage: React.FC = () => {
       />
       
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <p className="text-muted-foreground">
+      <div className="mb-10">
+        <h1 className="text-4xl font-bold tracking-tight">Dashboard</h1>
+        <p className="mt-2 text-lg text-muted-foreground">
           {isGuest 
             ? `Welcome, Guest! You have ${MAX_GUEST_UPLOADS - guestUploadsCount} free uploads remaining.`
             : 'Welcome back! You have unlimited access to all features.'
@@ -264,26 +264,29 @@ const DashboardPage: React.FC = () => {
 
       {/* Login prompt for guests who reached limit */}
       {showLoginPrompt && isGuest && (
-        <div className="mb-6 rounded-lg border-l-4 border-yellow-500 bg-yellow-100 p-4 text-yellow-700">
-          <p className="font-bold">Free Upload Limit Reached!</p>
-          <p>
-            You have used {MAX_GUEST_UPLOADS} free uploads. Please log in or register to continue.
+        <div className="mb-8 rounded-xl border border-amber-200 bg-amber-50 p-5 dark:border-amber-900/50 dark:bg-amber-950/30">
+          <p className="font-semibold text-amber-800 dark:text-amber-200">Free Upload Limit Reached</p>
+          <p className="mt-1 text-amber-700 dark:text-amber-300">
+            You have used {MAX_GUEST_UPLOADS} free uploads. Please sign in or create an account to continue.
           </p>
-          <div className="mt-4 flex gap-2">
-            <Button onClick={() => router.push('/login')}>Log In</Button>
-            <Button variant="outline" onClick={() => router.push('/register')}>Register</Button>
+          <div className="mt-4 flex gap-3">
+            <Button onClick={() => router.push('/login')}>Sign In</Button>
+            <Button variant="outline" onClick={() => router.push('/register')}>Create Account</Button>
           </div>
         </div>
       )}
 
       {/* Main Grid */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
         {/* Upload Card */}
         <Card className="md:col-span-2 lg:col-span-2">
           <CardHeader>
-            <CardTitle>📄 Upload Notes</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5 text-primary" />
+              Upload Notes
+            </CardTitle>
             <CardDescription>
-              Upload your lecture notes to generate summaries or quizzes
+              Upload your lecture notes to generate AI-powered summaries or quizzes
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -315,26 +318,32 @@ const DashboardPage: React.FC = () => {
         {/* Quick Actions Card */}
         <Card>
           <CardHeader>
-            <CardTitle>✨ How It Works</CardTitle>
-            <CardDescription>Upload a file, then choose your action</CardDescription>
+            <CardTitle>How It Works</CardTitle>
+            <CardDescription>Three simple steps to get started</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex items-start gap-3 rounded-lg border p-3 transition-all duration-200 hover:bg-accent/50 hover:shadow-sm">
-              <span className="text-2xl">1️⃣</span>
+          <CardContent className="space-y-4">
+            <div className="flex items-start gap-4 rounded-lg border border-border/50 p-4 transition-all duration-200 hover:bg-accent/50 hover:border-border">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold text-sm">
+                1
+              </div>
               <div>
                 <p className="font-medium">Upload Your Notes</p>
                 <p className="text-sm text-muted-foreground">Drop a PDF, TXT, or DOCX file</p>
               </div>
             </div>
-            <div className="flex items-start gap-3 rounded-lg border p-3 transition-all duration-200 hover:bg-accent/50 hover:shadow-sm">
-              <span className="text-2xl">2️⃣</span>
+            <div className="flex items-start gap-4 rounded-lg border border-border/50 p-4 transition-all duration-200 hover:bg-accent/50 hover:border-border">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold text-sm">
+                2
+              </div>
               <div>
                 <p className="font-medium">Choose Your Action</p>
                 <p className="text-sm text-muted-foreground">Generate a summary or quiz</p>
               </div>
             </div>
-            <div className="flex items-start gap-3 rounded-lg border p-3 transition-all duration-200 hover:bg-accent/50 hover:shadow-sm">
-              <span className="text-2xl">3️⃣</span>
+            <div className="flex items-start gap-4 rounded-lg border border-border/50 p-4 transition-all duration-200 hover:bg-accent/50 hover:border-border">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold text-sm">
+                3
+              </div>
               <div>
                 <p className="font-medium">Learn & Study</p>
                 <p className="text-sm text-muted-foreground">Review your AI-generated content</p>

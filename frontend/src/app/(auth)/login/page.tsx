@@ -39,10 +39,10 @@ export default function LoginPage() {
 
 function LoginPageSkeleton() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-950">
-      <Card className="mx-auto max-w-sm">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">Login</CardTitle>
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background via-background to-accent/30">
+      <Card className="mx-auto w-full max-w-md">
+        <CardHeader className="space-y-2 text-center">
+          <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
           <CardDescription>Loading...</CardDescription>
         </CardHeader>
       </Card>
@@ -103,66 +103,76 @@ function LoginPageContent() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-950">
-      <Card className="mx-auto max-w-sm">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">Login</CardTitle>
-          <CardDescription>
-            Enter your email and password to log in to your account.
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background via-background to-accent/30 px-4">
+      <Card className="mx-auto w-full max-w-md">
+        <CardHeader className="space-y-2 text-center">
+          <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
+          <CardDescription className="text-base">
+            Sign in to your account to continue
           </CardDescription>
         </CardHeader>
         <CardContent>
           {error && (
-            <div className="mb-4 text-center text-sm text-red-500">{error}</div>
+            <div className="mb-4 rounded-lg bg-destructive/10 p-3 text-center text-sm text-destructive">
+              {error}
+            </div>
           )}
-          <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
+          <form onSubmit={handleSubmit(onSubmit)} className="grid gap-5">
+            <div className="grid gap-2.5">
+              <Label htmlFor="email" className="text-sm font-medium">Email Address</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="m@example.com"
+                placeholder="you@example.com"
                 {...register('email')}
               />
               {errors.email && (
-                <p className="text-sm text-red-500">{errors.email.message}</p>
+                <p className="text-sm text-destructive">{errors.email.message}</p>
               )}
             </div>
-            <div className="grid gap-2">
-              <div className="flex items-center">
-                <Label htmlFor="password">Password</Label>
+            <div className="grid gap-2.5">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password" className="text-sm font-medium">Password</Label>
                 <Link
                   href="/forgot-password"
-                  className="ml-auto inline-block text-sm underline"
+                  className="text-sm text-primary hover:underline"
                 >
-                  Forgot your password?
+                  Forgot password?
                 </Link>
               </div>
               <Input id="password" type="password" {...register('password')} />
               {errors.password && (
-                <p className="text-sm text-red-500">
+                <p className="text-sm text-destructive">
                   {errors.password.message}
                 </p>
               )}
             </div>
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? 'Logging in...' : 'Login'}
+            <Button type="submit" className="w-full mt-2" disabled={isLoading}>
+              {isLoading ? 'Signing in...' : 'Sign In'}
             </Button>
           </form>
-          <div className="mt-4 grid gap-4">
+          <div className="mt-6 grid gap-4">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-2 text-muted-foreground">Or</span>
+              </div>
+            </div>
             <Button
               variant="outline"
               className="w-full"
               onClick={handleGuestLogin}
             >
-              Or continue as guest
+              Continue as Guest
             </Button>
-            <div className="text-center text-sm">
+            <p className="text-center text-sm text-muted-foreground">
               Don&apos;t have an account?{' '}
-              <Link href="/register" className="underline">
-                Sign up
+              <Link href="/register" className="font-medium text-primary hover:underline">
+                Create one
               </Link>
-            </div>
+            </p>
           </div>
         </CardContent>
       </Card>
