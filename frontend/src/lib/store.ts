@@ -3,13 +3,14 @@ import { create } from 'zustand'
 
 interface SummaryData {
   text: string | null
+  summaryId: string | null
   loading: boolean
   error: string | null
 }
 
 interface SummaryState {
   summaries: Record<string, SummaryData>
-  addSummary: (documentId: string, text: string | null) => void
+  addSummary: (documentId: string, text: string | null, summaryId?: string | null) => void
   setSummaryLoading: (documentId: string, loading: boolean) => void
   setSummaryError: (documentId: string, error: string | null) => void
   getSummaryById: (documentId: string) => SummaryData | undefined
@@ -17,11 +18,11 @@ interface SummaryState {
 
 export const useSummaryStore = create<SummaryState>((set, get) => ({
   summaries: {},
-  addSummary: (documentId, text) =>
+  addSummary: (documentId, text, summaryId = null) =>
     set((state) => ({
       summaries: {
         ...state.summaries,
-        [documentId]: { text, loading: false, error: null },
+        [documentId]: { text, summaryId, loading: false, error: null },
       },
     })),
   setSummaryLoading: (documentId, loading) =>

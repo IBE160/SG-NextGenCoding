@@ -5,6 +5,7 @@ import './globals.css'
 // import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import ReactQueryProvider from '@/providers/ReactQueryProvider'
 // import { Toaster } from '@/components/ui/toaster'
+import Link from 'next/link'
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -35,10 +36,34 @@ export default function RootLayout({
             <div className="flex min-h-screen flex-col">
               {' '}
               {/* Use div as main wrapper */}
-              <header className="sticky top-0 z-50 w-full border-b bg-background/95 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60">
-                <div className="container flex h-14 items-center">
-                  <h1 className="text-lg font-bold">ibe160 Application</h1>
-                  {/* Potentially add navigation here later */}
+              <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 transition-all duration-300">
+                <div className="container flex h-16 items-center justify-between">
+                  <Link href="/dashboard" className="flex items-center gap-2.5 font-bold text-lg hover:opacity-90 transition-all duration-200">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground text-sm font-semibold">
+                      S
+                    </div>
+                    <span className="bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">StudyAI</span>
+                  </Link>
+                  <nav className="flex items-center gap-1">
+                    <Link 
+                      href="/dashboard" 
+                      className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/80 rounded-lg transition-all duration-200"
+                    >
+                      Dashboard
+                    </Link>
+                    <Link 
+                      href="/history" 
+                      className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/80 rounded-lg transition-all duration-200"
+                    >
+                      History
+                    </Link>
+                    <Link 
+                      href="/login" 
+                      className="ml-2 px-4 py-2 text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg transition-all duration-200"
+                    >
+                      Sign In
+                    </Link>
+                  </nav>
                 </div>
               </header>
               <main className="flex-grow">
@@ -46,12 +71,15 @@ export default function RootLayout({
                 {/* main tag for semantic content */}
                 {children}
               </main>
-              <footer className="border-t py-6 md:py-0">
-                <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
-                  <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
-                    © 2025 SG-NextGenCoding. All rights reserved.
+              <footer className="border-t border-border/40 py-8 mt-auto">
+                <div className="container flex flex-col items-center justify-between gap-4 md:h-16 md:flex-row">
+                  <p className="text-center text-sm text-muted-foreground md:text-left">
+                    © 2025 StudyAI. Built for better learning.
                   </p>
-                  {/* Potentially add links/social media here later */}
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <Link href="#" className="hover:text-foreground transition-colors">Privacy</Link>
+                    <Link href="#" className="hover:text-foreground transition-colors">Terms</Link>
+                  </div>
                 </div>
               </footer>
             </div>

@@ -37,8 +37,64 @@ class Summary(SQLModel, table=True):
 
     id: Optional[UUID] = Field(default_factory=uuid4, primary_key=True)
     document_id: UUID = Field(foreign_key="documents.id")
-    user_id: UUID = Field(foreign_key="profiles.user_id")
+    user_id: Optional[UUID] = Field(default=None)  # Optional for guest users, no foreign key
     summary_text: str = Field(sa_column=Column(Text, nullable=False))
     generated_at: datetime = Field(default_factory=datetime.utcnow)
     ai_model: str = Field(default="gemini-1.5-flash", sa_column=Column(Text, nullable=False))
     feedback: Optional[str] = Field(default=None, sa_column=Column(Text))
+
+
+class Quiz(SQLModel, table=True):
+    __tablename__ = "quizzes"
+
+    id: Optional[UUID] = Field(default_factory=uuid4, primary_key=True)
+    document_id: UUID = Field(foreign_key="documents.id")
+    user_id: Optional[UUID] = Field(default=None)  # Optional for guest users
+    title: str = Field(sa_column=Column(Text, nullable=False))
+    # Status can be: generating, ready, failed
+    status: str = Field(default="generating", sa_column=Column(Text, nullable=False))
+    total_questions: int = Field(default=0)
+    ai_model: str = Field(default="gemini-2.5-flash", sa_column=Column(Text, nullable=False))
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class Question(SQLModel, table=True):
+    __tablename__ = "questions"
+
+    id: Optional[UUID] = Field(default_factory=uuid4, primary_key=True)
+    quiz_id: UUID = Field(foreign_key="quizzes.id")
+    # Question type: multiple_choice, true_false, short_answer
+    question_type: str = Field(sa_column=Column(Text, nullable=False))
+    question_text: str = Field(sa_column=Column(Text, nullable=False))
+    # JSON string for options (for multiple choice: ["A", "B", "C", "D"])
+    options: Optional[str] = Field(default=None, sa_column=Column(Text))
+    correct_answer: str = Field(sa_column=Column(Text, nullable=False))
+    explanation: Optional[str] = Field(default=None, sa_column=Column(Text))
+    order_index: int = Field(default=0)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class UserAnswer(SQLModel, table=True):
+    __tablename__ = "user_answers"
+
+    id: Optional[UUID] = Field(default_factory=uuid4, primary_key=True)
+    quiz_id: UUID = Field(foreign_key="quizzes.id")
+    question_id: UUID = Field(foreign_key="questions.id")
+    user_id: Optional[UUID] = Field(default=None)  # Optional for guest users
+    user_answer: str = Field(sa_column=Column(Text, nullable=False))
+    is_correct: bool = Field(default=False)
+    answered_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class Feedback(SQLModel, table=True):
+    """Feedback model for storing user feedback on AI-generated content."""
+    __tablename__ = "feedback"
+
+    id: Optional[UUID] = Field(default_factory=uuid4, primary_key=True)
+    content_id: UUID = Field(nullable=False)  # ID of the summary or quiz
+    content_type: str = Field(sa_column=Column(Text, nullable=False))  # 'summary' or 'quiz'
+    user_id: Optional[UUID] = Field(default=None)  # Optional for guest users
+    rating: int = Field(ge=1, le=5)  # 1-5 star rating
+    comment: Optional[str] = Field(default=None, sa_column=Column(Text))
+    created_at: datetime = Field(default_factory=datetime.utcnow)

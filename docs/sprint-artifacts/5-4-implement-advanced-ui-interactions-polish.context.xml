@@ -1,0 +1,267 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>5</epicId>
+    <storyId>4</storyId>
+    <title>Implement Advanced UI Interactions & Polish</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-12-09</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/5-4-implement-advanced-ui-interactions-polish.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>a user</asA>
+    <iWant>a highly polished and smooth user experience</iWant>
+    <soThat>the application feels professional and delightful to use.</soThat>
+    <tasks>
+      <task>Analyze existing UI for inconsistencies and areas for polish (AC: 1,2,3)</task>
+      <task>Identify opportunities for smooth UI animations and transitions (AC: 1)</task>
+      <task>Implement UI animations and transitions (AC: 1)</task>
+      <task>Resolve minor UI inconsistencies (AC: 2)</task>
+      <task>Ensure clear visual feedback for all user actions (AC: 3)</task>
+      <task>Conduct testing for UI polish and responsiveness across devices (AC: 1,2,3)</task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">
+      <given>core functionalities are implemented</given>
+      <when>interacting with the application</when>
+      <then>UI animations are smooth and transitions are seamless</then>
+    </criterion>
+    <criterion id="2">
+      <given>core functionalities are implemented</given>
+      <when>interacting with the application</when>
+      <then>minor UI inconsistencies are resolved</then>
+    </criterion>
+    <criterion id="3">
+      <given>core functionalities are implemented</given>
+      <when>interacting with the application</when>
+      <then>the application provides clear visual feedback for all user actions</then>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/PRD.md</path>
+        <title>Product Requirements Document</title>
+        <section>FR-UI-1: Responsive User Interface</section>
+        <snippet>The system shall provide a responsive web interface compatible with modern browsers (Chrome, Firefox, Safari, Edge - latest two versions) on desktop, laptop, and tablet devices.</snippet>
+      </doc>
+      <doc>
+        <path>docs/PRD.md</path>
+        <title>Product Requirements Document</title>
+        <section>User Experience Principles</section>
+        <snippet>The application's UX will embody a professional, clean, and intuitive design aesthetic. The primary goal is to make the process of transforming notes into learning tools feel effortless, efficient, and rewarding.</snippet>
+      </doc>
+      <doc>
+        <path>docs/PRD.md</path>
+        <title>Product Requirements Document</title>
+        <section>Key Interactions</section>
+        <snippet>We will focus on highly optimized and intuitive interaction patterns for the critical user journeys: ... Clear visual feedback for all user actions.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Epic to Architecture Mapping</section>
+        <snippet>Epic 5: History, Review & Advanced UI | frontend/src/app/dashboard/, frontend/src/app/history/, frontend/src/components/, backend/app/api/history/, backend/app/db/. WCAG compliance across frontend/src/components/ and frontend/src/app/ elements.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Technology Stack Details - Core Technologies</section>
+        <snippet>Frontend: Next.js 16.0.3, TypeScript, React, Tailwind CSS, Shadcn UI</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Implementation Patterns</section>
+        <snippet>Frontend Component Organization: By feature. Tests: Co-locate with code. API Response Wrapper: {"data": ..., "message": ..., "status": ...} for success.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Performance Considerations</section>
+        <snippet>Asynchronous Operations: FastAPI's async capabilities for I/O-bound tasks. Background Jobs: For AI generation. Caching: Potential for Redis (future) for AI prompt caching or frequently accessed data.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Consistency Rules</section>
+        <snippet>Code Formatting: ESLint/Prettier (frontend), Ruff (backend), with automated checks. User-facing Error Messages: Clear, non-technical, actionable advice.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Accessibility</section>
+        <snippet>The application must comply with Web Content Accessibility Guidelines (WCAG) 2.1 Level AA to ensure it is usable by all students, including those with disabilities.</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epic Breakdown</title>
+        <section>Epic 5: History, Review & Advanced UI</section>
+        <snippet>Enable users to review their past learning activities and enhance the overall user experience and accessibility.</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epic Breakdown</title>
+        <section>Story 5.4: Implement Advanced UI Interactions & Polish</section>
+        <snippet>As a user, I want a highly polished and smooth user experience, So that the application feels professional and delightful to use. Focus on CSS refinements, minor JS/React optimizations, attention to detail in UI/UX.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>frontend/src/app/layout.tsx</path>
+        <kind>layout</kind>
+        <symbol>RootLayout</symbol>
+        <reason>Defines the overall structure and common elements of the application's UI.</reason>
+      </artifact>
+      <artifact>
+        <path>frontend/src/app/globals.css</path>
+        <kind>stylesheet</kind>
+        <reason>Contains global CSS styles, including Tailwind CSS directives and custom styles.</reason>
+      </artifact>
+      <artifact>
+        <path>frontend/src/components/ThemeToggle.tsx</path>
+        <kind>component</kind>
+        <symbol>ThemeToggle</symbol>
+        <reason>An interactive UI component for switching between light/dark themes, relevant for polish and responsiveness.</reason>
+      </artifact>
+      <artifact>
+        <path>frontend/src/components/ui/button.tsx</path>
+        <kind>component</kind>
+        <symbol>Button</symbol>
+        <reason>Shadcn UI button component, a fundamental interactive element often subject to styling and animation.</reason>
+      </artifact>
+      <artifact>
+        <path>frontend/src/components/ui/card.tsx</path>
+        <kind>component</kind>
+        <symbol>Card</symbol>
+        <reason>Shadcn UI card component used throughout the app for content containers.</reason>
+      </artifact>
+      <artifact>
+        <path>frontend/src/components/ui/spinner.tsx</path>
+        <kind>component</kind>
+        <symbol>Spinner</symbol>
+        <reason>Loading spinner component for visual feedback during async operations.</reason>
+      </artifact>
+      <artifact>
+        <path>frontend/src/components/ui/toast.tsx</path>
+        <kind>component</kind>
+        <symbol>Toast</symbol>
+        <reason>Toast notification component for user feedback on actions.</reason>
+      </artifact>
+      <artifact>
+        <path>frontend/src/components/ui/input.tsx</path>
+        <kind>component</kind>
+        <symbol>Input</symbol>
+        <reason>Form input component needing focus states and validation styling.</reason>
+      </artifact>
+      <artifact>
+        <path>frontend/src/app/dashboard/page.tsx</path>
+        <kind>page</kind>
+        <symbol>DashboardPage</symbol>
+        <reason>Main dashboard page requiring polish and consistent styling.</reason>
+      </artifact>
+      <artifact>
+        <path>frontend/src/app/history/page.tsx</path>
+        <kind>page</kind>
+        <symbol>HistoryPage</symbol>
+        <reason>History listing page requiring consistent card styling and hover effects.</reason>
+      </artifact>
+      <artifact>
+        <path>frontend/src/app/upload/page.tsx</path>
+        <kind>page</kind>
+        <symbol>UploadPage</symbol>
+        <reason>Document upload page with drag-drop interactions needing polish.</reason>
+      </artifact>
+      <artifact>
+        <path>frontend/src/lib/utils.ts</path>
+        <kind>utility</kind>
+        <symbol>cn</symbol>
+        <reason>Utility function for conditionally joining Tailwind CSS classes, crucial for consistent styling.</reason>
+      </artifact>
+      <artifact>
+        <path>frontend/tailwind.config.js</path>
+        <kind>config</kind>
+        <reason>Tailwind configuration for custom theme colors and animations.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem name="Node.js/npm">
+        <package name="next" version="^16.0.7" />
+        <package name="react" version="18.2.0" />
+        <package name="react-dom" version="18.2.0" />
+        <package name="tailwindcss" version="3.3.3" />
+        <package name="shadcn-ui" version="^1.1.15" /> <!-- inferred from @radix-ui/* and tailwind-merge -->
+        <package name="zustand" version="5.0.8" />
+        <package name="axios" version="^1.6.5" />
+        <package name="lucide-react" version="^0.304.0" />
+        <package name="next-themes" version="^0.4.6" />
+        <package name="@supabase/supabase-js" version="^2.39.3" />
+        <package name="@tanstack/react-query" version="^5.17.15" />
+      </ecosystem>
+      <ecosystem name="Python/Poetry">
+        <package name="fastapi" version="^0.122.0" />
+        <package name="uvicorn" version="^0.38.0" />
+        <package name="supabase" version="^2.24.0" />
+        <package name="sqlmodel" version="^0.0.27" />
+        <package name="google-generativeai" version="^0.7.1" />
+        <package name="pypdf" version="^6.4.0" />
+        <package name="python-docx" version="^1.2.0" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>WCAG 2.1 AA compliance for all UI components and content.</constraint>
+    <constraint>Adherence to Tailwind CSS and Shadcn UI for styling.</constraint>
+    <constraint>Frontend components to be organized by feature.</constraint>
+    <constraint>Code to be formatted with ESLint/Prettier.</constraint>
+    <constraint>Performance implications of UI animations and transitions must be considered.</constraint>
+  </constraints>
+  <interfaces>
+    <interface>
+      <name>React Component Props</name>
+      <kind>component_interface</kind>
+      <signature>Standard React component props for customizability (e.g., className, onClick, children).</signature>
+      <path>frontend/src/components/</path>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>
+      Frontend testing uses Jest and React Testing Library, with tests co-located with code. Backend testing uses Pytest.
+      The project emphasizes Unit, Integration, and End-to-End tests.
+      WCAG 2.1 AA compliance testing is a critical standard for this story.
+    </standards>
+    <locations>
+      <location>frontend/src/**/__tests__/*.{ts,tsx}</location>
+      <location>frontend/src/**/*.test.{ts,tsx}</location>
+      <location>cypress/</location>
+      <location>backend/tests/</location>
+    </locations>
+    <ideas>
+      <idea ac_id="1">
+        **Unit/Integration Tests**:
+        - Test individual UI components for smooth animations and transitions upon state changes.
+        - Verify component responsiveness across different screen sizes (e.g., using `jest-axe` for accessibility checks).
+        **E2E Tests**:
+        - Simulate user interactions (clicks, hovers, form submissions) and assert on visual feedback and animation smoothness.
+        - Verify consistency of UI elements across different pages.
+      </idea>
+      <idea ac_id="2">
+        **Visual Regression Tests**:
+        - Capture screenshots of key UI states and compare against baseline to detect minor inconsistencies.
+        **Unit Tests**:
+        - Test components for correct rendering and styling against design specifications.
+      </idea>
+      <idea ac_id="3">
+        **Integration Tests**:
+        - Verify that user actions trigger appropriate visual feedback (e.g., loading spinners, success/error messages).
+        **E2E Tests**:
+        - Validate that interactive elements (buttons, forms) provide immediate and clear visual feedback upon user input.
+      </idea>
+    </ideas>
+  </tests>
+</story-context>

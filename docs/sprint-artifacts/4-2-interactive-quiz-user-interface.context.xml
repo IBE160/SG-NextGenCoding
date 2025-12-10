@@ -1,0 +1,541 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>4</epicId>
+    <storyId>4-2</storyId>
+    <title>Interactive Quiz User Interface</title>
+    <status>drafted</status>
+    <generatedAt>2025-12-07</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/4-2-interactive-quiz-user-interface.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user</asA>
+    <iWant>an intuitive interface to take the generated quizzes</iWant>
+    <soThat>my learning experience is engaging and effective</soThat>
+    <tasks>
+- [ ] Task 1 (AC: #1, #2, #3) - Create React components for quiz display.
+  - [ ] Subtask 1.1 - Create a `QuizView` component to manage the overall quiz state.
+  - [ ] Subtask 1.2 - Create a `QuestionCard` component to display a single question and its options.
+- [ ] Task 2 (AC: #2, #3) - Implement state management for user answers and navigation.
+  - [ ] Subtask 2.1 - Use React state (e.g., `useState`, `useReducer`, or a state management library) to track the current question index and user's answers.
+  - [ ] Subtask 2.2 - Implement "Next" and "Previous" button functionality.
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1.  **Given** a quiz has been generated, **When** I start the quiz, **Then** questions are presented one at a time.
+2.  I can select or input my answers.
+3.  I can navigate between questions (e.g., next/previous).
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/epics.md">
+## Epic 4: Interactive Quiz Generation &amp; Feedback
+
+Provide users with interactive AI-generated quizzes and a mechanism to provide feedback on the content.
+
+### Story 4.2: Interactive Quiz User Interface
+
+As a user,
+I want an intuitive interface to take the generated quizzes,
+So that my learning experience is engaging and effective.
+
+**Acceptance Criteria:**
+
+**Given** a quiz has been generated,
+**When** I start the quiz,
+**Then** questions are presented one at a time.
+
+**And** I can select or input my answers.
+
+**And** I can navigate between questions (e.g., next/previous).
+
+**Prerequisites:** Story 4.1
+
+Scope: MVP
+
+FRs: [FR-ILA-1]
+
+**Technical Notes:** React components for quiz display, state management for user answers.
+      </doc>
+      <doc path="docs/PRD.md">
+### Key Interactions
+
+*   **Interactive Quiz Experience**: An engaging, clear, and easy-to-use quiz interface that presents one question at a time, allows answer submission, and provides immediate results (or feedback for advanced features).
+
+### Functional Requirements
+**3. Interactive Learning &amp; Assessment (FR-ILA)**
+*   **FR-ILA-1: AI Quiz Generation**: The system shall generate relevant quiz questions (e.g., multiple-choice, true/false, short answer) and correct answers based on the uploaded lecture notes and/or generated summary using AI (Gemini 2.5).
+      </doc>
+      <doc path="docs/architecture.md">
+## Epic to Architecture Mapping
+| Epic | Architectural Component |
+|---|---|
+| Epic 4: Interactive Quiz Generation &amp; Feedback | frontend/src/app/quizzes/, frontend/src/services/, backend/app/api/quizzes/, backend/app/services/ai_generation/, backend/app/db/, backend/app/schemas/. |
+
+## Project Structure
+```
+/
+├── frontend/             # Next.js application
+│   ├── src/
+│   │   ├── components/   # Reusable UI components (shadcn/ui overrides, custom components)
+```
+      </doc>
+    </docs>
+    <code>
+      <file path="frontend/src/components/quiz/GenerateQuizButton.tsx">
+// frontend/src/components/quiz/GenerateQuizButton.tsx
+'use client'
+
+import React from 'react'
+import { Button } from '@/components/ui/button'
+import { Spinner } from '@/components/ui/spinner'
+import { useQuizStore } from '@/lib/quizStore'
+import { generateQuiz, getQuiz } from '@/services/quizzes'
+import { useRouter } from 'next/navigation'
+import { FileQuestion } from 'lucide-react'
+
+interface GenerateQuizButtonProps {
+  documentId: string
+  accessToken?: string
+  numQuestions?: number
+  className?: string
+}
+
+export function GenerateQuizButton({
+  documentId,
+  accessToken,
+  numQuestions = 5,
+  className,
+}: GenerateQuizButtonProps) {
+  const router = useRouter()
+  const { setCurrentQuiz, setIsGenerating, setError, isGenerating } = useQuizStore()
+
+  const handleGenerateQuiz = async () => {
+    setIsGenerating(true)
+    setError(null)
+
+    try {
+      // Generate quiz via API
+      const quiz = await generateQuiz(documentId, numQuestions, undefined, accessToken)
+      
+      // Fetch the full quiz with questions
+      const quizWithQuestions = await getQuiz(quiz.id, accessToken)
+      
+      // Set in store
+      setCurrentQuiz(quizWithQuestions)
+      
+      // Navigate to quiz page
+      router.push(`/quizzes/${quiz.id}`)
+    } catch (error) {
+      console.error('Failed to generate quiz:', error)
+      setError(error instanceof Error ? error.message : 'Failed to generate quiz')
+    } finally {
+      setIsGenerating(false)
+    }
+  }
+
+  return (
+    &lt;Button
+      onClick={handleGenerateQuiz}
+      disabled={isGenerating}
+      className={className}
+    &gt;
+      {isGenerating ? (
+        &lt;&gt;
+          &lt;Spinner /&gt;
+          &lt;span className="ml-2"&gt;Generating Quiz...&lt;/span&gt;
+        &lt;/&gt;
+      ) : (
+        &lt;&gt;
+          &lt;FileQuestion className="w-4 h-4 mr-2" /&gt;
+          Generate Quiz
+        &lt;/&gt;
+      )}
+    &lt;/Button&gt;
+  )
+}
+      </file>
+      <file path="frontend/src/components/quiz/QuestionCard.tsx">
+// frontend/src/components/quiz/QuestionCard.tsx
+'use client'
+
+import React from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import { Question, QuestionType } from '@/lib/quizStore'
+
+interface QuestionCardProps {
+  question: Question
+  questionNumber: number
+  totalQuestions: number
+  selectedAnswer: string | null
+  onAnswerSelect: (answer: string) => void
+  showResult?: boolean
+  correctAnswer?: string
+  isCorrect?: boolean
+}
+
+export function QuestionCard({
+  question,
+  questionNumber,
+  totalQuestions,
+  selectedAnswer,
+  onAnswerSelect,
+  showResult = false,
+  correctAnswer,
+  isCorrect,
+}: QuestionCardProps) {
+  const renderMultipleChoice = () => {
+    if (!question.options) return null
+
+    return (
+      &lt;div className="space-y-3"&gt;
+        {question.options.map((option, index) => {
+          const optionLetter = option.charAt(0) // Get "A", "B", etc.
+          const isSelected = selectedAnswer === optionLetter
+          const isCorrectOption = showResult && correctAnswer === optionLetter
+          const isWrongSelected = showResult && isSelected && !isCorrect
+
+          return (
+            &lt;button
+              key={index}
+              onClick={() => !showResult && onAnswerSelect(optionLetter)}
+              disabled={showResult}
+              className={cn(
+                'w-full p-4 text-left rounded-lg border-2 transition-all',
+                'hover:border-primary hover:bg-primary/5',
+                isSelected && !showResult && 'border-primary bg-primary/10',
+                isCorrectOption && 'border-green-500 bg-green-50 dark:bg-green-950',
+                isWrongSelected && 'border-red-500 bg-red-50 dark:bg-red-950',
+                showResult && !isCorrectOption && !isWrongSelected && 'opacity-50'
+              )}
+            &gt;
+              &lt;span className="font-medium"&gt;{option}&lt;/span&gt;
+            &lt;/button&gt;
+          )
+        })}
+      &lt;/div&gt;
+    )
+  }
+
+  const renderTrueFalse = () => {
+    const options = ['True', 'False']
+
+    return (
+      &lt;div className="flex gap-4 justify-center"&gt;
+        {options.map((option) => {
+          const isSelected = selectedAnswer === option
+          const isCorrectOption = showResult && correctAnswer === option
+          const isWrongSelected = showResult && isSelected && !isCorrect
+
+          return (
+            &lt;Button
+              key={option}
+              variant={isSelected && !showResult ? 'default' : 'outline'}
+              size="lg"
+              onClick={() => !showResult && onAnswerSelect(option)}
+              disabled={showResult}
+              className={cn(
+                'flex-1 max-w-[200px] h-16 text-lg',
+                isCorrectOption && 'border-green-500 bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300',
+                isWrongSelected && 'border-red-500 bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300'
+              )}
+            &gt;
+              {option}
+            &lt;/Button&gt;
+          )
+        })}
+      &lt;/div&gt;
+    )
+  }
+
+  const renderShortAnswer = () => {
+    return (
+      &lt;div className="space-y-4"&gt;
+        &lt;input
+          type="text"
+          value={selectedAnswer || ''}
+          onChange={(e) => !showResult && onAnswerSelect(e.target.value)}
+          disabled={showResult}
+          placeholder="Type your answer here..."
+          className={cn(
+            'w-full p-4 text-lg border-2 rounded-lg',
+            'focus:outline-none focus:border-primary',
+            showResult && isCorrect && 'border-green-500 bg-green-50',
+            showResult && !isCorrect && 'border-red-500 bg-red-50'
+          )}
+        /&gt;
+        {showResult && correctAnswer && (
+          &lt;p className="text-sm text-muted-foreground"&gt;
+            Correct answer: &lt;span className="font-medium text-green-600"&gt;{correctAnswer}&lt;/span&gt;
+          &lt;/p&gt;
+        )}
+      &lt;/div&gt;
+    )
+  }
+
+  const renderQuestion = () => {
+    switch (question.question_type) {
+      case 'multiple_choice':
+        return renderMultipleChoice()
+      case 'true_false':
+        return renderTrueFalse()
+      case 'short_answer':
+        return renderShortAnswer()
+      default:
+        return &lt;p&gt;Unknown question type&lt;/p&gt;
+    }
+  }
+
+  return (
+    &lt;Card className="w-full max-w-2xl mx-auto"&gt;
+      &lt;CardHeader&gt;
+        &lt;div className="flex justify-between items-center mb-2"&gt;
+          &lt;span className="text-sm text-muted-foreground"&gt;
+            Question {questionNumber} of {totalQuestions}
+          &lt;/span&gt;
+          &lt;span className="text-xs px-2 py-1 rounded-full bg-secondary"&gt;
+            {question.question_type.replace('_', ' ')}
+          &lt;/span&gt;
+        &lt;/div&gt;
+        &lt;CardTitle className="text-xl"&gt;{question.question_text}&lt;/CardTitle&gt;
+      &lt;/CardHeader&gt;
+      &lt;CardContent&gt;
+        {renderQuestion()}
+        {showResult && (
+          &lt;div className={cn(
+            'mt-4 p-3 rounded-lg',
+            isCorrect ? 'bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-300' : 'bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-300'
+          )}&gt;
+            {isCorrect ? '✓ Correct!' : '✗ Incorrect'}
+          &lt;/div&gt;
+        )}
+      &lt;/CardContent&gt;
+    &lt;/Card&gt;
+  )
+}
+      </file>
+      <file path="frontend/src/components/quiz/QuizView.tsx">
+// frontend/src/components/quiz/QuizView.tsx
+'use client'
+
+import React from 'react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Spinner } from '@/components/ui/spinner'
+import { QuestionCard } from './QuestionCard'
+import { useQuizStore } from '@/lib/quizStore'
+import { ChevronLeft, ChevronRight, Send } from 'lucide-react'
+
+interface QuizViewProps {
+  onSubmit: () => void
+}
+
+export function QuizView({ onSubmit }: QuizViewProps) {
+  const {
+    currentQuiz,
+    currentQuestionIndex,
+    userAnswers,
+    isSubmitting,
+    setUserAnswer,
+    nextQuestion,
+    previousQuestion,
+    goToQuestion,
+    getCurrentQuestion,
+    isFirstQuestion,
+    isLastQuestion,
+    getAnsweredCount,
+    canSubmit,
+  } = useQuizStore()
+
+  const currentQuestion = getCurrentQuestion()
+
+  if (!currentQuiz || !currentQuiz.questions) {
+    return (
+      &lt;Card className="w-full max-w-2xl mx-auto p-8"&gt;
+        &lt;CardContent className="flex items-center justify-center"&gt;
+          &lt;Spinner /&gt;
+          &lt;span className="ml-2"&gt;Loading quiz...&lt;/span&gt;
+        &lt;/CardContent&gt;
+      &lt;/Card&gt;
+    )
+  }
+
+  if (!currentQuestion) {
+    return (
+      &lt;Card className="w-full max-w-2xl mx-auto p-8"&gt;
+        &lt;CardContent className="text-center"&gt;
+          &lt;p&gt;No questions available&lt;/p&gt;
+        &lt;/CardContent&gt;
+      &lt;/Card&gt;
+    )
+  }
+
+  const handleAnswerSelect = (answer: string) => {
+    setUserAnswer(currentQuestion.id, answer)
+  }
+
+  return (
+    &lt;div className="space-y-6"&gt;
+      {/* Progress indicator */}
+      &lt;div className="w-full max-w-2xl mx-auto"&gt;
+        &lt;div className="flex justify-between text-sm text-muted-foreground mb-2"&gt;
+          &lt;span&gt;Progress&lt;/span&gt;
+          &lt;span&gt;
+            {getAnsweredCount()} of {currentQuiz.questions.length} answered
+          &lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div className="flex gap-1"&gt;
+          {currentQuiz.questions.map((q, index) => (
+            &lt;button
+              key={q.id}
+              onClick={() => goToQuestion(index)}
+              className={`flex-1 h-2 rounded-full transition-colors ${
+                index === currentQuestionIndex
+                  ? 'bg-primary'
+                  : userAnswers[q.id]
+                    ? 'bg-green-500'
+                    : 'bg-secondary'
+              }`}
+              aria-label={`Go to question ${index + 1}`}
+            /&gt;
+          ))}
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      {/* Question card */}
+      &lt;QuestionCard
+        question={currentQuestion}
+        questionNumber={currentQuestionIndex + 1}
+        totalQuestions={currentQuiz.questions.length}
+        selectedAnswer={userAnswers[currentQuestion.id] || null}
+        onAnswerSelect={handleAnswerSelect}
+      /&gt;
+
+      {/* Navigation */}
+      &lt;div className="flex justify-between items-center w-full max-w-2xl mx-auto"&gt;
+        &lt;Button
+          variant="outline"
+          onClick={previousQuestion}
+          disabled={isFirstQuestion()}
+        &gt;
+          &lt;ChevronLeft className="w-4 h-4 mr-1" /&gt;
+          Previous
+        &lt;/Button&gt;
+
+        &lt;div className="flex gap-2"&gt;
+          {isLastQuestion() ? (
+            &lt;Button
+              onClick={onSubmit}
+              disabled={!canSubmit() || isSubmitting}
+              className="bg-green-600 hover:bg-green-700"
+            &gt;
+              {isSubmitting ? (
+                &lt;&gt;
+                  &lt;Spinner /&gt;
+                  &lt;span className="ml-2"&gt;Submitting...&lt;/span&gt;
+                &lt;/&gt;
+              ) : (
+                &lt;&gt;
+                  &lt;Send className="w-4 h-4 mr-1" /&gt;
+                  Submit Quiz
+                &lt;/&gt;
+              )}
+            &lt;/Button&gt;
+          ) : (
+            &lt;Button onClick={nextQuestion}&gt;
+              Next
+              &lt;ChevronRight className="w-4 h-4 ml-1" /&gt;
+            &lt;/Button&gt;
+          )}
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      {/* Submit hint */}
+      {!canSubmit() && (
+        &lt;p className="text-center text-sm text-muted-foreground"&gt;
+          Answer all questions to submit the quiz
+        &lt;/p&gt;
+      )}
+    &lt;/div&gt;
+  )
+}
+      </file>
+    </code>
+    <dependencies>
+        <dependency name="@hookform/resolvers" version="^5.2.2"/>
+        <dependency name="@radix-ui/react-dialog" version="^1.1.15"/>
+        <dependency name="@radix-ui/react-dropdown-menu" version="^2.0.6"/>
+        <dependency name="@radix-ui/react-icons" version="^1.3.0"/>
+        <dependency name="@radix-ui/react-label" version="^2.1.8"/>
+        <dependency name="@radix-ui/react-slot" version="^1.0.2"/>
+        <dependency name="@radix-ui/react-toast" version="^1.2.15"/>
+        <dependency name="@supabase/ssr" version="^0.1.0"/>
+        <dependency name="@supabase/supabase-js" version="^2.39.3"/>
+        <dependency name="@tanstack/react-query" version="^5.17.15"/>
+        <dependency name="axios" version="^1.6.5"/>
+        <dependency name="class-variance-authority" version="^0.7.0"/>
+        <dependency name="clsx" version="^2.1.0"/>
+        <dependency name="geist" version="^1.0.0"/>
+        <dependency name="lucide-react" version="^0.304.0"/>
+        <dependency name="next" version="^16.0.7"/>
+        <dependency name="next-themes" version="^0.4.6"/>
+        <dependency name="react" version="18.2.0"/>
+        <dependency name="react-dom" version="18.2.0"/>
+        <dependency name="react-hook-form" version="^7.67.0"/>
+        <dependency name="zod" version="^4.1.13"/>
+        <dependency name="zustand" version="5.0.8"/>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint source="docs/architecture.md">Use Next.js 16.0.3, TypeScript, React, Tailwind CSS, Shadcn UI for frontend.</constraint>
+    <constraint source="docs/architecture.md">Use Zustand for frontend state management.</constraint>
+    <constraint source="docs/PRD.md">The application must comply with Web Content Accessibility Guidelines (WCAG) 2.1 Level AA.</constraint>
+  </constraints>
+  <interfaces>
+    <interface type="Restful API" source="docs/architecture.md">
+      <endpoint method="POST" path="/api/v1/quizzes/generate">
+        <description>Generates a new quiz for a given document.</description>
+        <request>
+          { "document_id": "string", "num_questions": "integer" }
+        </request>
+        <response>
+          { "id": "string", "document_id": "string", ... }
+        </response>
+      </endpoint>
+      <endpoint method="GET" path="/api/v1/quizzes/{quiz_id}">
+        <description>Fetches a quiz with its questions.</description>
+        <response>
+          { "id": "string", "questions": [...] }
+        </response>
+      </endpoint>
+      <endpoint method="POST" path="/api/v1/quizzes/{quiz_id}/submit">
+        <description>Submits user answers for a quiz and returns the results.</description>
+        <request>
+          { "answers": [{ "question_id": "string", "user_answer": "string" }] }
+        </request>
+        <response>
+          { "quiz_id": "string", "score": "integer", "percentage": "integer", ... }
+        </response>
+      </endpoint>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>Unit tests and integration tests will be written for the frontend and backend.</standards>
+    <locations>
+        <location path="frontend/__tests__/quizzes/quizzes.service.test.ts"/>
+    </locations>
+    <ideas>
+- Test that the QuizView component renders correctly and displays the first question.
+- Test that clicking the "Next" and "Previous" buttons updates the displayed question.
+- Test that selecting an answer updates the state.
+- Test that the submit button is disabled until all questions are answered.
+- Test that submitting the quiz triggers the onSubmit callback.
+    </ideas>
+  </tests>
+</story-context>

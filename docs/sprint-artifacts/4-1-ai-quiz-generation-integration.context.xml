@@ -1,0 +1,245 @@
+<story-context id="{bmad_folder}/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>4</epicId>
+    <storyId>4.1</storyId>
+    <title>AI Quiz Generation Integration</title>
+    <status>drafted</status>
+    <generatedAt>søndag 7. desember 2025</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/4-1-ai-quiz-generation-integration.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user</asA>
+    <iWant>to receive relevant quiz questions based on my lecture notes or summary</iWant>
+    <soThat>I can actively test my understanding</soThat>
+    <tasks>
+      <!-- Backend Development -->
+      <task>
+        <description>Design and implement database schema for quizzes and questions.</description>
+        <subtask>Define Quiz and Question models in backend/app/db/ (using SQLModel).</subtask>
+        <subtask>Create Alembic migrations for the new tables.</subtask>
+      </task>
+      <task>
+        <description>Implement FastAPI endpoint for quiz requests.</description>
+        <subtask>Create POST /api/v1/quizzes/generate endpoint in backend/app/api/quizzes/.</subtask>
+        <subtask>Implement Pydantic schemas for request/response validation in backend/app/schemas/.</subtask>
+      </task>
+      <task>
+        <description>Integrate with Gemini 2.5 for quiz generation.</description>
+        <subtask>Develop service layer in backend/app/services/ai_generation/ to handle prompt engineering and API calls to Gemini.</subtask>
+        <subtask>Implement asynchronous processing for quiz generation using background jobs.</subtask>
+        <subtask>Handle potential AI service errors gracefully.</subtask>
+      </task>
+      <task>
+        <description>Implement basic quiz grading logic (initially just comparing answers).</description>
+        <subtask>Develop logic to compare user answers with correct answers.</subtask>
+      </task>
+      <!-- Testing (Backend) -->
+      <task>
+        <description>Testing (Backend)</description>
+        <subtask>Write unit tests for database models and CRUD operations.</subtask>
+        <subtask>Write integration tests for the /api/v1/quizzes/generate endpoint, including AI model interaction.</subtask>
+      </task>
+      <!-- Frontend Development -->
+      <task>
+        <description>Create UI for requesting quiz generation.</description>
+        <subtask>Add a "Generate Quiz" button on the file view page.</subtask>
+        <subtask>Implement loading states/indicators for quiz generation.</subtask>
+      </task>
+      <task>
+        <description>Implement interactive quiz interface.</description>
+        <subtask>Design and develop React components for displaying quiz questions one at a time (frontend/src/app/quizzes/).</subtask>
+        <subtask>Implement state management (Zustand) for quiz flow and user answers.</subtask>
+        <subtask>Implement navigation between questions (next/previous).</subtask>
+      </task>
+      <task>
+        <description>Display quiz results.</description>
+        <subtask>Create UI for displaying the quiz score and review correct/incorrect answers.</subtask>
+      </task>
+      <!-- Testing (Frontend) -->
+      <task>
+        <description>Testing (Frontend)</description>
+        <subtask>Write unit tests for React components.</subtask>
+        <subtask>Write integration tests for user interaction with the quiz UI.</subtask>
+        <subtask>Write E2E tests for the entire quiz generation and taking flow using Cypress.</subtask>
+      </task>
+      <!-- General -->
+      <task>
+        <description>General</description>
+        <subtask>Ensure compliance with ethical AI guidelines in prompt engineering and content filtering.</subtask>
+        <subtask>Document API endpoints and data models.</subtask>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion>
+      <given>I have uploaded a file and its text has been extracted</given>
+      <when>I request a quiz</when>
+      <then>an AI model (Gemini 2.5) generates a set of quiz questions (e.g., multiple-choice, true/false, short answer) with correct answers based on the content.</then>
+      <verification>Integration test for AI quiz generation.</verification>
+    </criterion>
+    <criterion>
+      <given>I have uploaded a file and its text has been extracted</given>
+      <when>I request a quiz</when>
+      <then>the quiz is generated within a specified performance threshold (e.g., under 30 seconds).</then>
+      <verification>Performance testing of the quiz generation endpoint.</verification>
+    </criterion>
+    <criterion>
+      <given>I have uploaded a file and its text has been extracted</given>
+      <when>I request a quiz</when>
+      <then>ethical AI guidelines are followed to minimize bias and ensure factual accuracy.</then>
+      <verification>Manual review of generated quizzes, and automated checks for content safety (if applicable).</verification>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <artifact>
+        <path>docs/PRD.md</path>
+        <title>ibe160 - Product Requirements Document</title>
+        <section>Functional Requirements</section>
+        <snippet>The system shall generate relevant quiz questions (e.g., multiple-choice, true/false, short answer) and correct answers based on the uploaded lecture notes and/or generated summary using AI (Gemini 2.5).</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/PRD.md</path>
+        <title>ibe160 - Product Requirements Document</title>
+        <section>API Specification</section>
+        <snippet>The FastAPI backend will expose a RESTful API with clearly defined endpoints for: Quiz Generation: Requesting AI-generated quizzes based on notes.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/epics.md</path>
+        <title>ibe160 - Epic Breakdown</title>
+        <section>Epic 4: Interactive Quiz Generation & Feedback</section>
+        <snippet>Goal: Provide users with interactive AI-generated quizzes and a mechanism to provide feedback on the content.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/epics.md</path>
+        <title>ibe160 - Epic Breakdown</title>
+        <section>Story 4.1: AI Quiz Generation Integration</section>
+        <snippet>As a user, I want to receive relevant quiz questions based on my lecture notes or summary, So that I can actively test my understanding.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Epic to Architecture Mapping</section>
+        <snippet>Epic 4: Interactive Quiz Generation & Feedback maps to frontend/src/app/quizzes/, frontend/src/services/, backend/app/api/quizzes/, backend/app/services/ai_generation/, backend/app/db/, backend/app/schemas/.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Technology Stack Details</section>
+        <snippet>AI Model: Gemini 2.5 Pro/Flash. Backend: FastAPI (Python).</snippet>
+      </artifact>
+    </docs>
+    <code>
+      <artifact>
+        <path>frontend/src/app/quizzes/</path>
+        <kind>directory</kind>
+        <reason>Location for new UI components related to quizzes.</reason>
+      </artifact>
+      <artifact>
+        <path>frontend/src/services/</path>
+        <kind>directory</kind>
+        <reason>Possible location for frontend service interactions with the quiz API.</reason>
+      </artifact>
+      <artifact>
+        <path>backend/app/api/quizzes/</path>
+        <kind>directory</kind>
+        <reason>Location for the new FastAPI endpoint for quiz generation.</reason>
+      </artifact>
+      <artifact>
+        <path>backend/app/services/ai_generation/</path>
+        <kind>directory</kind>
+        <reason>Location for the service layer handling Gemini 2.5 integration for quiz generation.</reason>
+      </artifact>
+      <artifact>
+        <path>backend/app/db/</path>
+        <kind>directory</kind>
+        <reason>Location for new database models (Quiz, Question) using SQLModel.</reason>
+      </artifact>
+      <artifact>
+        <path>backend/app/schemas/</path>
+        <kind>directory</kind>
+        <reason>Location for Pydantic schemas for request/response validation of quiz data.</reason>
+      </artifact>
+      <artifact>
+        <path>backend/tests/</path>
+        <kind>directory</kind>
+        <reason>Location for co-located backend tests (unit, integration).</reason>
+      </artifact>
+      <artifact>
+        <path>frontend/tests/</path>
+        <kind>directory</kind>
+        <reason>Location for co-located frontend tests (unit, integration, E2E).</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem name="Node.js">
+        <package name="next" version="16.0.3"/>
+        <package name="react"/>
+        <package name="typescript"/>
+        <package name="tailwindcss"/>
+        <package name="shadcn-ui"/>
+        <package name="zustand" version="5.0.8"/>
+        <package name="axios" version="1.13.2"/>
+        <framework name="Next.js"/>
+      </ecosystem>
+      <ecosystem name="Python">
+        <package name="fastapi" version="0.122.0"/>
+        <package name="pydantic" version="2.12.4"/>
+        <package name="sqlmodel" version="0.0.27"/>
+        <framework name="FastAPI"/>
+        <framework name="SQLModel"/>
+      </ecosystem>
+      <ecosystem name="Global">
+        <package name="Supabase" version="2.5 (PostgreSQL, Supabase-js 2.84.0, Supabase-py 2.24.0)"/>
+        <package name="Gemini" version="2.5 Pro/Flash"/>
+        <package name="Resend" version="6.5.2"/>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Adhere to FastAPI and Next.js framework structures.</constraint>
+    <constraint>Follow naming conventions for API endpoints (plural nouns, kebab-case), database tables (plural, snake_case), etc., as defined in architecture.md.</constraint>
+    <constraint>Implement comprehensive testing (unit, integration, E2E) as per architecture.md.</constraint>
+    <constraint>Ensure compliance with ethical AI guidelines in prompt engineering and content filtering.</constraint>
+    <constraint>Quiz generation performance target: under 30 seconds.</constraint>
+  </constraints>
+  <interfaces>
+    <interface>
+      <name>Quiz Generation API</name>
+      <kind>REST endpoint</kind>
+      <signature>POST /api/v1/quizzes/generate</signature>
+      <path>backend/app/api/quizzes/main.py (or similar)</path>
+    </interface>
+    <interface>
+      <name>Gemini 2.5 API</name>
+      <kind>External API</kind>
+      <signature>Google Gemini API calls for text generation</signature>
+      <path>N/A (external)</path>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>
+      Unit Tests (Frontend: Jest, Backend: pytest), Integration Tests (Frontend: Jest/Cypress, Backend: pytest), End-to-End (E2E) Tests (Cypress/Playwright). Tests should be co-located with code.
+    </standards>
+    <locations>
+      <location>backend/tests/</location>
+      <location>frontend/__tests__/ or co-located with components</location>
+      <location>cypress/</location>
+    </locations>
+    <ideas>
+      <idea ac="AC 1">Integration test for the backend API endpoint (POST /api/v1/quizzes/generate) to verify interaction with Gemini 2.5 and correct quiz generation.</idea>
+      <idea ac="AC 2">Performance test for the quiz generation endpoint to ensure generation within 30 seconds.</idea>
+      <idea ac="AC 3">Manual review of generated quizzes for factual accuracy and bias; automated content safety checks (if applicable).</idea>
+      <idea>Unit tests for React components related to quiz display and input handling.</idea>
+      <idea>Integration tests for frontend user interaction with the quiz UI.</idea>
+      <idea>E2E tests for the full user journey of requesting and taking a quiz.</idea>
+      <idea>Unit tests for Quiz and Question database models and CRUD operations.</idea>
+    </ideas>
+  </tests>
+</story-context>
+

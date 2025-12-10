@@ -7,6 +7,7 @@ import '@testing-library/jest-dom'
 // Mock dependencies BEFORE importing the component
 jest.mock('next/navigation', () => ({
   useParams: () => ({ document_id: 'test-doc-id' }),
+  useRouter: () => ({ push: jest.fn(), back: jest.fn() }),
 }))
 
 jest.mock('react-markdown', () => {

@@ -1,26 +1,29 @@
 // frontend/src/app/summaries/[document_id]/page.tsx
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { useParams } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { useSummaryStore } from '@/lib/store'
 import { getSummary, getSummaryStatus } from '@/services/documents'
 import { Button } from '@/components/ui/button'
-import { createBrowserClient } from '@/utils/supabase'
+import { GenerateQuizButton } from '@/components/quiz'
+import { FeedbackButton } from '@/components/feedback'
 import type { Session } from '@supabase/supabase-js'
 
 const SummaryDisplayPage = () => {
   const params = useParams()
   const documentId = params.document_id as string
-  const supabase = createBrowserClient()
   const [session, setSession] = useState<Session | null>(null)
   const [isLoadingSession, setIsLoadingSession] = useState(true)
 
   useEffect(() => {
     const getSession = async () => {
       try {
+        // Only import and create supabase client on client-side
+        const { createBrowserClient } = await import('@/utils/supabase')
+        const supabase = createBrowserClient()
         const {
           data: { session },
         } = await supabase.auth.getSession()
@@ -33,7 +36,7 @@ const SummaryDisplayPage = () => {
       }
     }
     getSession()
-  }, [supabase])
+  }, [])
 
   // Allow guest users - access token is optional
   const accessToken = session?.access_token || undefined
@@ -81,7 +84,7 @@ const SummaryDisplayPage = () => {
           console.log('Summary completed, fetching summary...')
           const summary = await getSummary(documentId, accessToken)
           console.log('Summary received:', summary)
-          addSummary(documentId, summary.summary_text)
+          addSummary(documentId, summary.summary_text, summary.summary_id)
         } else if (statusData.status === 'failed') {
           console.log('Summary generation failed')
           setSummaryError(documentId, 'Summary generation failed.')
@@ -148,13 +151,35 @@ const SummaryDisplayPage = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="mb-4 text-2xl font-bold">Summary</h1>
-      <div className="prose lg:prose-xl">
+      <div className="mb-4 flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Summary</h1>
+        <Button variant="outline" onClick={() => window.location.href = '/dashboard'}>
+          ← Back to Dashboard
+        </Button>
+      </div>
+      <div className="prose lg:prose-xl dark:prose-invert">
         <ReactMarkdown>{summaryData.text}</ReactMarkdown>
       </div>
-      <CopyToClipboard text={summaryData.text} onCopy={() => setCopied(true)}>
-        <Button className="mt-4">{copied ? 'Copied!' : 'Copy Summary'}</Button>
-      </CopyToClipboard>
+      <div className="mt-4 flex gap-2 flex-wrap">
+        <CopyToClipboard text={summaryData.text} onCopy={() => setCopied(true)}>
+          <Button>{copied ? 'Copied!' : 'Copy Summary'}</Button>
+        </CopyToClipboard>
+        <GenerateQuizButton 
+          documentId={documentId} 
+          accessToken={accessToken}
+          numQuestions={5}
+        />
+        {summaryData.summaryId && (
+          <FeedbackButton
+            contentId={summaryData.summaryId}
+            contentType="summary"
+            accessToken={accessToken}
+          />
+        )}
+        <Button variant="outline" onClick={() => window.location.href = '/dashboard'}>
+          Back to Dashboard
+        </Button>
+      </div>
     </div>
   )
 }

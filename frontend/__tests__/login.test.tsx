@@ -46,12 +46,12 @@ describe('LoginPage', () => {
     render(<LoginPage />)
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
     expect(screen.getByLabelText('Password')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /login/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument()
   })
 
   it('shows validation errors for invalid input', async () => {
     render(<LoginPage />)
-    fireEvent.click(screen.getByRole('button', { name: /login/i }))
+    fireEvent.click(screen.getByRole('button', { name: /sign in/i }))
 
     expect(
       await screen.findByText(/enter a valid email address/i),
@@ -74,7 +74,7 @@ describe('LoginPage', () => {
     fireEvent.change(screen.getByLabelText('Password'), {
       target: { value: 'password123' },
     })
-    fireEvent.click(screen.getByRole('button', { name: /login/i }))
+    fireEvent.click(screen.getByRole('button', { name: /sign in/i }))
 
     await waitFor(() => {
       // Expect fetch to have been called on the local Next.js API route
@@ -97,7 +97,7 @@ describe('LoginPage', () => {
     fireEvent.change(screen.getByLabelText('Password'), {
       target: { value: 'wrongpassword' },
     })
-    fireEvent.click(screen.getByRole('button', { name: /login/i }))
+    fireEvent.click(screen.getByRole('button', { name: /sign in/i }))
 
     expect(await screen.findByText(/invalid credentials/i)).toBeInTheDocument()
     expect(fetchSpy).toHaveBeenCalledWith('/api/login', expect.any(Object))

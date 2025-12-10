@@ -1,6 +1,7 @@
 # backend/app/services/ai_generation/summary_generator.py
 
 import logging
+from typing import Optional
 from uuid import UUID
 from sqlmodel import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 async def generate_summary(
     document_id: UUID,
-    user_id: UUID,
+    user_id: Optional[UUID],
     extracted_text: str,
     session: AsyncSession
 ):

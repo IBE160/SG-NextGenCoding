@@ -51,17 +51,17 @@ development_status:
   3-1-file-upload-interface: done
   3-2-text-extraction-from-uploaded-files: done
   3-3-ai-summary-generation-integration: done
-  3-4-display-summary-in-user-interface: in-progress
+  3-4-display-summary-in-user-interface: done
   epic-3-retrospective: optional
-  epic-4: backlog
-  4-1-ai-quiz-generation-integration: backlog
-  4-2-interactive-quiz-user-interface: backlog
-  4-3-quiz-answer-submission-basic-results: backlog
-  4-4-content-quality-feedback-mechanism: backlog
+  epic-4: contexted
+  4-1-ai-quiz-generation-integration: done
+  4-2-interactive-quiz-user-interface: done
+  4-3-quiz-answer-submission-basic-results: done
+  4-4-content-quality-feedback-mechanism: done
   epic-4-retrospective: optional
-  epic-5: backlog
-  5-1-view-history-summaries-quizzes: backlog
-  5-2-review-past-quiz-results-answers: backlog
-  5-3-full-wcag-2-1-aa-compliance-audit-remediation: backlog
-  5-4-implement-advanced-ui-interactions-polish: backlog
+  epic-5: contexted
+  5-1-view-history-summaries-quizzes: ready-for-dev
+  5-2-review-past-quiz-results-answers: ready-for-dev
+  5-3-full-wcag-2-1-aa-compliance-audit-remediation: drafted
+  5-4-implement-advanced-ui-interactions-polish: ready-for-dev
   epic-5-retrospective: optional

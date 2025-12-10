@@ -6,13 +6,16 @@ export function proxy(request: NextRequest) {
   const accessToken = request.cookies.get('access_token')?.value
 
   // Paths that are public and don't require authentication
-  // Keep this list minimal — do NOT include protected pages like `/dashboard` or `/notes`.
+  // Keep this list minimal — do NOT include protected pages like `/notes`.
   const publicPaths = [
     '/login',
     '/register',
     '/',
     '/forgot-password',
     '/upload',
+    '/summaries',
+    '/dashboard',
+    '/quizzes',
   ]
 
   // Let static assets, images, and API routes pass through
@@ -25,7 +28,10 @@ export function proxy(request: NextRequest) {
     return NextResponse.next()
   }
 
-  const isPublicPath = publicPaths.includes(pathname)
+  // Check if pathname matches or starts with any public path
+  const isPublicPath = publicPaths.some(
+    (path) => pathname === path || pathname.startsWith(path + '/')
+  )
 
   if (accessToken) {
     // If authenticated and trying to access specifically auth pages (login/register), redirect to dashboard

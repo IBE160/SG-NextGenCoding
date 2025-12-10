@@ -82,14 +82,24 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({
 
   return (
     <div
-      className={`cursor-pointer rounded-lg border-2 border-dashed p-6 text-center transition-colors duration-200
-        ${isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'}`}
+      className={`cursor-pointer rounded-xl border-2 border-dashed p-8 text-center transition-all duration-300 ease-in-out
+        ${isDragActive 
+          ? 'border-primary bg-primary/5 scale-[1.01] shadow-lg' 
+          : 'border-border/60 hover:border-primary/50 hover:bg-accent/30'}`}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
       onClick={openFileExplorer}
-      aria-label="file upload area"
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          openFileExplorer()
+        }
+      }}
+      aria-label="File upload area. Click or drag and drop to upload a file."
     >
       <input
         type="file"
@@ -97,28 +107,35 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({
         onChange={onFileChange}
         className="hidden"
         accept={acceptedFileTypes.join(',')}
+        aria-hidden="true"
       />
       {selectedFile ? (
-        <div>
-          <p className="font-semibold">Selected File:</p>
-          <p>
-            {selectedFile.name} ({selectedFile.type})
+        <div className="animate-in fade-in duration-200">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+            <svg className="h-6 w-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <p className="font-semibold text-foreground">File Ready</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {selectedFile.name}
           </p>
-          {error && <p className="mt-2 text-red-500">{error}</p>}
+          {error && <p className="mt-2 text-sm text-destructive">{error}</p>}
         </div>
       ) : (
         <div>
-          <p className="text-gray-600">
-            Drag & drop your file here, or click to select
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+            <svg className="h-7 w-7 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+          </div>
+          <p className="text-base font-medium text-foreground">
+            Drop your file here, or <span className="text-primary">browse</span>
           </p>
-          <p className="mt-1 text-sm text-gray-500">
-            Accepted:{' '}
-            {acceptedFileTypes
-              .map((type) => type.split('/')[1] || type)
-              .join(', ')}{' '}
-            | Max size: {maxFileSizeMB}MB
+          <p className="mt-2 text-sm text-muted-foreground">
+            PDF, TXT, or DOCX up to {maxFileSizeMB}MB
           </p>
-          {error && <p className="mt-2 text-red-500">{error}</p>}
+          {error && <p className="mt-3 text-sm text-destructive">{error}</p>}
         </div>
       )}
     </div>
